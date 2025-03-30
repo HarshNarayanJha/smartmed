@@ -1,103 +1,242 @@
-import Image from "next/image";
+import Footer from "@/components/Footer"
+import { Button } from "@/components/ui/button"
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <>
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="mb-6 font-bold text-4xl">
+              Transforming Patient Care with AI-Powered Insights
+            </h2>
+            <p className="mb-8 text-muted-foreground text-xl">
+              SmartMed helps doctors track patient data and deliver better
+              outcomes through advanced analytics and artificial intelligence.
+            </p>
+            <div className="flex flex-col justify-center gap-4 sm:flex-row">
+              <Button className="rounded-md px-6 py-3 transition-colors">
+                Get Started
+              </Button>
+              <Button
+                variant="outline"
+                className="rounded-md px-6 py-3 transition-colors"
+              >
+                Book a Demo
+              </Button>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+      </section>
+
+      <section id="features" className="py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="mb-12 text-center font-bold text-3xl">
+            Powerful Features for Modern Healthcare
+          </h2>
+          <div className="grid gap-8 md:grid-cols-3">
+            <div className="rounded-lg border p-6 shadow-sm">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-primary"
+                >
+                  <path d="M20 5H8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Z"></path>
+                  <path d="M4 12V7a2 2 0 0 1 2-2"></path>
+                  <path d="M10 10h8"></path>
+                  <path d="M10 14h8"></path>
+                  <path d="M10 18h4"></path>
+                </svg>
+              </div>
+              <h3 className="mb-2 font-medium text-xl">
+                Patient Data Tracking
+              </h3>
+              <p className="text-muted-foreground">
+                Comprehensive dashboard to monitor patient vitals, medication,
+                and treatment progress in real-time.
+              </p>
+            </div>
+            <div className="rounded-lg border p-6 shadow-sm">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-primary"
+                >
+                  <path d="M12 2H2v10h10V2Z"></path>
+                  <path d="M22 12h-10v10h10V12Z"></path>
+                  <path d="M12 12H2v10h10V12Z"></path>
+                  <path d="M22 2h-10v10h10V2Z"></path>
+                </svg>
+              </div>
+              <h3 className="mb-2 font-medium text-xl">AI-Powered Diagnosis</h3>
+              <p className="text-muted-foreground">
+                Advanced algorithms to help identify patterns and suggest
+                potential diagnoses based on patient history.
+              </p>
+            </div>
+            <div className="rounded-lg border p-6 shadow-sm">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-primary"
+                >
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+              <h3 className="mb-2 font-medium text-xl">Team Collaboration</h3>
+              <p className="text-muted-foreground">
+                Seamless communication tools for healthcare teams to coordinate
+                care and share insights securely.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="benefits" className="py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="mb-12 text-center font-bold text-3xl">
+            Why Doctors Choose SmartMed
+          </h2>
+          <div className="grid gap-12 md:grid-cols-2">
+            <div>
+              <ul className="space-y-4">
+                <li className="flex gap-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-primary"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <div>
+                    <h3 className="font-medium">Save 5+ hours per week</h3>
+                    <p className="text-muted-foreground">
+                      Reduce administrative burden with automated data entry and
+                      analysis.
+                    </p>
+                  </div>
+                </li>
+                <li className="flex gap-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-primary"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <div>
+                    <h3 className="font-medium">Improve diagnostic accuracy</h3>
+                    <p className="text-muted-foreground">
+                      AI-assisted technology helps identify potential issues
+                      that might be overlooked.
+                    </p>
+                  </div>
+                </li>
+                <li className="flex gap-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-primary"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <div>
+                    <h3 className="font-medium">
+                      Enhance patient satisfaction
+                    </h3>
+                    <p className="text-muted-foreground">
+                      Provide more personalized care with comprehensive patient
+                      insights.
+                    </p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div className="rounded-lg border p-6 shadow-sm">
+              <blockquote className="text-lg text-muted-foreground italic">
+                "SmartMed has revolutionized my practice. The AI-powered
+                insights help me make more informed decisions, and the patient
+                tracking features ensure nothing falls through the cracks."
+              </blockquote>
+              <div className="mt-6 flex items-center gap-4">
+                <div className="h-12 w-12 rounded-full"></div>
+                <div>
+                  <p className="font-medium">Dr. Sarah Johnson</p>
+                  <p className="text-muted-foreground text-sm">
+                    Cardiologist, Memorial Hospital
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="mb-6 font-bold text-3xl">
+            Ready to transform your practice?
+          </h2>
+          <p className="mx-auto mb-8 max-w-2xl text-muted-foreground text-xl">
+            Join thousands of healthcare professionals who trust SmartMed to
+            help them deliver better patient outcomes.
+          </p>
+          <Button size="lg" className="rounded-md px-6 py-3">
+            Get Started Today
+          </Button>
+        </div>
+      </section>
+
+      <Footer />
+    </>
+  )
 }
