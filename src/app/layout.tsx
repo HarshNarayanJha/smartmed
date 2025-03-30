@@ -1,12 +1,11 @@
 import type { Metadata } from "next"
 import "./globals.css"
-import Header from "@/components/Header"
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/providers/ThemeProvider"
 
 export const metadata: Metadata = {
   title: "Smart Med",
-  description: "Smart Meds"
+  description: "SmartMeds"
 }
 
 export default function RootLayout({
@@ -19,12 +18,7 @@ export default function RootLayout({
       <head />
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="flex min-h-screen w-full flex-col">
-            <Header />
-            <main className="flex flex-1 flex-col px-4 pt-10 xl:px-8">
-              {children}
-            </main>I
-          </div>
+          {children}
         </ThemeProvider>
 
         <Toaster />

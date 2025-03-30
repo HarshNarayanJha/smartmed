@@ -18,8 +18,8 @@ const Header = async () => {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-4 px-8">
+      <div className="container flex h-16 items-center justify-between px-8">
+        <div className="flex items-center gap-4">
           <Link href="/" className="font-bold text-xl">
             💊 SmartMed
           </Link>
@@ -72,9 +72,7 @@ const Header = async () => {
         </div>
         <div className="flex items-center gap-4">
           <ColorModeToggle />
-          {user ? (
-            <AccountMenu />
-          ) : (
+          {user ? <AccountMenu /> : (
             <>
               <Button variant="outline" size="sm" asChild>
                 <Link href="/auth/login">Log in</Link>

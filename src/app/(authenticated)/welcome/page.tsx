@@ -8,10 +8,16 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card"
+import getUser from "@/utils/supabase/server"
 import { CheckCircle2 } from "lucide-react"
 import Link from "next/link"
+import { redirect } from "next/navigation"
 
-export default function WelcomeAboard() {
+export default async function WelcomeAboard() {
+  const user = await getUser()
+
+  if (!user) redirect("/")
+
   return (
     <>
       <div className="container mx-auto min-h-[50svh] px-4 py-10">
