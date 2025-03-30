@@ -1,4 +1,4 @@
-import Footer from "@/components/Footer"
+import Footer from "@/components/reusable/Footer"
 import { Button } from "@/components/ui/button"
 import {
   Card,

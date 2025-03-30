@@ -1,3 +1,5 @@
+import { getDoctorById } from "@/actions/doctor"
+import LogoutButton from "@/components/reusable/LogoutButton"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +18,6 @@ import {
   UserPen
 } from "lucide-react"
 import Link from "next/link"
-import LogoutButton from "./LogoutButton"
 
 export default async function AccountMenu() {
   const user = await getUser()
@@ -25,11 +26,7 @@ export default async function AccountMenu() {
     return null
   }
 
-  const userData: Doctor | null = await prisma.doctor.findUnique({
-    where: {
-      id: user.id
-    }
-  })
+  const userData: Doctor | null = await getDoctorById(user.id)
 
   if (!userData) {
     return null

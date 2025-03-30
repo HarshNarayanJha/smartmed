@@ -1,4 +1,11 @@
-import { Calendar, Search, Settings, UserPlus } from "lucide-react"
+import {
+  Calendar,
+  User2,
+  UserPlus,
+  Users,
+  Users2,
+  UsersIcon
+} from "lucide-react"
 
 import {
   Sidebar,
@@ -13,14 +20,16 @@ import {
 } from "@/components/ui/sidebar"
 import { prisma } from "@/db/prisma"
 import getUser from "@/utils/supabase/server"
+import { Doctor } from "@prisma/client"
 import Link from "next/link"
+import { getDoctorById } from "@/actions/doctor"
 
 // Menu items.
 const items = [
   {
     title: "My Patients",
     url: "/dashboard/patients",
-    icon: UserPlus
+    icon: UsersIcon
   },
   {
     title: "Appointments",
@@ -34,11 +43,7 @@ export default async function DashboardSidebar() {
 
   if (!user) return null
 
-  const userData: Doctor | null = await prisma.doctor.findUnique({
-    where: {
-      id: user.id
-    }
-  })
+  const userData: Doctor | null = await getDoctorById(user.id)
 
   if (!userData) return null
 

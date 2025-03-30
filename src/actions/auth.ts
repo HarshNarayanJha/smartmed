@@ -4,6 +4,7 @@ import { prisma } from "@/db/prisma"
 import { handleError } from "@/lib/utils"
 import { createClient } from "@/utils/supabase/server"
 import { Doctor } from "@prisma/client"
+import { getDoctorByEmail } from "./doctor"
 
 export async function login(formData: FormData) {
   try {
@@ -56,11 +57,9 @@ export async function signup(formData: FormData) {
       }
     }
 
-    const existingDoctor: Doctor | null = await prisma.doctor.findUnique({
-      where: {
-        email: credentials.email
-      }
-    })
+    const existingDoctor: Doctor | null = await getDoctorByEmail(
+      credentials.email
+    )
 
     if (existingDoctor) throw new Error("Email already exists")
 

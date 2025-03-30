@@ -1,4 +1,4 @@
-import { ColorModeToggle } from "@/components/ColorModeToggle"
+import { ColorModeToggle } from "@/components/reusable/ColorModeToggle"
 import { Button } from "@/components/ui/button"
 import {
   NavigationMenu,

@@ -1,3 +1,4 @@
+import { getDoctorById } from "@/actions/doctor"
 import { prisma } from "@/db/prisma"
 import getUser from "@/utils/supabase/server"
 import { Doctor } from "@prisma/client"
@@ -8,11 +9,7 @@ export default async function ProfilePage() {
 
   if (!user) redirect("/")
 
-  const userData: Doctor | null = await prisma.doctor.findUnique({
-    where: {
-      id: user.id
-    }
-  })
+  const userData: Doctor | null = await getDoctorById(user.id)
 
   if (!userData) redirect("/")
 
