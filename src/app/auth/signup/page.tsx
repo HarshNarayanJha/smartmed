@@ -1,0 +1,33 @@
+import SignupForm from "@/components/SignupForm"
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card"
+import getUser from "@/utils/supabase/server"
+import { redirect } from "next/navigation"
+
+export default async function SignupPage() {
+  const user = await getUser()
+
+  if (user) {
+    redirect("/dashboard")
+  }
+
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-center font-bold text-2xl">
+            Create an Account
+          </CardTitle>
+          <CardDescription className="text-center">
+            Enter your details below to create your account
+          </CardDescription>
+        </CardHeader>
+        <SignupForm />
+      </Card>
+    </div>
+  )
+}
