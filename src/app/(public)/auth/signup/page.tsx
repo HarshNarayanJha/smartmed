@@ -16,18 +16,16 @@ export default async function SignupPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-center font-bold text-2xl">
-            Create an Account
-          </CardTitle>
-          <CardDescription className="text-center">
-            Enter your details below to create your account
-          </CardDescription>
-        </CardHeader>
-        <SignupForm />
-      </Card>
-    </div>
+    <Card className="m-auto w-full max-w-md">
+      <CardHeader>
+        <CardTitle className="text-center font-bold text-2xl">
+          Create an Account
+        </CardTitle>
+        <CardDescription className="text-center">
+          Enter your details below to create your account
+        </CardDescription>
+      </CardHeader>
+      <SignupForm />
+    </Card>
   )
 }
