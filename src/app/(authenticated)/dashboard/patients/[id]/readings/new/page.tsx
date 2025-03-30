@@ -1,16 +1,9 @@
-// import { Breadcrumb } from "@/components/ui/breadcrumb";
-import { CardHeader, CardContent, Card } from "@/components/ui/card"
 import { PatientReadingsForm } from "@/components/dashboard/PatientReadingsForm"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 export default function NewPatientReadingPage() {
   return (
     <div className="container mx-auto px-4 py-6">
-      {/* <Breadcrumb className="mb-6">
-        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-        <Breadcrumb.Item href="/patients">Patients</Breadcrumb.Item>
-        <Breadcrumb.Item>New Reading</Breadcrumb.Item>
-      </Breadcrumb> */}
-
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-bold text-3xl">New Patient Reading</h1>
       </div>
