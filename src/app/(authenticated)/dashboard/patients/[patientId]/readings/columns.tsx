@@ -54,10 +54,12 @@ export const columns: ColumnDef<Reading>[] = [
     accessorKey: "diagnosedFor",
     header: "Diagnosed For",
     cell: ({ row }) => {
-      return <div className="truncate">{row.getValue("diagnosedFor")}</div>
+      return (
+        <div className="max-w-28 truncate">{row.getValue("diagnosedFor")}</div>
+      )
     },
     meta: {
-      width: 50
+      width: 28
     }
   },
   {
