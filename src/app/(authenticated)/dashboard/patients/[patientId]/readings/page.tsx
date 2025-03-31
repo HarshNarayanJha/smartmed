@@ -2,6 +2,7 @@ import { getPatientById } from "@/actions/patient"
 import { getReadingsByPatientId } from "@/actions/reading"
 import ReadingBarChart from "@/components/dashboard/ReadingBarChart"
 import ReadingLineChart from "@/components/dashboard/ReadingLineChart"
+import { DataTable } from "@/components/reusable/DataTable"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -18,6 +19,7 @@ import { calculateAge } from "@/lib/utils"
 import { Patient, Reading } from "@prisma/client"
 import { FilePlus, Plus } from "lucide-react"
 import Link from "next/link"
+import { columns } from "./columns"
 
 export default async function PatientReadingsPage({
   params
@@ -565,6 +567,10 @@ export default async function PatientReadingsPage({
           />
         </TabsContent>
       </Tabs>
+
+      <h2 className="mt-8 mb-4 font-semibold text-2xl">All Readings</h2>
+
+      <DataTable columns={columns} data={readings} />
     </div>
   )
 }

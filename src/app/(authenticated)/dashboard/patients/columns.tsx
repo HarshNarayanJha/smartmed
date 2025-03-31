@@ -12,14 +12,11 @@ import {
 import { ColumnDef } from "@tanstack/react-table"
 import {
   CheckCircle,
-  CircleX,
   Copy,
-  CrossIcon,
   EyeIcon,
   FileTextIcon,
   MoreHorizontal,
   PlusCircle,
-  X,
   XCircle
 } from "lucide-react"
 import Link from "next/link"
