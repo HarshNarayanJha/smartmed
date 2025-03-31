@@ -1,373 +1,568 @@
+import { getPatientById } from "@/actions/patient"
+import { getReadingsByPatientId } from "@/actions/reading"
+import ReadingBarChart from "@/components/dashboard/ReadingBarChart"
+import ReadingLineChart from "@/components/dashboard/ReadingLineChart"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card"
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Legend,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis
-} from "recharts"
-
-// Mock data for patient readings
-const patientData = {
-  name: "Jane Smith",
-  age: 42,
-  patientId: "P-12345",
-  bloodPressureReadings: [
-    { date: "2023-01-01", systolic: 120, diastolic: 80 },
-    { date: "2023-01-08", systolic: 122, diastolic: 78 },
-    { date: "2023-01-15", systolic: 118, diastolic: 76 },
-    { date: "2023-01-22", systolic: 124, diastolic: 82 },
-    { date: "2023-01-29", systolic: 120, diastolic: 80 },
-    { date: "2023-02-05", systolic: 116, diastolic: 78 }
-  ],
-  glucoseReadings: [
-    { date: "2023-01-01", value: 95 },
-    { date: "2023-01-08", value: 98 },
-    { date: "2023-01-15", value: 92 },
-    { date: "2023-01-22", value: 97 },
-    { date: "2023-01-29", value: 94 },
-    { date: "2023-02-05", value: 90 }
-  ],
-  weightReadings: [
-    { date: "2023-01-01", value: 68.5 },
-    { date: "2023-01-15", value: 67.8 },
-    { date: "2023-01-29", value: 67.2 },
-    { date: "2023-02-05", value: 66.9 }
-  ]
-}
+import { calculateAge } from "@/lib/utils"
+import { Patient, Reading } from "@prisma/client"
+import { FilePlus, Plus } from "lucide-react"
+import Link from "next/link"
 
 export default async function PatientReadingsPage({
   params
 }: { params: Promise<{ patientId: string }> }) {
   const { patientId } = await params
 
+  const patient: Patient | null = await getPatientById(patientId)
+
+  if (!patient) {
+    return (
+      <div className="flex h-64 flex-col items-center justify-center space-y-4 rounded-md border border-dashed text-center">
+        <h3 className="font-semibold text-lg">Patient Not Found</h3>
+        <p className="text-muted-foreground text-sm">
+          The patient with the provided ID could not be found.
+        </p>
+      </div>
+    )
+  }
+
+  const readings: Reading[] = await getReadingsByPatientId(patientId)
+
+  if (readings.length === 0) {
+    return (
+      <div className="flex h-64 flex-col items-center justify-center space-y-4 rounded-md border border-dashed text-center">
+        <h3 className="font-semibold text-lg">No Readings Found</h3>
+        <p className="text-muted-foreground text-sm">
+          This patient does not have any readings recorded yet.
+        </p>
+        <Button asChild>
+          <Link href={`/dashboard/patients/${patientId}/readings/new`}>
+            <Plus />
+            Add New Reading
+          </Link>
+        </Button>
+      </div>
+    )
+  }
+
+  const K = 5
+  const M = 20
+
+  const latestReading: Reading = readings.at(-1)
+  const latestKReadings: Reading[] = readings.slice(-K)
+  const latestMReadings: Reading[] = readings.slice(-M)
+
   return (
     <div className="container mx-auto py-8">
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Avatar className="h-16 w-16">
-            <AvatarImage src="/avatar-placeholder.png" alt={patientData.name} />
-            <AvatarFallback>{patientData.name.charAt(0)}</AvatarFallback>
+            <AvatarImage
+              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${patient.name}`}
+              alt={patient.name}
+            />
+            <AvatarFallback>{patient.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
-            <h1 className="font-bold text-3xl">{patientData.name}</h1>
+            <h1 className="font-bold text-3xl">{patient.name}</h1>
             <p className="text-muted-foreground">
-              Age: {patientData.age} | Patient ID: {patientData.patientId}
+              Age: {calculateAge(patient.dob)} | Patient ID:{" "}
+              {patient.id.slice(0, 6)}
             </p>
           </div>
         </div>
-        <Button>Export Data</Button>
+        <Button asChild>
+          <Link href={`/dashboard/patients/${patientId}/readings/new`}>
+            <FilePlus />
+            New Reading
+          </Link>
+        </Button>
       </div>
 
       <Tabs defaultValue="overview">
-        <TabsList className="mb-8 grid w-full grid-cols-4">
+        <TabsList className="mb-8 grid w-full grid-cols-7">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="blood-pressure">Blood Pressure</TabsTrigger>
           <TabsTrigger value="glucose">Glucose</TabsTrigger>
           <TabsTrigger value="weight">Weight</TabsTrigger>
+          <TabsTrigger value="height">Height</TabsTrigger>
+          <TabsTrigger value="temperature">Temperature</TabsTrigger>
+          <TabsTrigger value="heartRate">Heart Rate</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Latest Diagnosis</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>
+                {latestReading.diagnosedFor ||
+                  "No diagnosis recorded for this reading."}
+              </p>
+            </CardContent>
+          </Card>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle>Blood Pressure</CardTitle>
-                <CardDescription>
-                  Latest:{" "}
-                  {
-                    patientData.bloodPressureReadings[
-                      patientData.bloodPressureReadings.length - 1
-                    ].systolic
-                  }
-                  /
-                  {
-                    patientData.bloodPressureReadings[
-                      patientData.bloodPressureReadings.length - 1
-                    ].diastolic
-                  }{" "}
-                  mmHg
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={200}>
-                  <LineChart data={patientData.bloodPressureReadings}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" tick={false} />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="systolic" stroke="#8884d8" />
-                    <Line
-                      type="monotone"
-                      dataKey="diastolic"
-                      stroke="#82ca9d"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
+            <ReadingBarChart
+              title="Blood Pressure"
+              description={`Latest: ${latestReading.bpSystolic}/${latestReading.bpDiastolic} mmHg`}
+              xAxisKey="date"
+              showXAxisTicks={false}
+              bars={[
+                {
+                  dataKey: "systolic",
+                  name: "Systolic",
+                  fill: "#8884d8"
+                },
+                {
+                  dataKey: "diastolic",
+                  name: "Diastolic",
+                  fill: "#82ca9d"
+                }
+              ]}
+              // @ts-ignore
+              data={latestKReadings.map((r: Reading) => ({
+                date: r.createdAt.toLocaleDateString(),
+                systolic: r.bpSystolic,
+                diastolic: r.bpDiastolic
+              }))}
+            />
 
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle>Glucose</CardTitle>
-                <CardDescription>
-                  Latest:{" "}
-                  {
-                    patientData.glucoseReadings[
-                      patientData.glucoseReadings.length - 1
-                    ].value
-                  }{" "}
-                  mg/dL
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={200}>
-                  <LineChart data={patientData.glucoseReadings}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" tick={false} />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="value" stroke="#ff7300" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
+            <ReadingLineChart
+              title="Glucose"
+              description={`Latest: ${latestReading.glucoseLevel} mg/dL`}
+              xAxisKey="date"
+              showXAxisTicks={false}
+              lines={[
+                {
+                  dataKey: "glucoseLevel",
+                  type: "monotone",
+                  name: "Glucose",
+                  stroke: "#ff7300"
+                }
+              ]}
+              // @ts-ignore
+              data={latestKReadings.map((r: Reading) => ({
+                date: r.createdAt.toLocaleDateString(),
+                glucoseLevel: r.glucoseLevel
+              }))}
+            />
 
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle>Weight</CardTitle>
-                <CardDescription>
-                  Latest:{" "}
-                  {
-                    patientData.weightReadings[
-                      patientData.weightReadings.length - 1
-                    ].value
-                  }{" "}
-                  kg
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={200}>
-                  <LineChart data={patientData.weightReadings}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" tick={false} />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="value" stroke="#2e7d32" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
+            <ReadingLineChart
+              title="Height"
+              description={`Latest: ${latestReading.height} cm`}
+              xAxisKey="date"
+              showXAxisTicks={false}
+              lines={[
+                {
+                  dataKey: "height",
+                  type: "monotone",
+                  name: "Height",
+                  stroke: "#2e7d32"
+                }
+              ]}
+              // @ts-ignore
+              data={latestKReadings.map((r: Reading) => ({
+                date: r.createdAt.toLocaleDateString(),
+                height: r.height
+              }))}
+            />
+
+            <ReadingLineChart
+              title="Weight"
+              description={`Latest: ${latestReading.weight} kg`}
+              xAxisKey="date"
+              showXAxisTicks={false}
+              lines={[
+                {
+                  dataKey: "weight",
+                  type: "monotone",
+                  name: "Weight",
+                  stroke: "#ffc658"
+                }
+              ]}
+              // @ts-ignore
+              data={latestKReadings.map((r: Reading) => ({
+                date: r.createdAt.toLocaleDateString(),
+                weight: r.weight
+              }))}
+            />
+
+            <ReadingLineChart
+              title="Body Temperature"
+              description={`Latest: ${latestReading.temperature} °C`}
+              xAxisKey="date"
+              showXAxisTicks={false}
+              lines={[
+                {
+                  dataKey: "value",
+                  type: "monotone",
+                  name: "Body Temperature",
+                  stroke: "#ff5733"
+                }
+              ]}
+              // @ts-ignore
+              data={latestKReadings.map((r: Reading) => ({
+                date: r.createdAt.toLocaleDateString(),
+                value: r.temperature
+              }))}
+            />
+
+            <ReadingLineChart
+              title="Heart Rate"
+              description={`Latest: ${latestReading.heartRate} bpm`}
+              xAxisKey="date"
+              showXAxisTicks={false}
+              lines={[
+                {
+                  dataKey: "value",
+                  type: "monotone",
+                  name: "Heart Rate",
+                  stroke: "#e53935"
+                }
+              ]}
+              // @ts-ignore
+              data={latestKReadings.map((r: Reading) => ({
+                date: r.createdAt.toLocaleDateString(),
+                value: r.heartRate
+              }))}
+            />
+
+            <ReadingLineChart
+              title="Respiratory Rate"
+              description={`Latest: ${latestReading.respiratoryRate} bpm`}
+              xAxisKey="date"
+              showXAxisTicks={false}
+              lines={[
+                {
+                  dataKey: "value",
+                  type: "monotone",
+                  name: "Respiratory Rate",
+                  stroke: "#1976d2"
+                }
+              ]}
+              // @ts-ignore
+              data={latestKReadings.map((r: Reading) => ({
+                date: r.createdAt.toLocaleDateString(),
+                value: r.respiratoryRate
+              }))}
+            />
+
+            <ReadingLineChart
+              title="Oxygen Saturation"
+              description={`Latest: ${latestReading.oxygenSaturation} %`}
+              xAxisKey="date"
+              showXAxisTicks={false}
+              lines={[
+                {
+                  dataKey: "value",
+                  type: "monotone",
+                  name: "Oxygen Saturation",
+                  stroke: "#009688"
+                }
+              ]}
+              // @ts-ignore
+              data={latestKReadings.map((r: Reading) => ({
+                date: r.createdAt.toLocaleDateString(),
+                value: r.oxygenSaturation
+              }))}
+            />
           </div>
         </TabsContent>
 
         <TabsContent value="blood-pressure">
-          <Card>
-            <CardHeader>
-              <CardTitle>Blood Pressure History</CardTitle>
-              <CardDescription>
-                Systolic and diastolic readings over time
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[400px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={patientData.bloodPressureReadings}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="systolic"
-                      stroke="#8884d8"
-                      name="Systolic"
-                      strokeWidth={2}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="diastolic"
-                      stroke="#82ca9d"
-                      name="Diastolic"
-                      strokeWidth={2}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+          <ReadingBarChart
+            title="Blood Pressure History"
+            description="Systolic and diastolic readings over time"
+            data={latestMReadings.map((r: Reading) => ({
+              date: r.createdAt.toLocaleDateString(),
+              systolic: r.bpSystolic,
+              diastolic: r.bpDiastolic
+            }))}
+            xAxisKey="date"
+            bars={[
+              {
+                dataKey: "systolic",
+                fill: "#8884d8",
+                name: "Systolic"
+              },
+              {
+                dataKey: "diastolic",
+                fill: "#82ca9d",
+                name: "Diastolic"
+              }
+            ]}
+            height={400}
+            table={
               <div className="mt-6">
                 <h3 className="mb-4 font-semibold">Recent Readings</h3>
                 <div className="rounded-md border">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left font-medium text-gray-500 text-xs uppercase tracking-wider">
-                          Date
-                        </th>
-                        <th className="px-6 py-3 text-left font-medium text-gray-500 text-xs uppercase tracking-wider">
-                          Systolic
-                        </th>
-                        <th className="px-6 py-3 text-left font-medium text-gray-500 text-xs uppercase tracking-wider">
-                          Diastolic
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200 bg-white">
-                      {patientData.bloodPressureReadings
-                        .slice()
-                        .reverse()
-                        .map((reading, idx) => (
-                          <tr key={idx}>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm">
-                              {reading.date}
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm">
-                              {reading.systolic} mmHg
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm">
-                              {reading.diastolic} mmHg
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[150px]">Date</TableHead>
+                        <TableHead>Systolic</TableHead>
+                        <TableHead>Diastolic</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {latestMReadings.map((reading: Reading, idx) => (
+                        <TableRow key={idx}>
+                          <TableCell className="font-medium">
+                            {reading.createdAt.toLocaleString()}
+                          </TableCell>
+                          <TableCell>{reading.bpSystolic} mmHg</TableCell>
+                          <TableCell>{reading.bpDiastolic} mmHg</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            }
+          />
         </TabsContent>
 
         <TabsContent value="glucose">
-          <Card>
-            <CardHeader>
-              <CardTitle>Glucose Readings</CardTitle>
-              <CardDescription>Blood glucose levels over time</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[400px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={patientData.glucoseReadings}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar
-                      dataKey="value"
-                      name="Glucose Level (mg/dL)"
-                      fill="#ff7300"
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+          <ReadingBarChart
+            title="Glucose Readings"
+            description="Blood glucose levels over time"
+            data={latestMReadings.map((r: Reading) => ({
+              date: r.createdAt.toLocaleDateString(),
+              value: r.glucoseLevel
+            }))}
+            xAxisKey="date"
+            bars={[
+              {
+                dataKey: "value",
+                fill: "#FF6384",
+                name: "Glucose Level (mg/dL)"
+              }
+            ]}
+            height={400}
+            table={
               <div className="mt-6">
                 <h3 className="mb-4 font-semibold">Recent Readings</h3>
                 <div className="rounded-md border">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left font-medium text-gray-500 text-xs uppercase tracking-wider">
-                          Date
-                        </th>
-                        <th className="px-6 py-3 text-left font-medium text-gray-500 text-xs uppercase tracking-wider">
-                          Glucose
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200 bg-white">
-                      {patientData.glucoseReadings
-                        .slice()
-                        .reverse()
-                        .map((reading, idx) => (
-                          <tr key={idx}>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm">
-                              {reading.date}
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm">
-                              {reading.value} mg/dL
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[150px]">Date</TableHead>
+                        <TableHead>Glucose</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {latestMReadings.map((reading: Reading, idx) => (
+                        <TableRow key={idx}>
+                          <TableCell className="font-medium">
+                            {reading.createdAt.toLocaleString()}
+                          </TableCell>
+                          <TableCell>{reading.glucoseLevel} mmHg</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            }
+          />
         </TabsContent>
 
         <TabsContent value="weight">
-          <Card>
-            <CardHeader>
-              <CardTitle>Weight Tracking</CardTitle>
-              <CardDescription>Patient weight over time</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[400px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={patientData.weightReadings}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis domain={["dataMin - 2", "dataMax + 2"]} />
-                    <Tooltip />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="value"
-                      name="Weight (kg)"
-                      stroke="#2e7d32"
-                      strokeWidth={2}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+          <ReadingLineChart
+            title="Weight Tracking"
+            description="Patient weight over time"
+            height={400}
+            data={latestMReadings.map((r: Reading) => ({
+              date: r.createdAt.toLocaleDateString(),
+              value: r.weight
+            }))}
+            xAxisKey="date"
+            lines={[
+              {
+                type: "monotone",
+                dataKey: "value",
+                name: "Weight (kg)",
+                stroke: "#2e7d32",
+                strokeWidth: 4
+              }
+            ]}
+            table={
               <div className="mt-6">
                 <h3 className="mb-4 font-semibold">Recent Readings</h3>
                 <div className="rounded-md border">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left font-medium text-gray-500 text-xs uppercase tracking-wider">
-                          Date
-                        </th>
-                        <th className="px-6 py-3 text-left font-medium text-gray-500 text-xs uppercase tracking-wider">
-                          Weight
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200 bg-white">
-                      {patientData.weightReadings
-                        .slice()
-                        .reverse()
-                        .map((reading, idx) => (
-                          <tr key={idx}>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm">
-                              {reading.date}
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm">
-                              {reading.value} kg
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[150px]">Date</TableHead>
+                        <TableHead>Weight (kg)</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {latestMReadings.map((reading: Reading, idx) => (
+                        <TableRow key={idx}>
+                          <TableCell className="font-medium">
+                            {reading.createdAt.toLocaleString()}
+                          </TableCell>
+                          <TableCell>{reading.weight} kg</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            }
+          />
+        </TabsContent>
+
+        <TabsContent value="height">
+          <ReadingLineChart
+            title="Height Tracking"
+            description="Patient height over time"
+            height={400}
+            data={latestMReadings.map((r: Reading) => ({
+              date: r.createdAt.toLocaleDateString(),
+              value: r.height
+            }))}
+            xAxisKey="date"
+            lines={[
+              {
+                type: "monotone",
+                dataKey: "value",
+                name: "Height (cm)",
+                stroke: "#4287f5",
+                strokeWidth: 4
+              }
+            ]}
+            table={
+              <div className="mt-6">
+                <h3 className="mb-4 font-semibold">Recent Readings</h3>
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[150px]">Date</TableHead>
+                        <TableHead>Height (cm)</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {latestMReadings.map((reading: Reading, idx) => (
+                        <TableRow key={idx}>
+                          <TableCell className="font-medium">
+                            {reading.createdAt.toLocaleString()}
+                          </TableCell>
+                          <TableCell>{reading.height} cm</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            }
+          />
+        </TabsContent>
+
+        <TabsContent value="temperature">
+          <ReadingBarChart
+            title="Body Temperature Tracking"
+            description="Patient body temperature over time"
+            height={400}
+            data={latestMReadings.map((r: Reading) => ({
+              date: r.createdAt.toLocaleDateString(),
+              value: r.temperature
+            }))}
+            xAxisKey="date"
+            bars={[
+              {
+                dataKey: "value",
+                name: "Temperature (°C)",
+                fill: "#ff5733"
+              }
+            ]}
+            table={
+              <div className="mt-6">
+                <h3 className="mb-4 font-semibold">Recent Readings</h3>
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[150px]">Date</TableHead>
+                        <TableHead>Temperature (°C)</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {latestMReadings.map((reading: Reading, idx) => (
+                        <TableRow key={idx}>
+                          <TableCell className="font-medium">
+                            {reading.createdAt.toLocaleString()}
+                          </TableCell>
+                          <TableCell>{reading.temperature} °C</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            }
+          />
+        </TabsContent>
+
+        <TabsContent value="heartRate">
+          <ReadingLineChart
+            title="Heart Rate Tracking"
+            description="Patient heart rate over time"
+            height={400}
+            data={latestMReadings.map((r: Reading) => ({
+              date: r.createdAt.toLocaleDateString(),
+              value: r.heartRate
+            }))}
+            xAxisKey="date"
+            lines={[
+              {
+                type: "monotone",
+                dataKey: "value",
+                name: "Heart Rate (bpm)",
+                stroke: "#e53935",
+                strokeWidth: 4
+              }
+            ]}
+            table={
+              <div className="mt-6">
+                <h3 className="mb-4 font-semibold">Recent Readings</h3>
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[150px]">Date</TableHead>
+                        <TableHead>Heart Rate (bpm)</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {latestMReadings.map((reading: Reading, idx) => (
+                        <TableRow key={idx}>
+                          <TableCell className="font-medium">
+                            {reading.createdAt.toLocaleString()}
+                          </TableCell>
+                          <TableCell>{reading.heartRate} bpm</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            }
+          />
         </TabsContent>
       </Tabs>
     </div>

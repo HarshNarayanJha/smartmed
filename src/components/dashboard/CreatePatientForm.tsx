@@ -86,8 +86,12 @@ export function CreatePatientForm({ doctorId }: { doctorId: string }) {
   const allergies = form.watch("allergies")
 
   const addAllergy = () => {
-    if (allergyInput.trim() !== "" && !allergies.includes(allergyInput)) {
-      form.setValue("allergies", [...allergies, allergyInput])
+    if (
+      allergyInput.trim() !== "" &&
+      !allergies.includes(allergyInput.toLowerCase()) &&
+      !allergyInput.includes(",")
+    ) {
+      form.setValue("allergies", [...allergies, allergyInput.toLowerCase()])
       setAllergyInput("")
     }
   }
@@ -109,6 +113,7 @@ export function CreatePatientForm({ doctorId }: { doctorId: string }) {
           dob: new Date(data.dob),
           phoneNumber: data.phoneNumber,
           email: data.email,
+          gender: data.gender,
           bloodGroup: data.bloodGroup,
           smokingStatus: data.smokingStatus as SmokingStatus,
           medicalHistory: data.medicalHistory,

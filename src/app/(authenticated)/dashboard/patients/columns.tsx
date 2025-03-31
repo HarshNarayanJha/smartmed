@@ -30,6 +30,7 @@ import {
   TooltipTrigger
 } from "@/components/ui/tooltip"
 import { Patient } from "@prisma/client"
+import { calculateAge } from "@/lib/utils"
 
 const ActionsCell = ({ patient }: { patient: Patient }) => {
   return (
@@ -168,13 +169,3 @@ export const columns: ColumnDef<Patient>[] = [
     }
   }
 ]
-
-function calculateAge(dob: Date) {
-  const today = new Date()
-  const age = today.getFullYear() - dob.getFullYear()
-  const monthDiff = today.getMonth() - dob.getMonth()
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-    return age - 1
-  }
-  return age
-}

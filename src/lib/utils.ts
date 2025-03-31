@@ -12,3 +12,13 @@ export const handleError = (error: unknown) => {
     return { errorMessage: "An unknown error occurred" }
   }
 }
+
+export function calculateAge(dob: Date) {
+  const today = new Date()
+  const age = today.getFullYear() - dob.getFullYear()
+  const monthDiff = today.getMonth() - dob.getMonth()
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+    return age - 1
+  }
+  return age
+}

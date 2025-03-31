@@ -14,8 +14,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Reading } from "@prisma/client"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import * as z from "zod"
@@ -107,7 +108,7 @@ type FormValues = z.infer<typeof formSchema>
 
 export function PatientReadingsForm({ patientId }: { patientId: string }) {
   const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -134,34 +135,47 @@ export function PatientReadingsForm({ patientId }: { patientId: string }) {
     }
   })
 
-  async function onSubmit(values: FormValues) {
-    setIsLoading(true)
+  function onSubmit(values: FormValues) {
+    startTransition(async () => {
+      try {
+        const readingData = {
+          height: values.height,
+          weight: values.weight,
+          temperature: values.temperature,
+          heartRate: values.heartRate,
+          oxygenSaturation: values.oxygenSaturation,
+          respiratoryRate: values.respiratoryRate,
+          glucoseLevel: values.glucoseLevel,
+          bpSystolic: values.bpSystolic,
+          bpDiastolic: values.bpDiastolic,
+          patientId: patientId,
+          diagnosedFor: values.notes
+        }
 
-    try {
-      // Here you would normally submit to an API
-      console.log(values)
+        const reading: Reading = await createReading(readingData)
 
-      // const reading = await createReading(values)
+        form.reset()
 
-      toast.success("Reading submitted", {
-        description:
-          "The patient's medical reading has been saved successfully.",
-        action: (
-          <Button
-            onClick={() => router.push(`/patients/${patientId}/readings/${1}`)}
-          >
-            View
-          </Button>
-        )
-      })
-    } catch (error) {
-      console.log(error)
-      toast.error("Error", {
-        description: "There was a problem submitting the reading."
-      })
-    } finally {
-      setIsLoading(false)
-    }
+        toast.success("Reading submitted", {
+          description:
+            "The patient's medical reading has been saved successfully.",
+          action: (
+            <Button
+              onClick={() =>
+                router.push(`/dashboard/patients/${patientId}/readings/${reading.id}`)
+              }
+            >
+              View
+            </Button>
+          )
+        })
+      } catch (error) {
+        console.error("Error submitting patient reading:", error)
+        toast.error("Error", {
+          description: "There was a problem submitting the reading."
+        })
+      }
+    })
   }
 
   return (
@@ -172,6 +186,7 @@ export function PatientReadingsForm({ patientId }: { patientId: string }) {
             <FormField
               control={form.control}
               name="bpSystolic"
+              disabled={isPending}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Blood Pressure (Systolic)</FormLabel>
@@ -186,6 +201,7 @@ export function PatientReadingsForm({ patientId }: { patientId: string }) {
             <FormField
               control={form.control}
               name="bpDiastolic"
+              disabled={isPending}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Blood Pressure (Diastolic)</FormLabel>
@@ -201,6 +217,7 @@ export function PatientReadingsForm({ patientId }: { patientId: string }) {
           <FormField
             control={form.control}
             name="heartRate"
+            disabled={isPending}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Heart Rate (bpm)</FormLabel>
@@ -215,6 +232,7 @@ export function PatientReadingsForm({ patientId }: { patientId: string }) {
           <FormField
             control={form.control}
             name="temperature"
+            disabled={isPending}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Temperature (°C)</FormLabel>
@@ -229,6 +247,7 @@ export function PatientReadingsForm({ patientId }: { patientId: string }) {
           <FormField
             control={form.control}
             name="oxygenSaturation"
+            disabled={isPending}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Oxygen Saturation (%)</FormLabel>
@@ -243,6 +262,7 @@ export function PatientReadingsForm({ patientId }: { patientId: string }) {
           <FormField
             control={form.control}
             name="respiratoryRate"
+            disabled={isPending}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Respiratory Rate (breaths/min)</FormLabel>
@@ -258,6 +278,7 @@ export function PatientReadingsForm({ patientId }: { patientId: string }) {
           <FormField
             control={form.control}
             name="weight"
+            disabled={isPending}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Weight (kg)</FormLabel>
@@ -273,6 +294,7 @@ export function PatientReadingsForm({ patientId }: { patientId: string }) {
           <FormField
             control={form.control}
             name="height"
+            disabled={isPending}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Height (cm)</FormLabel>
@@ -288,6 +310,7 @@ export function PatientReadingsForm({ patientId }: { patientId: string }) {
           <FormField
             control={form.control}
             name="glucoseLevel"
+            disabled={isPending}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Glucose Level (mg/dL)</FormLabel>
@@ -304,6 +327,7 @@ export function PatientReadingsForm({ patientId }: { patientId: string }) {
         <FormField
           control={form.control}
           name="notes"
+          disabled={isPending}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Clinical Notes</FormLabel>
@@ -321,8 +345,8 @@ export function PatientReadingsForm({ patientId }: { patientId: string }) {
         />
 
         <div className="flex justify-end gap-2">
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Saving..." : "Save Reading"}
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Saving..." : "Save Reading"}
           </Button>
         </div>
       </form>

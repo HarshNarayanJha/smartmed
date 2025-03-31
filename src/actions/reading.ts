@@ -1,3 +1,5 @@
+"use server"
+
 import { prisma } from "@/db/prisma"
 import { Reading } from "@prisma/client"
 
@@ -5,7 +7,8 @@ export async function createReading(
   readingData: Omit<Reading, "id" | "createdAt" | "updatedAt">
 ): Promise<Reading> {
   try {
-    const reading = await prisma.reading.create({
+    console.log("Creating reading with data:", readingData)
+    const reading: Reading = await prisma.reading.create({
       data: readingData
     })
 
@@ -44,6 +47,20 @@ export async function getReadingsByPatientId(
   }
 }
 
+export async function getNumReadingsByPatientId(
+  patientId: string
+): Promise<number> {
+  try {
+    const numReadings = await prisma.reading.count({
+      where: { patientId }
+    })
+
+    return numReadings
+  } catch (error) {
+    console.log(error)
+    throw new Error("Failed to get number of readings")
+  }
+}
 export async function deleteReadingById(id: string): Promise<void> {
   try {
     await prisma.reading.delete({

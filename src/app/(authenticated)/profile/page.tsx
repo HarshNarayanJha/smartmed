@@ -71,7 +71,7 @@ const PersonalInfoCard = async ({ doctorId }: { doctorId: string }) => {
         <div className="mb-6 flex items-center space-x-4">
           <Avatar className="h-20 w-20">
             <AvatarImage
-              src={`https://avatar.vercel.sh/${doctor.id}`}
+              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${doctor.id}`}
               alt={doctor.name}
             />
             <AvatarFallback>{doctor.name.charAt(0)}</AvatarFallback>

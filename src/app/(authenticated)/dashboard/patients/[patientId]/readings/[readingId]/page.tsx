@@ -1,3 +1,4 @@
+import { getPatientById } from "@/actions/patient"
 import { getReadingById } from "@/actions/reading"
 import {
   Card,
@@ -7,7 +8,7 @@ import {
   CardTitle
 } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Reading } from "@prisma/client"
+import { Patient, Reading } from "@prisma/client"
 import { Suspense } from "react"
 
 export default async function ReadingPage({
@@ -16,16 +17,21 @@ export default async function ReadingPage({
   const { patientId, readingId } = await params
 
   const reading: Reading | null = await getReadingById(readingId)
+  const patient: Patient | null = await getPatientById(patientId)
 
   if (!reading) {
     throw new Error("Reading not found")
+  }
+
+  if (!patient) {
+    throw new Error("Patient not found")
   }
 
   return (
     <Suspense fallback={<ReadingSkeleton />}>
       <Card>
         <CardHeader>
-          <CardTitle>Patient Reading</CardTitle>
+          <CardTitle>Patient Reading: {patient.name}</CardTitle>
           <CardDescription>
             Diagnosed for: {reading.diagnosedFor} • Date:{" "}
             {new Date(reading.createdAt).toLocaleString()}

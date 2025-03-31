@@ -133,11 +133,11 @@ export async function createPatient(
 ): Promise<Patient> {
   try {
     console.log("Creating patient with data:", patientData)
-    const patient = await prisma.patient.create({
+    const patient: Patient = await prisma.patient.create({
       data: patientData
     })
 
-    revalidatePath("/patients")
+    revalidatePath("/dashboard/patients")
     return patient
   } catch (error) {
     console.error("Failed to create patient. Error: ", error)
@@ -158,8 +158,8 @@ export async function updatePatient(
       data: patientData
     })
 
-    revalidatePath(`/patients/${id}`)
-    revalidatePath("/patients")
+    revalidatePath(`/dashboard/patients/${id}`)
+    revalidatePath("/dashboard")
     return patient
   } catch (error) {
     console.error(`Failed to update patient with id ${id}:`, error)
@@ -176,7 +176,7 @@ export async function deletePatient(id: string): Promise<void> {
       where: { id }
     })
 
-    revalidatePath("/patients")
+    revalidatePath("/dashboard/patients")
   } catch (error) {
     console.error(`Failed to delete patient with id ${id}:`, error)
     throw new Error("Failed to delete patient")

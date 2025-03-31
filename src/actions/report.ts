@@ -1,5 +1,8 @@
+"use server"
+
 import { prisma } from "@/db/prisma"
 import { GoogleGenAI, Type } from "@google/genai"
+import { Report } from "@prisma/client"
 
 const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY!
 const ai = new GoogleGenAI({ apiKey })
@@ -127,6 +130,23 @@ export async function getReportsByPatientId(
   } catch (error) {
     console.log(error)
     throw new Error("Failed to get reports")
+  }
+}
+
+export async function getNumReportsByPatientId(
+  patientId: string
+): Promise<number> {
+  try {
+    const numReports = await prisma.report.count({
+      where: {
+        patientId
+      }
+    })
+
+    return numReports
+  } catch (error) {
+    console.log(error)
+    throw new Error("Failed to get number of reports")
   }
 }
 
