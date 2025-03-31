@@ -16,21 +16,34 @@ export default function LogoutButton({
   const handleLogout = async () => {
     setLoading(true)
 
-    const { errorMessage } = await logout()
-
-    if (!errorMessage) {
-      toast.success("Logged out", {
-        description: "You have been successfully logged out"
-      })
-      router.push("/")
-    } else {
-      toast.error("Logout failed", {
-        description: errorMessage
-      })
-    }
-
-    setLoading(false)
-    console.log("Logging out...")
+    toast.promise(logout(), {
+      loading: "Logging out...",
+      success: data => {
+        if (!data.errorMessage) {
+          router.push("/")
+          return (
+            <div>
+              <div>Logged out</div>
+              <div>You have been successfully logged out</div>
+            </div>
+          )
+        } else {
+          throw new Error(data.errorMessage)
+        }
+      },
+      error: error => {
+        return (
+          <div>
+            <div>Logout failed</div>
+            <div>{error.message}</div>
+          </div>
+        )
+      },
+      finally: () => {
+        setLoading(false)
+        console.log("Logging out...")
+      }
+    })
   }
 
   return textOnly ? (

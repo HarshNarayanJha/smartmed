@@ -45,25 +45,6 @@ export async function getDoctors(): Promise<Doctor[]> {
   }
 }
 
-export async function createDoctor(
-  id: string,
-  email: string,
-  name: string
-): Promise<Doctor | null> {
-  try {
-    return await prisma.doctor.create({
-      data: {
-        id: id,
-        email: email,
-        name: name
-      }
-    })
-  } catch (error) {
-    console.error("Error creating doctor:", error)
-    return null
-  }
-}
-
 /**
  * Updates a doctor's profile information
  */

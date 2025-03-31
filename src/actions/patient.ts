@@ -44,6 +44,72 @@ export async function getPatientsByDoctorId(
 }
 
 /**
+ * Fetch all cured patients by doctor id
+ */
+export async function getCuredPatientsByDoctorId(
+  doctorId: string
+): Promise<Patient[]> {
+  try {
+    const patients: Patient[] = await prisma.patient.findMany({
+      where: { doctorId, cured: true },
+      orderBy: {
+        createdAt: "desc"
+      }
+    })
+
+    return patients
+  } catch (error) {
+    console.error(
+      `Failed to fetch cured patients by doctor id ${doctorId}:`,
+      error
+    )
+    throw new Error("Failed to fetch cured patients")
+  }
+}
+
+/**
+ * Get number of patients by doctor id
+ */
+export async function getPatientsCountByDoctorId(
+  doctorId: string
+): Promise<number> {
+  try {
+    const count = await prisma.patient.count({
+      where: { doctorId }
+    })
+
+    return count
+  } catch (error) {
+    console.error(
+      `Failed to fetch patients count by doctor id ${doctorId}:`,
+      error
+    )
+    throw new Error("Failed to fetch patients count")
+  }
+}
+
+/*
+ * Get number of cured patients by doctor id
+ */
+export async function getCuredPatientsCountByDoctorId(
+  doctorId: string
+): Promise<number> {
+  try {
+    const count = await prisma.patient.count({
+      where: { doctorId, cured: true }
+    })
+
+    return count
+  } catch (error) {
+    console.error(
+      `Failed to fetch cured patients count by doctor id ${doctorId}:`,
+      error
+    )
+    throw new Error("Failed to fetch cured patients count")
+  }
+}
+
+/**
  * Fetch a specific patient by ID
  */
 export async function getPatientById(id: string): Promise<Patient | null> {
@@ -63,9 +129,10 @@ export async function getPatientById(id: string): Promise<Patient | null> {
  * Create a new patient
  */
 export async function createPatient(
-  patientData: Omit<Patient, "id" | "createdAt" | "updatedAt">
+  patientData: Omit<Patient, "id" | "createdAt" | "updatedAt" | "cured">
 ): Promise<Patient> {
   try {
+    console.log("Creating patient with data:", patientData)
     const patient = await prisma.patient.create({
       data: patientData
     })
@@ -73,7 +140,7 @@ export async function createPatient(
     revalidatePath("/patients")
     return patient
   } catch (error) {
-    console.error("Failed to create patient:", error)
+    console.error("Failed to create patient. Error: ", error)
     throw new Error("Failed to create patient")
   }
 }

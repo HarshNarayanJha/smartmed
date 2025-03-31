@@ -1,16 +1,11 @@
-import {
-  Calendar,
-  User2,
-  UserPlus,
-  Users,
-  Users2,
-  UsersIcon
-} from "lucide-react"
+import { Calendar, FileText, Plus, UsersIcon } from "lucide-react"
 
+import { getDoctorById } from "@/actions/doctor"
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
+  SidebarGroupAction,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
@@ -18,11 +13,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from "@/components/ui/sidebar"
-import { prisma } from "@/db/prisma"
 import getUser from "@/utils/supabase/server"
 import { Doctor } from "@prisma/client"
 import Link from "next/link"
-import { getDoctorById } from "@/actions/doctor"
 
 // Menu items.
 const items = [
@@ -32,9 +25,9 @@ const items = [
     icon: UsersIcon
   },
   {
-    title: "Appointments",
-    url: "/dashboard/appointments",
-    icon: Calendar
+    title: "Reports",
+    url: "/dashboard/reports",
+    icon: FileText
   }
 ]
 
@@ -57,6 +50,11 @@ export default async function DashboardSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Patients</SidebarGroupLabel>
+          <SidebarGroupAction title="Add Patient">
+            <Link href="/dashboard/patients/new">
+              <Plus /> <span className="sr-only">New Patient</span>
+            </Link>
+          </SidebarGroupAction>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map(item => (

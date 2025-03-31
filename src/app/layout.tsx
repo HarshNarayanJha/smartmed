@@ -19,7 +19,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
-          <Toaster />
+          <Toaster richColors closeButton />
         </ThemeProvider>
       </body>
     </html>

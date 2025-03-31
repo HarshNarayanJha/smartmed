@@ -11,18 +11,18 @@ import { redirect } from "next/navigation"
 export default async function SignupPage() {
   const user = await getUser()
 
-  if (user) {
+  if (user && user.aud) {
     redirect("/dashboard")
   }
 
   return (
-    <Card className="m-auto w-full max-w-md">
+    <Card className="m-auto w-full max-w-2xl">
       <CardHeader>
-        <CardTitle className="text-center font-bold text-2xl">
-          Create an Account
+        <CardTitle className="text-center font-bold text-2xl tracking-tight">
+          Create your Account
         </CardTitle>
-        <CardDescription className="text-center">
-          Enter your details below to create your account
+        <CardDescription className="text-center text-muted-foreground">
+          Enter your information to get started
         </CardDescription>
       </CardHeader>
       <SignupForm />

@@ -1,5 +1,9 @@
 import { getDoctorById } from "@/actions/doctor"
 import {
+  getCuredPatientsCountByDoctorId,
+  getPatientsCountByDoctorId
+} from "@/actions/patient"
+import {
   Card,
   CardContent,
   CardDescription,
@@ -104,11 +108,7 @@ export default async function DashboardPage() {
 }
 
 async function PatientCard({ userId }: { userId: string }) {
-  const patientsCount = await prisma.patient.count({
-    where: {
-      doctorId: userId
-    }
-  })
+  const patientsCount = await getPatientsCountByDoctorId(userId)
 
   return (
     <Link href="/dashboard/patients">
@@ -142,12 +142,7 @@ function PatientCardSkeleton() {
 }
 
 async function CuredPatientCard({ userId }: { userId: string }) {
-  const curedPatientsCount = await prisma.patient.count({
-    where: {
-      doctorId: userId
-      // cured: true
-    }
-  })
+  const curedPatientsCount = await getCuredPatientsCountByDoctorId(userId)
 
   return (
     <Link href="/dashboard/patients?cured=true">

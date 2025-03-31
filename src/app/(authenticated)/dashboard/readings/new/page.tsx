@@ -1,7 +1,11 @@
 import { PatientReadingsForm } from "@/components/dashboard/PatientReadingsForm"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
-export default function NewPatientReadingPage() {
+export default async function NewPatientReadingPage({
+  params
+}: { params: Promise<{ id: string }> }) {
+  const { id: patientId } = await params
+
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="mb-6 flex items-center justify-between">
@@ -16,7 +20,7 @@ export default function NewPatientReadingPage() {
           </p>
         </CardHeader>
         <CardContent>
-          <PatientReadingsForm />
+          <PatientReadingsForm patientId={patientId} />
         </CardContent>
       </Card>
     </div>

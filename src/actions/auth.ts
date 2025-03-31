@@ -3,7 +3,7 @@
 import { prisma } from "@/db/prisma"
 import { handleError } from "@/lib/utils"
 import { createClient } from "@/utils/supabase/server"
-import { Doctor } from "@prisma/client"
+import { Doctor, Gender } from "@prisma/client"
 import { getDoctorByEmail } from "./doctor"
 
 export async function login(formData: FormData) {
@@ -19,7 +19,6 @@ export async function login(formData: FormData) {
 
     if (error) throw error
 
-    // revalidatePath("/", "layout")
     return { errorMessage: null }
   } catch (error) {
     return handleError(error)
@@ -34,7 +33,6 @@ export async function logout() {
 
     if (error) throw error
 
-    // revalidatePath("/", "layout")
     return { errorMessage: null }
   } catch (error) {
     return handleError(error)
@@ -46,6 +44,10 @@ export async function signup(formData: FormData) {
     const supabase = await createClient()
 
     const name = formData.get("name") as string
+    const gender = formData.get("gender") as string
+    const practiceStarted = Number(formData.get("practiceStarted"))
+    const degree = formData.get("degree") as string
+    const speciality = formData.get("speciality") as string
     const credentials = {
       email: formData.get("email") as string,
       password: formData.get("password") as string
@@ -77,11 +79,14 @@ export async function signup(formData: FormData) {
       data: {
         id: userId,
         email: credentials.email,
-        name: name
+        name,
+        gender: gender as Gender,
+        practiceStarted,
+        degree,
+        speciality
       }
     })
 
-    // revalidatePath("/", "layout")
     return { errorMessage: null }
   } catch (error) {
     return handleError(error)

@@ -2,59 +2,123 @@
 
 import { login } from "@/actions/auth"
 import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useTransition } from "react"
+import { useForm } from "react-hook-form"
 import { toast } from "sonner"
+import { z } from "zod"
+
+const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters")
+})
+
+type LoginFormValues = z.infer<typeof loginSchema>
 
 export default function LoginForm() {
+  const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    console.log(formData)
-    startTransition(async () => {
-      const { errorMessage } = await login(formData)
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: ""
+    }
+  })
 
-      if (!errorMessage) {
-        toast.success("Logged In", { description: "Welcome Back" })
-        redirect("/dashboard")
-      } else {
-        toast.error(errorMessage)
-      }
+  const onSubmit = (values: LoginFormValues) => {
+    const formData = new FormData()
+    formData.append("email", values.email)
+    formData.append("password", values.password)
+
+    startTransition(async () => {
+      toast.promise(
+        async () => {
+          const { errorMessage } = await login(formData)
+          if (errorMessage) {
+            throw new Error(errorMessage)
+          }
+
+          router.push("/dashboard")
+        },
+        {
+          loading: "Authenticating...",
+          success: () => {
+            return (
+              <div>
+                <div className="font-semibold">Logged In!</div>
+                <p>Welcome Back! Loading Dashboard</p>
+              </div>
+            )
+          },
+          error: reason => {
+            return (
+              <div>
+                <div className="font-semibold">Error Signing Up!</div>
+                <p>{reason.message}</p>
+              </div>
+            )
+          }
+        }
+      )
     })
   }
 
   return (
-    <form onSubmit={handleLogin} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
           name="email"
-          type="email"
-          placeholder="Enter your email"
-          required
           disabled={isPending}
+          render={({ field }) => (
+            <FormItem className="space-y-2">
+              <FormLabel>Email Address</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type="email"
+                  placeholder="Please enter your email address"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
+        <FormField
+          control={form.control}
           name="password"
-          type="password"
-          placeholder="Enter your password"
-          required
           disabled={isPending}
+          render={({ field }) => (
+            <FormItem className="space-y-2">
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type="password"
+                  placeholder="Please enter your password"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-      <Button type="submit" className="w-full">
-        {isPending ? <Loader2 className="animate-spin" /> : "Log In"}
-      </Button>
-    </form>
+        <Button type="submit" className="w-full" disabled={isPending}>
+          {isPending ? <Loader2 className="animate-spin" /> : "Sign In"}
+        </Button>
+      </form>
+    </Form>
   )
 }
