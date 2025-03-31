@@ -20,24 +20,25 @@ const DoctorHeader = ({ doctor }: { doctor: Doctor }) => {
   return (
     <div className="my-8 flex flex-row justify-between">
       <div className="flex flex-col">
-        <h1 className="font-bold text-2xl">{doctor.name}'s Patients</h1>
+        <h1 className="font-bold text-2xl">{doctor.name}'s Patient Registry</h1>
         <p className="text-muted-foreground">
-          Manage your patient records, review histories, and track appointments
-          in one place.
+          Comprehensive patient management portal for healthcare professionals.
+          Access medical histories, appointment schedules, and treatment plans
+          efficiently.
         </p>
       </div>
 
       <Button asChild>
         <Link href="/dashboard/patients/new">
           <UserPlus2Icon />
-          Add Patient
+          Register New Patient
         </Link>
       </Button>
     </div>
   )
 }
 
-export default async function Patients() {
+export default async function PatientsPage() {
   const user = await getUser()
 
   if (!user) redirect("/auth/login")

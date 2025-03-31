@@ -3,8 +3,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 export default async function NewPatientReadingPage({
   params
-}: { params: Promise<{ id: string }> }) {
-  const { id: patientId } = await params
+}: { params: Promise<{ patientId: string }> }) {
+  const { patientId } = await params
 
   return (
     <div className="container mx-auto px-4 py-6">

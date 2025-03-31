@@ -46,6 +46,7 @@ model Patient {
   dob            DateTime
   phoneNumber    String        @db.VarChar(15)
   email          String        @db.VarChar(255)
+  gender         Gender
   bloodGroup     String        @db.VarChar(4)
   smokingStatus  SmokingStatus
   medicalHistory String        @db.Text

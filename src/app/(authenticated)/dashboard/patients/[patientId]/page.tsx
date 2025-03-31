@@ -1,4 +1,5 @@
 import { getDoctorById } from "@/actions/doctor"
+import { getPatientById } from "@/actions/patient"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Card,
@@ -8,14 +9,13 @@ import {
   CardTitle
 } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { prisma } from "@/db/prisma"
 import getUser from "@/utils/supabase/server"
 import { Doctor, Patient } from "@prisma/client"
 
 export default async function PatientPage({
   params
-}: { params: Promise<{ id: string }> }) {
-  const { id: patientId } = await params
+}: { params: Promise<{ patientId: string }> }) {
+  const { patientId } = await params
 
   const user = await getUser()
 
@@ -29,14 +29,9 @@ export default async function PatientPage({
     throw new Error("Doctor not found")
   }
 
-  const patient: Patient | null = await prisma.patient.findUnique({
-    where: {
-      id: patientId,
-      doctorId: doctor.id
-    }
-  })
+  const patient: Patient | null = await getPatientById(patientId)
 
-  if (!patient) {
+  if (!patient || patient.doctorId !== doctor.id) {
     return (
       <div className="container mx-auto py-6">
         <Card>

@@ -11,14 +11,24 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
 import {
+  CheckCircle,
+  CircleX,
   Copy,
+  CrossIcon,
   EyeIcon,
+  FileTextIcon,
   MoreHorizontal,
-  PencilIcon,
-  PlusCircle
+  PlusCircle,
+  X,
+  XCircle
 } from "lucide-react"
 import Link from "next/link"
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from "@/components/ui/tooltip"
 import { Patient } from "@prisma/client"
 
 const ActionsCell = ({ patient }: { patient: Patient }) => {
@@ -27,7 +37,6 @@ const ActionsCell = ({ patient }: { patient: Patient }) => {
       <Button variant="outline" asChild>
         <Link href={`/dashboard/patients/${patient.id}`}>
           <EyeIcon />
-          View Patient
         </Link>
       </Button>
       <Button variant="outline" asChild>
@@ -54,16 +63,22 @@ const ActionsCell = ({ patient }: { patient: Patient }) => {
             Copy Patient Name
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
+          {/* <DropdownMenuItem asChild>
             <Link href={`/dashboard/patients/${patient.id}/edit`}>
               <PencilIcon />
               Edit Patient
             </Link>
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuItem asChild>
             <Link href={`/dashboard/patients/${patient.id}/readings`}>
               <EyeIcon />
               View Readings
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={`/dashboard/patients/${patient.id}/reports`}>
+              <FileTextIcon />
+              View Reports
             </Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -73,6 +88,13 @@ const ActionsCell = ({ patient }: { patient: Patient }) => {
 }
 
 export const columns: ColumnDef<Patient>[] = [
+  {
+    accessorKey: "index",
+    header: () => <div>#</div>,
+    cell: ({ row }) => {
+      return <div>{row.index + 1}</div>
+    }
+  },
   {
     accessorKey: "name",
     header: () => <div>Name</div>,
@@ -88,16 +110,55 @@ export const columns: ColumnDef<Patient>[] = [
     }
   },
   {
-    accessorKey: "age",
-    header: "Age"
+    accessorKey: "email",
+    header: "Email"
+  },
+  {
+    accessorKey: "phoneNumber",
+    header: "Phone Number"
+  },
+  {
+    accessorKey: "dob",
+    header: "Age",
+    cell: ({ row }) => {
+      const age = calculateAge(row.getValue("dob"))
+      return <div>{age}</div>
+    }
   },
   {
     accessorKey: "gender",
     header: "Gender"
   },
   {
-    accessorKey: "email",
-    header: "Email"
+    accessorKey: "bloodGroup",
+    header: "Blood Group"
+  },
+  {
+    accessorKey: "cured",
+    header: "Cured",
+    cell: ({ row }) => {
+      const cured: boolean = row.getValue("cured")
+      return (
+        <div className="flex items-center justify-center">
+          <Tooltip>
+            <TooltipTrigger>
+              {cured ? (
+                <>
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span className="sr-only">Yes</span>
+                </>
+              ) : (
+                <>
+                  <XCircle className="h-4 w-4 text-red-500" />
+                  <span className="sr-only">No</span>
+                </>
+              )}
+            </TooltipTrigger>
+            <TooltipContent>{cured ? "Yes" : "No"}</TooltipContent>
+          </Tooltip>
+        </div>
+      )
+    }
   },
   {
     id: "actions",
@@ -107,3 +168,13 @@ export const columns: ColumnDef<Patient>[] = [
     }
   }
 ]
+
+function calculateAge(dob: Date) {
+  const today = new Date()
+  const age = today.getFullYear() - dob.getFullYear()
+  const monthDiff = today.getMonth() - dob.getMonth()
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+    return age - 1
+  }
+  return age
+}

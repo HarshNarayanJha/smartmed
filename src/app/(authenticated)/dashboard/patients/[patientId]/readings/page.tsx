@@ -1,5 +1,3 @@
-"use client"
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -52,7 +50,11 @@ const patientData = {
   ]
 }
 
-export default function PatientReadingsPage() {
+export default async function PatientReadingsPage({
+  params
+}: { params: Promise<{ patientId: string }> }) {
+  const { patientId } = await params
+
   return (
     <div className="container mx-auto py-8">
       <div className="mb-6 flex items-center justify-between">

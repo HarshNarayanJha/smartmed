@@ -5,7 +5,7 @@ import getUser from "@/utils/supabase/server"
 import { Doctor } from "@prisma/client"
 import { redirect } from "next/navigation"
 
-export default async function Patients() {
+export default async function NewPatientPage() {
   const user = await getUser()
 
   if (!user) redirect("/auth/login")

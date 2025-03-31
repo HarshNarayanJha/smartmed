@@ -6,14 +6,14 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Reading } from "@prisma/client"
 import { Suspense } from "react"
 
-export default async function ReadingDetail({
+export default async function ReadingPage({
   params
-}: { params: Promise<{ id: string }> }) {
-  const { id: readingId } = await params
+}: { params: Promise<{ patientId: string; readingId: string }> }) {
+  const { patientId, readingId } = await params
 
   const reading: Reading | null = await getReadingById(readingId)
 

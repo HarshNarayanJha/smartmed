@@ -11,7 +11,6 @@ import {
   CardTitle
 } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { prisma } from "@/db/prisma"
 import getUser from "@/utils/supabase/server"
 import { Doctor } from "@prisma/client"
 import { ActivityIcon, UserPlus2Icon, Users } from "lucide-react"

@@ -48,6 +48,9 @@ const patientSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email address."
   }),
+  gender: z.enum(["MALE", "FEMALE", "OTHER"], {
+    message: "Please select patient's gender."
+  }),
   bloodGroup: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"], {
     message: "Please select patient's blood group."
   }),
@@ -202,6 +205,35 @@ export function CreatePatientForm({ doctorId }: { doctorId: string }) {
                   <FormControl>
                     <Input placeholder="e.g., 1234567890" {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div>
+            <FormField
+              control={form.control}
+              name="gender"
+              disabled={isPending}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gender</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select patient's gender" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="MALE">Male</SelectItem>
+                      <SelectItem value="FEMALE">Female</SelectItem>
+                      <SelectItem value="OTHER">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
