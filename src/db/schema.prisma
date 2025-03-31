@@ -8,21 +8,84 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum SmokingStatus {
+  PRESENT
+  NEVER
+  PAST
+}
+
+enum UrgencyLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
 model Doctor {
-  id        String    @id @default(uuid())
-  email     String    @unique
-  name      String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now()) @updatedAt
-  patients  Patient[]
+  id              String    @id @default(uuid())
+  email           String    @unique @db.VarChar(255)
+  name            String    @db.VarChar(100)
+  practiceStarted Int
+  gender          Gender
+  degree          String    @db.VarChar(100)
+  speciality      String    @db.VarChar(100)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now()) @updatedAt
+  reports         Report[]
+  patients        Patient[]
 }
 
 model Patient {
-  id        String   @id @default(uuid())
-  name      String
-  age       Int
-  doctorId  String
-  doctor    Doctor   @relation(fields: [doctorId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id             String        @id @default(uuid())
+  name           String        @db.VarChar(100)
+  dob            DateTime
+  phoneNumber    String        @db.VarChar(15)
+  email          String        @db.VarChar(255)
+  bloodGroup     String        @db.VarChar(10)
+  smokingStatus  SmokingStatus
+  medicalHistory String        @db.Text
+  allergies      String        @db.Text
+  doctorId       String
+  doctor         Doctor        @relation(fields: [doctorId], references: [id])
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @default(now()) @updatedAt
+  reports        Report[]
+  readings       Reading[]
+}
+
+model Reading {
+  id               String   @id @default(uuid())
+  patientId        String
+  patient          Patient  @relation(fields: [patientId], references: [id])
+  diagnosedFor     String   @db.VarChar(100)
+  height           Float?
+  weight           Float?
+  temperature      Float
+  heartRate        Int
+  bpSystolic       Int?
+  bpDiastolic      Int?
+  respiratoryRate  Int?
+  glucoseLevel     Float?
+  oxygenSaturation Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now())
+}
+
+model Report {
+  id               String       @id @default(uuid())
+  doctorId         String
+  doctor           Doctor       @relation(fields: [doctorId], references: [id])
+  patientId        String
+  patient          Patient      @relation(fields: [patientId], references: [id])
+  summary          String       @db.Text
+  detailedAnalysis String       @db.Text
+  diagnosis        String       @db.Text
+  recommendations  String       @db.Text
+  urgencyLevel     UrgencyLevel
+  additionalNotes  String       @db.Text
 }
