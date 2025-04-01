@@ -29,7 +29,7 @@ export default function GenerateReportButton({
       try {
         const { data } = await generateReport(reading, patient)
 
-        console.log("Response Generated", data)
+        console.log("Response Generated")
         console.log("Saving response into db")
 
         const report: Report = await createReport({

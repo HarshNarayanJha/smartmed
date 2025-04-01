@@ -96,8 +96,6 @@ export async function generateReport(
       })}
     `
 
-    console.log("Sending request with contents", contents)
-
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
       contents,

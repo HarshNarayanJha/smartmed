@@ -8,7 +8,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { prisma } from "@/db/prisma"
 import getUser from "@/utils/supabase/server"
 import { Doctor } from "@prisma/client"
 import {
