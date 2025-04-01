@@ -8,33 +8,41 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const token_hash = searchParams.get("token_hash")
   const type = searchParams.get("type") as EmailOtpType | null
-  const next = "/welcome"
 
-  // Create redirect link without the secret token
-  const redirectTo = request.nextUrl.clone()
-  redirectTo.pathname = next
-  redirectTo.searchParams.delete("token_hash")
-  redirectTo.searchParams.delete("type")
+  const welcomePath = "/welcome"
+  const errorPath = "/error"
 
+  const redirectBaseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || request.nextUrl.origin
+
+  const createRedirectResponse = (pathname: string): NextResponse => {
+    const redirectUrl = new URL(pathname, redirectBaseUrl)
+    console.log(`Redirecting to: ${redirectUrl.toString()}`)
+    return NextResponse.redirect(redirectUrl)
+  }
+
+  // Check if token_hash and type are present in the query parameters
   if (token_hash && type) {
     const supabase = await createClient()
 
+    // Attempt to verify the OTP (email confirmation token) with Supabase
     const { error } = await supabase.auth.verifyOtp({
       type,
       token_hash
     })
 
     if (!error) {
-      console.log("verification successful, redirecting to", redirectTo)
-      redirectTo.searchParams.delete("next")
-      return NextResponse.redirect(redirectTo)
+      console.log("Email verification successful.")
+      return createRedirectResponse(welcomePath)
     }
 
-    console.log("verification failed", error)
+    console.error("Email verification failed:", error.message)
+  } else {
+    console.error(
+      "Verification failed: Missing 'token_hash' or 'type' in query parameters."
+    )
   }
 
-  // return the user to an error page with some instructions
-  redirectTo.pathname = "/error"
-  console.log("verification failed, redirecting to", redirectTo)
-  return NextResponse.redirect(redirectTo)
+  console.log("Redirecting user to error page.")
+  return createRedirectResponse(errorPath)
 }
