@@ -1,5 +1,6 @@
 import { getDoctorById } from "@/actions/doctor"
 import LogoutButton from "@/components/reusable/LogoutButton"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,14 +37,23 @@ export default async function AccountMenu() {
       <DropdownMenuTrigger>
         <UserCircle />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-64">
-        <div className="space-y-1 p-2">
-          <DropdownMenuLabel className="font-bold text-lg">
-            {userData.name}
-          </DropdownMenuLabel>
-          <DropdownMenuLabel className="truncate text-muted-foreground text-sm">
-            {userData.email}
-          </DropdownMenuLabel>
+      <DropdownMenuContent className="w-72" align="end">
+        <div className="space-x-1 p-2 flex flex-row">
+          <Avatar className="h-14 w-14 m-auto">
+            <AvatarImage
+              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.id}`}
+              alt={userData.name}
+              />
+            <AvatarFallback>{userData.name.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col justify-end">
+            <DropdownMenuLabel className="font-bold text-lg">
+              {userData.name}
+            </DropdownMenuLabel>
+            <DropdownMenuLabel className="truncate text-muted-foreground text-sm">
+              {userData.email}
+            </DropdownMenuLabel>
+          </div>
         </div>
         <DropdownMenuSeparator className="my-1" />
         <DropdownMenuItem asChild>
