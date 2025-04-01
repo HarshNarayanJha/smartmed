@@ -1,15 +1,34 @@
-import { Calendar, FileText, Plus, UsersIcon } from "lucide-react"
+import {
+  ChevronUp,
+  FileText,
+  Github,
+  Info,
+  LogOutIcon,
+  Plus,
+  User2,
+  UserCog,
+  UsersIcon
+} from "lucide-react"
 
 import { getDoctorById } from "@/actions/doctor"
+import LogoutButton from "@/components/reusable/LogoutButton"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupAction,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem
 } from "@/components/ui/sidebar"
@@ -71,6 +90,60 @@ export default async function DashboardSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarGroup>
+            <SidebarGroupLabel>SmartMed</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link href="/about">
+                      <Info />
+                      About
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      href="https://github.com/HarshNarayanJha/smartmed"
+                      target="_blank"
+                    >
+                      <Github />
+                      This is a Prototype Version
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarMenu>
+        <div className="w-full border-t p-4">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <SidebarMenuButton>
+                    <User2 /> {userData.name}
+                    <ChevronUp className="ml-auto" />
+                  </SidebarMenuButton>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent side="top">
+                  <DropdownMenuItem>
+                    <UserCog />
+                    <Link href="/profile">Profile</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem variant="destructive">
+                    <LogOutIcon />
+                    <LogoutButton textOnly={true} />
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </div>
+      </SidebarFooter>
     </Sidebar>
   )
 }

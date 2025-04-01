@@ -1,6 +1,8 @@
+import { getDoctorById } from "@/actions/doctor"
 import { getPatientById } from "@/actions/patient"
 import { getReadingById } from "@/actions/reading"
 import { getReportById } from "@/actions/report"
+import GenerateReportButton from "@/components/dashboard/GenerateReportButton"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,7 +11,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator
 } from "@/components/ui/breadcrumb"
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -18,26 +19,36 @@ import {
   CardTitle
 } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Patient, Reading, Report } from "@prisma/client"
+import { calculateBmi } from "@/lib/utils"
+import getUser from "@/utils/supabase/server"
+import { Doctor, Patient, Reading, Report } from "@prisma/client"
 import {
   Activity,
   Droplet,
+  Gauge,
   HeartPulse,
   type LucideIcon,
-  Notebook,
   Percent,
   Ruler,
   Scale,
+  Sparkles,
   Thermometer,
   Wind
 } from "lucide-react"
 import Link from "next/link"
+import { redirect } from "next/navigation"
 import { Suspense } from "react"
 
 export default async function ReadingPage({
   params
 }: { params: Promise<{ patientId: string; readingId: string }> }) {
   const { patientId, readingId } = await params
+
+  const user = await getUser()
+  if (!user) redirect("/auth/login")
+
+  const doctor: Doctor | null = await getDoctorById(user.id)
+  if (!doctor) redirect("/auth/login")
 
   const reading: Reading | null = await getReadingById(readingId)
   const patient: Patient | null = await getPatientById(patientId)
@@ -85,10 +96,25 @@ export default async function ReadingPage({
                 </CardDescription>
               </div>
               <div>
-                <Button>
-                  <Notebook />
-                  {report ? "View" : "Generate"} Report
-                </Button>
+                {report ? (
+                  <Link
+                    href={`/dashboard/patients/${patient.id}/reports/${report.id}`}
+                  >
+                    View Report
+                  </Link>
+                ) : (
+                  <GenerateReportButton
+                    doctorId={doctor.id}
+                    patient={patient}
+                    reading={reading}
+                    slot={
+                      <>
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        Generate Report
+                      </>
+                    }
+                  />
+                )}
               </div>
             </CardHeader>
             <CardContent className="p-6">
@@ -153,6 +179,15 @@ export default async function ReadingPage({
                   Icon={Scale}
                   title="Weight"
                   value={reading.weight ? `${reading.weight} kg` : "N/A"}
+                />
+                <ReadingItem
+                  Icon={Gauge}
+                  title="BMI"
+                  value={
+                    reading.weight && reading.height
+                      ? `${calculateBmi(reading.weight, reading.height)} kg/m²`
+                      : "N/A"
+                  }
                 />
               </div>
             </CardContent>

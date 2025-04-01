@@ -4,6 +4,7 @@ import { prisma } from "@/db/prisma"
 import { handleError } from "@/lib/utils"
 import { createClient } from "@/utils/supabase/server"
 import { Doctor, Gender } from "@prisma/client"
+import { revalidatePath } from "next/cache"
 import { getDoctorByEmail } from "./doctor"
 
 export async function login(formData: FormData) {
@@ -19,6 +20,7 @@ export async function login(formData: FormData) {
 
     if (error) throw error
 
+    revalidatePath("/", "layout") // Revalidate the root layout after login
     return { errorMessage: null }
   } catch (error) {
     return handleError(error)
@@ -33,6 +35,7 @@ export async function logout() {
 
     if (error) throw error
 
+    revalidatePath("/", "layout") // Revalidate the root layout after logout
     return { errorMessage: null }
   } catch (error) {
     return handleError(error)
@@ -87,6 +90,7 @@ export async function signup(formData: FormData) {
       }
     })
 
+    revalidatePath("/", "layout") // Revalidate the root layout after signup
     return { errorMessage: null }
   } catch (error) {
     return handleError(error)

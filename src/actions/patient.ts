@@ -179,13 +179,16 @@ export async function getPatientByIdWithReports(
 export async function createPatient(
   patientData: Omit<Patient, "id" | "createdAt" | "updatedAt" | "cured">
 ): Promise<Patient> {
+  let patient: Patient | null = null
   try {
     console.log("Creating patient with data:", patientData)
-    const patient: Patient = await prisma.patient.create({
+    patient = await prisma.patient.create({
       data: patientData
     })
 
+    // Revalidate paths that show lists of patients
     revalidatePath("/dashboard")
+    revalidatePath("/dashboard/patients")
     return patient
   } catch (error) {
     console.error("Failed to create patient. Error: ", error)
@@ -207,6 +210,8 @@ export async function updatePatient(
     })
 
     revalidatePath("/dashboard")
+    revalidatePath("/dashboard/patients")
+    revalidatePath(`/dashboard/patients/${id}`)
     return patient
   } catch (error) {
     console.error(`Failed to update patient with id ${id}:`, error)
@@ -223,7 +228,10 @@ export async function markPatientCured(id: string): Promise<void> {
       where: { id },
       data: { cured: true }
     })
+
     revalidatePath("/dashboard")
+    revalidatePath("/dashboard/patients")
+    revalidatePath(`/dashboard/patients/${id}`)
   } catch (error) {
     console.error(`Failed to mark patient with id ${id} as cured:`, error)
     throw new Error("Failed to mark patient as cured")
@@ -240,6 +248,7 @@ export async function deletePatient(id: string): Promise<void> {
     })
 
     revalidatePath("/dashboard")
+    revalidatePath("/dashboard/patients")
   } catch (error) {
     console.error(`Failed to delete patient with id ${id}:`, error)
     throw new Error("Failed to delete patient")

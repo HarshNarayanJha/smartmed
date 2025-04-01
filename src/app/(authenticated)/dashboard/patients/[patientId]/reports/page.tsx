@@ -138,9 +138,13 @@ export default async function PatientReadingsPage({
                   </p>
                 </div>
               )}
-              <Link href={`/patients/${patientId}/reports/${latestReport.id}`}>
-                View Full Report
-              </Link>
+              <Button variant="outline">
+                <Link
+                  href={`/dashboard/patients/${patientId}/reports/${latestReport.id}`}
+                >
+                  View Full Report
+                </Link>
+              </Button>
             </div>
           </CardContent>
         </Card>

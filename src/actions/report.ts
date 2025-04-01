@@ -1,36 +1,42 @@
 "use server"
 
 import { prisma } from "@/db/prisma"
+import { calculateAge, calculateBmi } from "@/lib/utils"
 import { GoogleGenAI, Type } from "@google/genai"
-import { Report } from "@prisma/client"
+import { Patient, Reading, Report } from "@prisma/client"
+import { revalidatePath } from "next/cache"
 
 const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY!
 const ai = new GoogleGenAI({ apiKey })
 
 const GENERATE_REPORT_PROMPT = `
-You are a highly qualified medical professional tasked with generating a comprehensive medical report based on the given reading data.
+You have completed your MBBS from a AIIMS Delhi and then you have completed your phd from AIIMS Kalyani and you have given a lot of time in research and practice for your profession. After 10 years of practice, you have qualified for being a medical professional and now you have been in this field for 50 years and is one of the most reliable doctors in India. Using your ample amount of knowledge of this field,you have to generate medical reports which is closed to 99% accuracy level from the readings taken. Try to be sensitive in all cases as it can cause a life or death like situation.
+Analyze the information provided and create a detailed, accurate, and professional medical report.
 
-Analyze the information provided and create a detailed, accurate, and professional medical report. Your response should follow this exact JSON schema:
+Your response should follow this exact JSON schema:
 
 {
-  "summary": "Brief overview of key findings",
-  "detailedAnalysis": "In-depth analysis of all readings and measurements",
-  "diagnosis": "Professional diagnosis based on the readings",
-  "recommendations": "Treatment recommendations and follow-up suggestions",
-  "urgencyLevel": "Low/Medium/High - indicate if immediate attention is required",
-  "additionalNotes": "Any other relevant medical observations or concerns"
+  "summary": "Short & Precise overview of key findings",
+  "detailedAnalysis": "In-depth and accurate analysis of all readings and measurements",
+  "diagnosis": "Life-saving diagnosis methods based on the readings",
+  "recommendations": "Try to give Accurate Treatment recommendations and follow-up suggestions everytime",
+  "urgencyLevel": "Low/Medium/High - Include these parameters according to your findings and alert the patient accordingly",
+  "additionalNotes": "Any other relevant medical observations or concerns you want to give from your experience"
 }
 
 Your report should:
-- Use formal medical terminology appropriately
-- Be factually accurate based only on the data provided
-- Maintain a professional, clinical tone
-- Avoid speculative statements unless clearly marked as such
+- Use formal and easy to understand medical terminology appropriately
+- Be factually accurate based only on the data provided and avoid creating fear-mongering among patients
+- Maintain a professional, clinical tone so they feel like talking to a real doctor
+- Avoid speculation of your own
 - Include specific values from the readings when relevant
 - Format all values with appropriate units
-- Prioritize patient health and safety in all recommendations
+- Prioritize patient's health and safety in all recommendations being economical at the same time
+- Also, mention the ranges if the readings come severe for any reading
 
-Remember to be thorough but concise. This report will be used by healthcare professionals to make clinical decisions.
+Also, NEVER use markdown syntax. Respond in plaintext only.
+
+Remember to be thorough but concise. This report will be used by healthcare professionals to make clinical decisions so avoid making any errors.
 
 Here are the readings in the json format:
 
@@ -40,18 +46,61 @@ Here are the readings in the json format:
  * Generates a report for a given reading and patient ID
  * This does NOT create a report
  */
-export async function generateReport(readingId: string, patientId: string) {
+export async function generateReport(
+  reading: Reading,
+  patient: Patient
+): Promise<{
+  data: Omit<
+    Report,
+    "id" | "doctorId" | "patientId" | "createdAt" | "updatedAt"
+  >
+}> {
   try {
-    const reading = await prisma.reading.findUnique({
-      where: {
-        id: readingId,
-        patientId: patientId
-      }
-    })
+    const contents = `
+      ${GENERATE_REPORT_PROMPT}
+
+      ${JSON.stringify({
+        diagnosedFor: reading.diagnosedFor,
+        height: reading.height,
+        weight: reading.weight,
+        bmi: calculateBmi(reading.weight, reading.height),
+        bodyTemperature: reading.temperature,
+        heartRate: reading.heartRate,
+        bpSystolic: reading.bpSystolic,
+        bpDiastolic: reading.bpDiastolic,
+        respiratoryRate: reading.respiratoryRate,
+        glucoseLevel: reading.glucoseLevel,
+        oxygenSaturation: reading.oxygenSaturation,
+        takenAt: reading.createdAt.toJSON()
+      })}
+
+      Height is in centimeters
+      weight is in kilograms
+      bmi is in kg/m^2
+      body temperature is in degrees Celsius
+      heart rate is in beats per minute
+      blood pressure is in mmHg
+      respiratory rate is in breaths per minute
+      glucose level is in mg/dL
+      oxygen saturation is in percentage
+
+      Also, here is the relevant patient data
+
+      ${JSON.stringify({
+        age: calculateAge(patient.dob),
+        gender: patient.gender,
+        bloodGroup: patient.bloodGroup,
+        smokingStatus: patient.smokingStatus,
+        medicalHistory: patient.medicalHistory,
+        allergies: patient.allergies
+      })}
+    `
+
+    console.log("Sending request with contents", contents)
 
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
-      contents: GENERATE_REPORT_PROMPT + JSON.stringify(reading),
+      contents,
       config: {
         responseMimeType: "application/json",
         responseSchema: {
@@ -77,16 +126,11 @@ export async function generateReport(readingId: string, patientId: string) {
     })
 
     return {
-      ...JSON.parse(response.text || "{}"),
-      errorMessage: null
+      data: JSON.parse(response.text || "{}")
     }
   } catch (error) {
     console.log(error)
-    if (error instanceof Error) {
-      return { errorMessage: error.message }
-    } else {
-      return { errorMessage: "An unknown error occurred" }
-    }
+    throw error
   }
 }
 
@@ -94,12 +138,18 @@ export async function generateReport(readingId: string, patientId: string) {
  * Creates a report for a given reading and patient ID
  */
 export async function createReport(
-  reportData: Omit<Report, "id" | "createdAt" | "updatedAt">
+  reportData: Omit<Report, "createdAt" | "updatedAt">
 ): Promise<Report> {
   try {
-    const report = await prisma.report.create({
+    const report: Report = await prisma.report.create({
       data: reportData
     })
+
+    revalidatePath(
+      `/dashboard/patient/${report.patientId}/reports/${report.id}`
+    )
+    revalidatePath(`/dashboard/patient/${report.patientId}/reports`)
+    revalidatePath(`/dashboard/patient/${report.patientId}`)
 
     return report
   } catch (error) {
@@ -113,7 +163,7 @@ export async function createReport(
  */
 export async function getReportById(reportId: string): Promise<Report | null> {
   try {
-    const report: Report = await prisma.report.findUnique({
+    const report: Report | null = await prisma.report.findUnique({
       where: {
         id: reportId
       }
@@ -136,6 +186,9 @@ export async function getReportsByPatientId(
     const reports = await prisma.report.findMany({
       where: {
         patientId
+      },
+      orderBy: {
+        createdAt: "desc"
       }
     })
 
@@ -176,6 +229,9 @@ export async function getReportsByDoctorId(
     const reports = await prisma.report.findMany({
       where: {
         doctorId
+      },
+      orderBy: {
+        createdAt: "desc"
       }
     })
 
@@ -214,7 +270,7 @@ export async function deleteReport(reportId: string): Promise<void> {
       }
     })
   } catch (error) {
-    console.log(error)
-    throw new Error("Failed to delete report")
+    console.error(`Failed to delete report ${reportId}:`, error)
+    throw new Error(`Failed to delete report with ID ${reportId}.`)
   }
 }

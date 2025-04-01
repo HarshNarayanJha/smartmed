@@ -1,6 +1,8 @@
+import { getDoctorById } from "@/actions/doctor"
 import { getPatientById } from "@/actions/patient"
 import { getReadingById } from "@/actions/reading"
 import { getReportById } from "@/actions/report"
+import GenerateReportButton from "@/components/dashboard/GenerateReportButton"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -11,7 +13,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator
 } from "@/components/ui/breadcrumb"
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -21,14 +22,23 @@ import {
   CardTitle
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { Patient, Reading, Report, UrgencyLevel } from "@prisma/client"
+import { calculateAge } from "@/lib/utils"
+import getUser from "@/utils/supabase/server"
+import { Doctor, Patient, Reading, Report, UrgencyLevel } from "@prisma/client"
 import { Sparkles } from "lucide-react"
 import Link from "next/link"
+import { redirect } from "next/navigation"
 
 export default async function ReportDetailPage({
   params
-}: { params: { patientId: string; reportId: string } }) {
-  const { patientId, reportId } = params
+}: { params: Promise<{ patientId: string; reportId: string }> }) {
+  const { patientId, reportId } = await params
+
+  const user = await getUser()
+  if (!user) redirect("/auth/login")
+
+  const doctor: Doctor | null = await getDoctorById(user.id)
+  if (!doctor) redirect("/auth/login")
 
   if (!patientId || !reportId) {
     return (
@@ -92,10 +102,17 @@ export default async function ReportDetailPage({
               <p className="mb-4 text-muted-foreground text-sm">
                 The report for this reading has not been generated.
               </p>
-              <Button className="w-full sm:w-auto">
-                <Sparkles className="mr-2 h-4 w-4" />
-                Generate Report Now
-              </Button>
+              <GenerateReportButton
+                slot={
+                  <>
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Generate Report Now
+                  </>
+                }
+                reading={reading}
+                patient={patient}
+                doctorId={doctor.id}
+              />
             </div>
           </CardContent>
         </Card>
@@ -172,7 +189,7 @@ export default async function ReportDetailPage({
             <CardContent className="space-y-5">
               <div>
                 <h3 className="mb-1 font-semibold text-md">Summary</h3>
-                <p className="text-muted-foreground text-sm">
+                <p className=" text-sm">
                   {report.summary || "No summary provided."}
                 </p>
               </div>
@@ -181,21 +198,21 @@ export default async function ReportDetailPage({
                 <h3 className="mb-1 font-semibold text-md">
                   Detailed Analysis
                 </h3>
-                <p className="whitespace-pre-wrap text-muted-foreground text-sm">
+                <p className="whitespace-pre-wrap text-sm">
                   {report.detailedAnalysis || "No detailed analysis provided."}
                 </p>
               </div>
               <Separator />
               <div>
                 <h3 className="mb-1 font-semibold text-md">Diagnosis</h3>
-                <p className="whitespace-pre-wrap text-muted-foreground text-sm">
+                <p className="whitespace-pre-wrap text-sm">
                   {report.diagnosis || "No diagnosis provided."}
                 </p>
               </div>
               <Separator />
               <div>
                 <h3 className="mb-1 font-semibold text-md">Recommendations</h3>
-                <p className="whitespace-pre-wrap text-muted-foreground text-sm">
+                <p className="whitespace-pre-wrap text-sm">
                   {report.recommendations || "No recommendations provided."}
                 </p>
               </div>
@@ -206,7 +223,7 @@ export default async function ReportDetailPage({
                     <h3 className="mb-1 font-semibold text-md">
                       Additional Notes
                     </h3>
-                    <p className="whitespace-pre-wrap text-muted-foreground text-sm">
+                    <p className="whitespace-pre-wrap text-sm">
                       {report.additionalNotes}
                     </p>
                   </div>
@@ -214,8 +231,8 @@ export default async function ReportDetailPage({
               )}
             </CardContent>
             <CardFooter>
-              <p className="text-muted-foreground text-sm">
-                Report by: Dr. [Doctor Name] (ID:{" "}
+              <p className="text-sm">
+                Report by: Dr. {doctor.name} (ID:{" "}
                 {report.doctorId.substring(0, 6)})
               </p>
             </CardFooter>
@@ -226,14 +243,18 @@ export default async function ReportDetailPage({
           <Card>
             <CardHeader>
               <CardTitle className="text-xl">Patient Information</CardTitle>
-              <CardDescription>Patient ID: {patient.id}</CardDescription>
+              <CardDescription>
+                Patient ID: {patient.id.substring(0, 6)}
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
               <p>
                 <strong>Name:</strong> {patient.name}
               </p>
               <p>
-                <strong>Date of Birth:</strong> {patient.dob.toLocaleString()}
+                <strong>Date of Birth:</strong>{" "}
+                {patient.dob.toLocaleDateString()} ({calculateAge(patient.dob)}{" "}
+                y/o)
               </p>
               <p>
                 <strong>Gender:</strong> {patient.gender || "N/A"}
@@ -250,7 +271,7 @@ export default async function ReportDetailPage({
                 {patient.smokingStatus || "N/A"}
               </p>
               <p>
-                <strong>Cured Status:</strong> {patient.cured ? "Yes" : "No"}
+                <strong>Cured:</strong> {patient.cured ? "Yes" : "No"}
               </p>
               <Separator className="my-3" />
               <div>
@@ -262,9 +283,12 @@ export default async function ReportDetailPage({
               <Separator className="my-3" />
               <div>
                 <p className="mb-1 font-semibold">Allergies:</p>
-                <p className="whitespace-pre-wrap text-muted-foreground text-xs">
-                  {patient.allergies || "N/A"}
-                </p>
+                <ul className="whitespace-pre-wrap text-muted-foreground text-xs">
+                  {patient.allergies
+                    .split(",")
+                    .map((allergy, index) => <li key={index}>{allergy}</li>) ||
+                    "N/A"}
+                </ul>
               </div>
             </CardContent>
           </Card>
@@ -273,16 +297,16 @@ export default async function ReportDetailPage({
             <CardHeader>
               <CardTitle className="text-xl">Associated Reading</CardTitle>
               <CardDescription>
-                Reading ID: {reading.id} (Taken:{" "}
+                Reading ID: {reading.id.substring(0, 6)} (Taken:{" "}
                 {reading.createdAt.toLocaleString()})
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-1 text-sm">
-              <p>
+              <p className="max-w-full truncate">
                 <strong>Context:</strong> {reading.diagnosedFor || "N/A"}
               </p>
               <p>
-                <strong>Temp:</strong> {reading.temperature?.toFixed(1)}°C
+                <strong>Temp:</strong> {reading.temperature?.toFixed(1)} °C
               </p>
               <p>
                 <strong>Heart Rate:</strong> {reading.heartRate} bpm

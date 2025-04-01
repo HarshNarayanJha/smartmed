@@ -26,7 +26,7 @@ import {
   TableRow
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { calculateAge } from "@/lib/utils"
+import { calculateAge, calculateBmi } from "@/lib/utils"
 import { Patient, Reading } from "@prisma/client"
 import { FilePlus, Notebook, Plus } from "lucide-react"
 import Link from "next/link"
@@ -123,12 +123,13 @@ export default async function PatientReadingsPage({
       </div>
 
       <Tabs defaultValue="overview">
-        <TabsList className="mb-8 grid w-full grid-cols-7">
+        <TabsList className="mb-8 grid w-full grid-cols-8">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="blood-pressure">Blood Pressure</TabsTrigger>
           <TabsTrigger value="glucose">Glucose</TabsTrigger>
-          <TabsTrigger value="weight">Weight</TabsTrigger>
           <TabsTrigger value="height">Height</TabsTrigger>
+          <TabsTrigger value="weight">Weight</TabsTrigger>
+          <TabsTrigger value="bmi">BMI</TabsTrigger>
           <TabsTrigger value="temperature">Temperature</TabsTrigger>
           <TabsTrigger value="heartRate">Heart Rate</TabsTrigger>
         </TabsList>
@@ -217,6 +218,26 @@ export default async function PatientReadingsPage({
               data={latestKReadings.map((r: Reading) => ({
                 date: r.createdAt.toLocaleDateString(),
                 weight: r.weight
+              }))}
+            />
+
+            <ReadingLineChart
+              title="BMI"
+              description={`Latest: ${calculateBmi(latestReading.weight, latestReading.height)} kg/m²`}
+              xAxisKey="date"
+              showXAxisTicks={false}
+              lines={[
+                {
+                  dataKey: "bmi",
+                  type: "monotone",
+                  name: "BMI kg/m²",
+                  stroke: "#9c27b0"
+                }
+              ]}
+              // @ts-ignore
+              data={latestKReadings.map((r: Reading) => ({
+                date: r.createdAt.toLocaleDateString(),
+                bmi: calculateBmi(r.weight, r.height)
               }))}
             />
 
@@ -415,6 +436,53 @@ export default async function PatientReadingsPage({
           />
         </TabsContent>
 
+        <TabsContent value="height">
+          <ReadingLineChart
+            title="Height Tracking"
+            description="Patient height over time"
+            height={400}
+            data={latestMReadings.map((r: Reading) => ({
+              date: r.createdAt.toLocaleDateString(),
+              value: r.height
+            }))}
+            xAxisKey="date"
+            lines={[
+              {
+                type: "monotone",
+                dataKey: "value",
+                name: "Height (cm)",
+                stroke: "#4287f5",
+                strokeWidth: 4
+              }
+            ]}
+            table={
+              <div className="mt-6">
+                <h3 className="mb-4 font-semibold">Recent Readings</h3>
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[150px]">Date</TableHead>
+                        <TableHead>Height (cm)</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {latestMReadings.map((reading: Reading, idx) => (
+                        <TableRow key={idx}>
+                          <TableCell className="font-medium">
+                            {reading.createdAt.toLocaleString()}
+                          </TableCell>
+                          <TableCell>{reading.height} cm</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            }
+          />
+        </TabsContent>
+
         <TabsContent value="weight">
           <ReadingLineChart
             title="Weight Tracking"
@@ -462,22 +530,22 @@ export default async function PatientReadingsPage({
           />
         </TabsContent>
 
-        <TabsContent value="height">
+        <TabsContent value="bmi">
           <ReadingLineChart
-            title="Height Tracking"
-            description="Patient height over time"
+            title="BMI Tracking"
+            description="Patient BMI over time"
             height={400}
             data={latestMReadings.map((r: Reading) => ({
               date: r.createdAt.toLocaleDateString(),
-              value: r.height
+              value: calculateBmi(r.weight, r.height)
             }))}
             xAxisKey="date"
             lines={[
               {
                 type: "monotone",
                 dataKey: "value",
-                name: "Height (cm)",
-                stroke: "#4287f5",
+                name: "BMI (kg/m²)",
+                stroke: "#9c27b0",
                 strokeWidth: 4
               }
             ]}
@@ -489,7 +557,7 @@ export default async function PatientReadingsPage({
                     <TableHeader>
                       <TableRow>
                         <TableHead className="w-[150px]">Date</TableHead>
-                        <TableHead>Height (cm)</TableHead>
+                        <TableHead>BMI (kg/m²)</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -498,7 +566,9 @@ export default async function PatientReadingsPage({
                           <TableCell className="font-medium">
                             {reading.createdAt.toLocaleString()}
                           </TableCell>
-                          <TableCell>{reading.height} cm</TableCell>
+                          <TableCell>
+                            {calculateBmi(reading.weight, reading.height)} kg/m²
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

@@ -34,9 +34,22 @@ const patientSchema = z.object({
   name: z.string().min(3, {
     message: "Patient name must be at least 3 characters."
   }),
-  dob: z.string().refine(val => !isNaN(Date.parse(val)), {
-    message: "Date of birth must be a valid date"
-  }),
+  dob: z
+    .string()
+    .refine(val => !isNaN(Date.parse(val)), {
+      message: "Date of birth must be a valid date format"
+    })
+    .refine(
+      val => {
+        const inputDate = new Date(val)
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        return inputDate < today
+      },
+      {
+        message: "Date of birth must be before today"
+      }
+    ),
   phoneNumber: z
     .string()
     .min(10, {

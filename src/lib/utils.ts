@@ -18,7 +18,19 @@ export function calculateAge(dob: Date) {
   const age = today.getFullYear() - dob.getFullYear()
   const monthDiff = today.getMonth() - dob.getMonth()
   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-    return age - 1
+    return Math.max(0, age - 1)
   }
-  return age
+  return Math.max(0, age)
+}
+
+/**
+ * Calculates the Body Mass Index (BMI) based on weight and height.
+ *
+ * @param weight - The weight in kilograms.
+ * @param height - The height in centimeters.
+ * @returns The calculated BMI value.
+ */
+export function calculateBmi(weight: number, height: number) {
+  const bmi = weight / (height / 100) ** 2
+  return Math.max(0, bmi).toFixed(2)
 }

@@ -216,7 +216,7 @@ export default async function PatientPage({
                       ? "bg-green-100 font-semibold text-green-800"
                       : patient.smokingStatus === SmokingStatus.PAST
                         ? "bg-amber-100 font-semibold text-amber-800"
-                        : "bg-red-400 font-semibold text-red-800"
+                        : ""
                   }
                 >
                   {patient.smokingStatus}

@@ -8,6 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
+import { calculateBmi } from "@/lib/utils"
 import { Reading } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
 import { Copy, EyeIcon, MoreHorizontal, Notebook } from "lucide-react"
@@ -22,7 +23,7 @@ const ActionsCell = ({
       <Button variant="outline" asChild>
         <Link href={`/dashboard/patients/${patientId}/readings/${reading.id}`}>
           <EyeIcon />
-          View Reading
+          View
         </Link>
       </Button>
       <Button variant="outline" asChild>
@@ -111,6 +112,19 @@ export const columns: ColumnDef<Reading>[] = [
     }
   },
   {
+    accessorKey: "bmi",
+    header: "BMI",
+    cell: ({ row }) => {
+      const weight: number = row.getValue("weight")
+      const height: number = row.getValue("height")
+      const bmi = calculateBmi(weight, height)
+      return <div>{`${bmi} kg/m²`}</div>
+    },
+    meta: {
+      width: 25
+    }
+  },
+  {
     accessorKey: "temperature",
     header: "Temperature",
     cell: ({ row }) => {
@@ -138,7 +152,13 @@ export const columns: ColumnDef<Reading>[] = [
     cell: ({ row }) => {
       const bpSystolic = row.original.bpSystolic
       const bpDiastolic = row.original.bpDiastolic
-      return <div>{`${bpSystolic}/${bpDiastolic} mmHg`}</div>
+      return (
+        <div>
+          {`${bpSystolic} `}
+          <span className="text-muted-foreground">/</span>
+          {` ${bpDiastolic} mmHg`}
+        </div>
+      )
     }
   },
   {

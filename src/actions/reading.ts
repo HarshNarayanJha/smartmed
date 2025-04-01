@@ -2,6 +2,7 @@
 
 import { prisma } from "@/db/prisma"
 import { Reading } from "@prisma/client"
+import { revalidatePath } from "next/cache"
 
 /**
  * Creates a new reading
@@ -15,9 +16,13 @@ export async function createReading(
       data: readingData
     })
 
+    revalidatePath(`/dashboard/patients/${readingData.patientId}`)
+    revalidatePath(`/dashboard/patients/${readingData.patientId}/readings`)
+    revalidatePath("/dashboard")
+
     return reading
   } catch (error) {
-    console.log(error)
+    console.error("Failed to create reading:", error)
     throw new Error("Failed to create reading")
   }
 }
@@ -33,7 +38,7 @@ export async function getReadingById(id: string): Promise<Reading | null> {
 
     return reading
   } catch (error) {
-    console.log(error)
+    console.error("Failed to get reading by ID:", error)
     throw new Error("Failed to get reading")
   }
 }
@@ -45,13 +50,16 @@ export async function getReadingsByPatientId(
   patientId: string
 ): Promise<Reading[]> {
   try {
-    const readings = await prisma.reading.findMany({
-      where: { patientId }
+    const readings: Reading[] = await prisma.reading.findMany({
+      where: { patientId },
+      orderBy: {
+        createdAt: "desc"
+      }
     })
 
     return readings
   } catch (error) {
-    console.log(error)
+    console.error("Failed to get readings by patient ID:", error)
     throw new Error("Failed to get readings")
   }
 }
@@ -69,7 +77,7 @@ export async function getNumReadingsByPatientId(
 
     return numReadings
   } catch (error) {
-    console.log(error)
+    console.error("Failed to get number of readings by patient ID:", error)
     throw new Error("Failed to get number of readings")
   }
 }
@@ -91,7 +99,7 @@ export async function getNumReadingsByDoctorId(
 
     return numReadings
   } catch (error) {
-    console.log(error)
+    console.error("Failed to get number of readings by doctor ID:", error)
     throw new Error("Failed to get number of readings")
   }
 }
@@ -100,12 +108,29 @@ export async function getNumReadingsByDoctorId(
  * Deletes a reading by its ID
  */
 export async function deleteReadingById(id: string): Promise<void> {
+  let patientId: string | null = null
   try {
+    const reading = await prisma.reading.findUnique({
+      where: { id },
+      select: { patientId: true } // Only select patientId
+    })
+
+    if (!reading) {
+      console.warn(`Reading with ID ${id} not found for deletion.`)
+      return
+    }
+    patientId = reading.patientId
+
     await prisma.reading.delete({
       where: { id }
     })
+
+    revalidatePath(`/dashboard/patients/${patientId}`)
+    revalidatePath(`/dashboard/patients/${patientId}/readings`)
+
+    revalidatePath("/dashboard")
   } catch (error) {
-    console.log(error)
+    console.error("Failed to delete reading:", error)
     throw new Error("Failed to delete reading")
   }
 }
