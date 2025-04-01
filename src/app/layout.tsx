@@ -4,8 +4,11 @@ import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/providers/ThemeProvider"
 
 export const metadata: Metadata = {
-  title: "Smart Med",
-  description: "SmartMeds"
+  title: "SmartMed",
+  description: "SmartMed, A new place to take care of the medical reports as with SmartMed we provide a cloud-based register for hassle-free report generation",
+  appleWebApp: {
+    title: "SmartMed"
+  }
 }
 
 export default function RootLayout({
