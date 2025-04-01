@@ -23,13 +23,18 @@ export async function GET(request: NextRequest) {
       type,
       token_hash
     })
+
     if (!error) {
+      console.log("verification successful, redirecting to", redirectTo)
       redirectTo.searchParams.delete("next")
       return NextResponse.redirect(redirectTo)
     }
+
+    console.log("verification failed", error)
   }
 
   // return the user to an error page with some instructions
   redirectTo.pathname = "/error"
+  console.log("verification failed, redirecting to", redirectTo)
   return NextResponse.redirect(redirectTo)
 }
