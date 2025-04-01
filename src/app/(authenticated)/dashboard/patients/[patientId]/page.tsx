@@ -4,6 +4,14 @@ import { getNumReadingsByPatientId } from "@/actions/reading"
 import { getNumReportsByPatientId } from "@/actions/report"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator
+} from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -24,7 +32,6 @@ import {
   Heart,
   HeartPulse,
   Mail,
-  Pencil,
   Phone,
   Plus,
   User
@@ -66,7 +73,27 @@ export default async function PatientPage({
   const numReadings = await getNumReadingsByPatientId(patient.id)
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="container mx-auto">
+      <Breadcrumb className="mb-8">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink>
+              <Link href="/dashboard">Dashboard</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink>
+              <Link href="/dashboard/patients">Patients</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{patient.name}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-bold text-3xl">Patient Information</h1>
         <div>
@@ -120,22 +147,26 @@ export default async function PatientPage({
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-md bg-muted/30 p-2">
-                  <p className="font-medium text-muted-foreground text-xs">
-                    Reports
-                  </p>
-                  <p className="flex items-center font-semibold">
-                    <FileText className="mr-1 h-4 w-4 text-primary" />
-                    {numReports}
-                  </p>
+                  <Link href={`/dashboard/patients/${patient.id}/reports`}>
+                    <p className="font-medium text-muted-foreground text-xs">
+                      Reports
+                    </p>
+                    <p className="flex items-center font-semibold">
+                      <FileText className="mr-1 h-4 w-4 text-primary" />
+                      {numReports}
+                    </p>
+                  </Link>
                 </div>
                 <div className="rounded-md bg-muted/30 p-2">
-                  <p className="font-medium text-muted-foreground text-xs">
-                    Readings
-                  </p>
-                  <p className="flex items-center font-semibold">
-                    <HeartPulse className="mr-1 h-4 w-4 text-primary" />
-                    {numReadings}
-                  </p>
+                  <Link href={`/dashboard/patients/${patient.id}/readings`}>
+                    <p className="font-medium text-muted-foreground text-xs">
+                      Readings
+                    </p>
+                    <p className="flex items-center font-semibold">
+                      <HeartPulse className="mr-1 h-4 w-4 text-primary" />
+                      {numReadings}
+                    </p>
+                  </Link>
                 </div>
               </div>
 
@@ -225,12 +256,6 @@ export default async function PatientPage({
                   Last updated:{" "}
                   {patient.updatedAt?.toLocaleDateString() || "Unknown"}
                 </Badge>
-                <Button variant="outline" size="sm" asChild>
-                  <Link href={`/dashboard/patients/${patient.id}/readings`}>
-                    <Eye />
-                    View Readings
-                  </Link>
-                </Button>
               </div>
             </div>
             <CardDescription>

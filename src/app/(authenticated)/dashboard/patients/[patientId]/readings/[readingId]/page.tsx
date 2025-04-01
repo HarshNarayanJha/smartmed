@@ -1,5 +1,14 @@
 import { getPatientById } from "@/actions/patient"
 import { getReadingById } from "@/actions/reading"
+import { getReportById } from "@/actions/report"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator
+} from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -9,7 +18,7 @@ import {
   CardTitle
 } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Patient, Reading } from "@prisma/client"
+import { Patient, Reading, Report } from "@prisma/client"
 import {
   Activity,
   Droplet,
@@ -22,6 +31,7 @@ import {
   Thermometer,
   Wind
 } from "lucide-react"
+import Link from "next/link"
 import { Suspense } from "react"
 
 export default async function ReadingPage({
@@ -31,6 +41,7 @@ export default async function ReadingPage({
 
   const reading: Reading | null = await getReadingById(readingId)
   const patient: Patient | null = await getPatientById(patientId)
+  const report: Report | null = await getReportById(patientId)
 
   if (!reading) {
     throw new Error("Reading not found")
@@ -52,94 +63,103 @@ export default async function ReadingPage({
   )
 
   return (
-    <div className="container mx-auto max-w-4xl py-8">
-      <Suspense fallback={<ReadingSkeleton />}>
-        <Card className="overflow-hidden shadow-lg">
-          <CardHeader className="flex flex-row justify-between border-b">
-            <div>
-              <CardTitle className="font-bold text-2xl text-primary">
-                {patient.name}'s Reading Details
-              </CardTitle>
-              <CardDescription className="pt-1 text-muted-foreground">
-                <span className="font-medium">Diagnosed for:</span>{" "}
-                {reading.diagnosedFor} <br />
-                <span className="font-medium">Recorded on:</span>{" "}
-                {formattedDate}
-              </CardDescription>
-            </div>
-            <div>
-              <Button>
-                <Notebook />
-                Generate Report
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="p-6">
-            <h3 className="mb-4 font-semibold text-foreground text-lg">
-              Vital Signs & Measurements
-            </h3>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <ReadingItem
-                Icon={Thermometer}
-                title="Temperature"
-                value={
-                  reading.temperature ? `${reading.temperature} °C` : "N/A"
-                }
-              />
-              <ReadingItem
-                Icon={HeartPulse}
-                title="Heart Rate"
-                value={reading.heartRate ? `${reading.heartRate} bpm` : "N/A"}
-              />
-              <ReadingItem
-                Icon={Activity}
-                title="Blood Pressure"
-                value={
-                  reading.bpSystolic && reading.bpDiastolic
-                    ? `${reading.bpSystolic}/${reading.bpDiastolic} mmHg`
-                    : "N/A"
-                }
-              />
-              <ReadingItem
-                Icon={Wind}
-                title="Respiratory Rate"
-                value={
-                  reading.respiratoryRate
-                    ? `${reading.respiratoryRate} breaths/min`
-                    : "N/A"
-                }
-              />
-              <ReadingItem
-                Icon={Percent}
-                title="Oxygen Saturation"
-                value={
-                  reading.oxygenSaturation
-                    ? `${reading.oxygenSaturation}%`
-                    : "N/A"
-                }
-              />
-              <ReadingItem
-                Icon={Droplet}
-                title="Glucose Level"
-                value={
-                  reading.glucoseLevel ? `${reading.glucoseLevel} mg/dL` : "N/A"
-                }
-              />
-              <ReadingItem
-                Icon={Ruler}
-                title="Height"
-                value={reading.height ? `${reading.height} cm` : "N/A"}
-              />
-              <ReadingItem
-                Icon={Scale}
-                title="Weight"
-                value={reading.weight ? `${reading.weight} kg` : "N/A"}
-              />
-            </div>
-          </CardContent>
-        </Card>
-      </Suspense>
-    </div>
+    <>
+      {pageBreadcrumbs(
+        patientId,
+        patient.name,
+        reading.createdAt.toLocaleString()
+      )}
+      <div className="container mx-auto max-w-4xl">
+        <Suspense fallback={<ReadingSkeleton />}>
+          <Card className="overflow-hidden shadow-lg">
+            <CardHeader className="flex flex-row justify-between border-b">
+              <div>
+                <CardTitle className="font-bold text-2xl text-primary">
+                  {patient.name}'s Reading Details
+                </CardTitle>
+                <CardDescription className="pt-1 text-muted-foreground">
+                  <span className="font-medium">Diagnosed for:</span>{" "}
+                  {reading.diagnosedFor} <br />
+                  <span className="font-medium">Recorded on:</span>{" "}
+                  {formattedDate}
+                </CardDescription>
+              </div>
+              <div>
+                <Button>
+                  <Notebook />
+                  {report ? "View" : "Generate"} Report
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="p-6">
+              <h3 className="mb-4 font-semibold text-foreground text-lg">
+                Vital Signs & Measurements
+              </h3>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <ReadingItem
+                  Icon={Thermometer}
+                  title="Temperature"
+                  value={
+                    reading.temperature ? `${reading.temperature} °C` : "N/A"
+                  }
+                />
+                <ReadingItem
+                  Icon={HeartPulse}
+                  title="Heart Rate"
+                  value={reading.heartRate ? `${reading.heartRate} bpm` : "N/A"}
+                />
+                <ReadingItem
+                  Icon={Activity}
+                  title="Blood Pressure"
+                  value={
+                    reading.bpSystolic && reading.bpDiastolic
+                      ? `${reading.bpSystolic}/${reading.bpDiastolic} mmHg`
+                      : "N/A"
+                  }
+                />
+                <ReadingItem
+                  Icon={Wind}
+                  title="Respiratory Rate"
+                  value={
+                    reading.respiratoryRate
+                      ? `${reading.respiratoryRate} breaths/min`
+                      : "N/A"
+                  }
+                />
+                <ReadingItem
+                  Icon={Percent}
+                  title="Oxygen Saturation"
+                  value={
+                    reading.oxygenSaturation
+                      ? `${reading.oxygenSaturation}%`
+                      : "N/A"
+                  }
+                />
+                <ReadingItem
+                  Icon={Droplet}
+                  title="Glucose Level"
+                  value={
+                    reading.glucoseLevel
+                      ? `${reading.glucoseLevel} mg/dL`
+                      : "N/A"
+                  }
+                />
+                <ReadingItem
+                  Icon={Ruler}
+                  title="Height"
+                  value={reading.height ? `${reading.height} cm` : "N/A"}
+                />
+                <ReadingItem
+                  Icon={Scale}
+                  title="Weight"
+                  value={reading.weight ? `${reading.weight} kg` : "N/A"}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </Suspense>
+      </div>
+    </>
   )
 }
 
@@ -193,5 +213,47 @@ function ReadingItem({ Icon, title, value }: ReadingItemProps) {
         <p className="font-semibold text-foreground text-lg">{displayValue}</p>
       </div>
     </div>
+  )
+}
+
+function pageBreadcrumbs(
+  patientId: string,
+  patientName: string,
+  readingName: string
+) {
+  return (
+    <Breadcrumb className="mb-8">
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink>
+            <Link href="/dashboard">Dashboard</Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbLink>
+            <Link href="/dashboard/patients">Patients</Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbLink>
+            <Link href={`/dashboard/patients/${patientId}`}>{patientName}</Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbLink>
+            <Link href={`/dashboard/patients/${patientId}/readings`}>
+              Readings
+            </Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbPage>{readingName}</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
   )
 }

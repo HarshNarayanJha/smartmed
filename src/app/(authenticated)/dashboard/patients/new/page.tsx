@@ -1,8 +1,17 @@
 import { getDoctorById } from "@/actions/doctor"
 import { CreatePatientForm } from "@/components/dashboard/CreatePatientForm"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator
+} from "@/components/ui/breadcrumb"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import getUser from "@/utils/supabase/server"
 import { Doctor } from "@prisma/client"
+import Link from "next/link"
 import { redirect } from "next/navigation"
 
 export default async function NewPatientPage() {
@@ -15,9 +24,29 @@ export default async function NewPatientPage() {
   if (!doctor) redirect("/auth/login")
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto">
+      <Breadcrumb className="mb-8">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink>
+              <Link href="/dashboard">Dashboard</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink>
+              <Link href="/dashboard/patients">Patients</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>New</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="mb-6 font-bold text-3xl">Patient Registration</h1>
+        <h1 className="font-bold text-3xl">Patient Registration</h1>
       </div>
 
       <Card>

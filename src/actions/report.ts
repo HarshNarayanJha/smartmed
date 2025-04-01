@@ -103,7 +103,7 @@ export async function createReport(
 
 export async function getReportById(reportId: string): Promise<Report | null> {
   try {
-    const report = await prisma.report.findUnique({
+    const report: Report = await prisma.report.findUnique({
       where: {
         id: reportId
       }

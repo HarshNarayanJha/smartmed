@@ -38,7 +38,7 @@ export const columns: ColumnDef<Reading>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: () => <div>Reading Take At</div>,
+    header: () => <div>Reading Taken At</div>,
     cell: ({ row }) => {
       return (
         <Link

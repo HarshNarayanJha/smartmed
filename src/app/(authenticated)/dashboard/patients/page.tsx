@@ -1,6 +1,14 @@
 import { getDoctorById } from "@/actions/doctor"
 import { getPatientsByDoctorId } from "@/actions/patient"
 import { DataTable } from "@/components/reusable/DataTable"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator
+} from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import getUser from "@/utils/supabase/server"
@@ -48,7 +56,21 @@ export default async function PatientsPage() {
   if (!userData) redirect("/auth/login")
 
   return (
-    <div className="">
+    <div>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink>
+              <Link href="/dashboard">Dashboard</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Patients</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <DoctorHeader doctor={userData} />
       <Suspense
         fallback={

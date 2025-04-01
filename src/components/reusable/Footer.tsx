@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 export default function Footer() {
   return (
     <footer className="py-12 text-white">
@@ -15,39 +17,70 @@ export default function Footer() {
               <h4 className="mb-4 font-medium">Product</h4>
               <ul className="space-y-2 text-slate-400">
                 <li>
-                  <a href="#" className="transition-colors hover:text-white">
+                  <a
+                    href="#features"
+                    className="transition-colors hover:text-white"
+                  >
                     Features
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="transition-colors hover:text-white">
-                    Pricing
+                  <a
+                    href="#benefits"
+                    className="transition-colors hover:text-white"
+                  >
+                    Benefits
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="transition-colors hover:text-white">
-                    Integrations
-                  </a>
+                  <Link
+                    href="/auth/signup"
+                    className="transition-colors hover:text-white"
+                  >
+                    Get Started
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/dashboard"
+                    className="transition-colors hover:text-white"
+                  >
+                    My Dashboard
+                  </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="mb-4 font-medium">Resources</h4>
+              <h4 className="mb-4 font-medium">Patients</h4>
               <ul className="space-y-2 text-slate-400">
                 <li>
-                  <a href="#" className="transition-colors hover:text-white">
-                    Documentation
-                  </a>
+                  <Link
+                    href="/dashboard/patients"
+                    className="transition-colors hover:text-white"
+                  >
+                    My Patients
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="transition-colors hover:text-white">
-                    Blog
-                  </a>
+                  <Link
+                    href="/dashboard/patients/new"
+                    className="transition-colors hover:text-white"
+                  >
+                    Add Patient
+                  </Link>
                 </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="mb-4 font-medium">Reports</h4>
+              <ul className="space-y-2 text-slate-400">
                 <li>
-                  <a href="#" className="transition-colors hover:text-white">
-                    Support
-                  </a>
+                  <Link
+                    href="/dashboard/reports"
+                    className="transition-colors hover:text-white"
+                  >
+                    My Reports
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -55,19 +88,12 @@ export default function Footer() {
               <h4 className="mb-4 font-medium">Company</h4>
               <ul className="space-y-2 text-slate-400">
                 <li>
-                  <a href="#" className="transition-colors hover:text-white">
+                  <Link
+                    href="/about"
+                    className="transition-colors hover:text-white"
+                  >
                     About
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="transition-colors hover:text-white">
-                    Careers
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="transition-colors hover:text-white">
-                    Contact
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>

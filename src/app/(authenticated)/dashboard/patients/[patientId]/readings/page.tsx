@@ -4,6 +4,14 @@ import ReadingBarChart from "@/components/dashboard/ReadingBarChart"
 import ReadingLineChart from "@/components/dashboard/ReadingLineChart"
 import { DataTable } from "@/components/reusable/DataTable"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator
+} from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -17,7 +25,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { calculateAge } from "@/lib/utils"
 import { Patient, Reading } from "@prisma/client"
-import { FilePlus, Plus } from "lucide-react"
+import { FilePlus, Notebook, Plus } from "lucide-react"
 import Link from "next/link"
 import { columns } from "./columns"
 
@@ -43,18 +51,22 @@ export default async function PatientReadingsPage({
 
   if (readings.length === 0) {
     return (
-      <div className="flex h-64 flex-col items-center justify-center space-y-4 rounded-md border border-dashed text-center">
-        <h3 className="font-semibold text-lg">No Readings Found</h3>
-        <p className="text-muted-foreground text-sm">
-          This patient does not have any readings recorded yet.
-        </p>
-        <Button asChild>
-          <Link href={`/dashboard/patients/${patientId}/readings/new`}>
-            <Plus />
-            Add New Reading
-          </Link>
-        </Button>
-      </div>
+      <>
+        {pageBreadcrumbs(patientId, patient.name)}
+
+        <div className="flex h-64 flex-col items-center justify-center space-y-4 rounded-md border border-dashed text-center">
+          <h3 className="font-semibold text-lg">No Readings Found</h3>
+          <p className="text-muted-foreground text-sm">
+            This patient does not have any readings recorded yet.
+          </p>
+          <Button asChild>
+            <Link href={`/dashboard/patients/${patientId}/readings/new`}>
+              <Plus />
+              Add New Reading
+            </Link>
+          </Button>
+        </div>
+      </>
     )
   }
 
@@ -66,7 +78,9 @@ export default async function PatientReadingsPage({
   const latestMReadings: Reading[] = readings.slice(-M)
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto">
+      {pageBreadcrumbs(patientId, patient.name)}
+
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Avatar className="h-16 w-16">
@@ -84,12 +98,20 @@ export default async function PatientReadingsPage({
             </p>
           </div>
         </div>
-        <Button asChild>
-          <Link href={`/dashboard/patients/${patientId}/readings/new`}>
-            <FilePlus />
-            New Reading
-          </Link>
-        </Button>
+        <div className="space-x-2">
+          <Button asChild>
+            <Link href={`/dashboard/patients/${patientId}/readings/new`}>
+              <FilePlus />
+              New Reading
+            </Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href={`/dashboard/patients/${patientId}/reports`}>
+              <Notebook />
+              View Reports
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <Tabs defaultValue="overview">
@@ -572,5 +594,35 @@ export default async function PatientReadingsPage({
 
       <DataTable columns={columns} data={readings} />
     </div>
+  )
+}
+
+function pageBreadcrumbs(patientId: string, patientName: string) {
+  return (
+    <Breadcrumb className="mb-8">
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink>
+            <Link href="/dashboard">Dashboard</Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbLink>
+            <Link href="/dashboard/patients">Patients</Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbLink>
+            <Link href={`/dashboard/patients/${patientId}`}>{patientName}</Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbPage>Readings</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
   )
 }

@@ -1,5 +1,17 @@
 import Footer from "@/components/reusable/Footer"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Activity,
+  ArrowRight,
+  BrainCircuit,
+  BrainCog,
+  CalendarClock,
+  Clock,
+  HeartPulse
+} from "lucide-react"
+import Link from "next/link"
 
 export default function Home() {
   return (
@@ -16,13 +28,13 @@ export default function Home() {
             </p>
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <Button className="rounded-md px-6 py-3 transition-colors">
-                Get Started
+                <Link href="/auth/signup">Get Started</Link>
               </Button>
               <Button
                 variant="outline"
                 className="rounded-md px-6 py-3 transition-colors"
               >
-                Book a Demo
+                <Link href="/dashboard">Go to Dashboard</Link>
               </Button>
             </div>
           </div>
@@ -35,87 +47,54 @@ export default function Home() {
             Powerful Features for Modern Healthcare
           </h2>
           <div className="grid gap-8 md:grid-cols-3">
-            <div className="rounded-lg border p-6 shadow-sm">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-primary"
-                >
-                  <path d="M20 5H8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Z"></path>
-                  <path d="M4 12V7a2 2 0 0 1 2-2"></path>
-                  <path d="M10 10h8"></path>
-                  <path d="M10 14h8"></path>
-                  <path d="M10 18h4"></path>
-                </svg>
-              </div>
-              <h3 className="mb-2 font-medium text-xl">
-                Patient Data Tracking
-              </h3>
-              <p className="text-muted-foreground">
-                Comprehensive dashboard to monitor patient vitals, medication,
-                and treatment progress in real-time.
-              </p>
-            </div>
-            <div className="rounded-lg border p-6 shadow-sm">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-primary"
-                >
-                  <path d="M12 2H2v10h10V2Z"></path>
-                  <path d="M22 12h-10v10h10V12Z"></path>
-                  <path d="M12 12H2v10h10V12Z"></path>
-                  <path d="M22 2h-10v10h10V2Z"></path>
-                </svg>
-              </div>
-              <h3 className="mb-2 font-medium text-xl">AI-Powered Diagnosis</h3>
-              <p className="text-muted-foreground">
-                Advanced algorithms to help identify patterns and suggest
-                potential diagnoses based on patient history.
-              </p>
-            </div>
-            <div className="rounded-lg border p-6 shadow-sm">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-primary"
-                >
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="9" cy="7" r="4"></circle>
-                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
-              </div>
-              <h3 className="mb-2 font-medium text-xl">Team Collaboration</h3>
-              <p className="text-muted-foreground">
-                Seamless communication tools for healthcare teams to coordinate
-                care and share insights securely.
-              </p>
-            </div>
+            <Card>
+              <CardHeader>
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                  <Activity className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle className="mb-2 text-xl">
+                  Patient Data Tracking
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Comprehensive dashboard to monitor patient vitals, medication,
+                  and treatment progress in real-time.
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                  <BrainCircuit className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle className="mb-2 text-xl">
+                  AI-Powered Diagnosis
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Advanced algorithms to help identify patterns and suggest
+                  potential diagnoses based on patient history.
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                  <CalendarClock className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle className="mb-2 text-xl">
+                  Automated Reminders
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Set up automated reminders for appointments and follow-ups to
+                  ensure patients stay on track with their care plans.
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -126,117 +105,97 @@ export default function Home() {
             Why Doctors Choose SmartMed
           </h2>
           <div className="grid gap-12 md:grid-cols-2">
-            <div>
-              <ul className="space-y-4">
-                <li className="flex gap-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  <div>
-                    <h3 className="font-medium">Save 5+ hours per week</h3>
-                    <p className="text-muted-foreground">
-                      Reduce administrative burden with automated data entry and
-                      analysis.
-                    </p>
-                  </div>
-                </li>
-                <li className="flex gap-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  <div>
-                    <h3 className="font-medium">Improve diagnostic accuracy</h3>
-                    <p className="text-muted-foreground">
-                      AI-assisted technology helps identify potential issues
-                      that might be overlooked.
-                    </p>
-                  </div>
-                </li>
-                <li className="flex gap-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  <div>
-                    <h3 className="font-medium">
-                      Enhance patient satisfaction
-                    </h3>
-                    <p className="text-muted-foreground">
-                      Provide more personalized care with comprehensive patient
-                      insights.
-                    </p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div className="rounded-lg border p-6 shadow-sm">
-              <blockquote className="text-lg text-muted-foreground italic">
-                "SmartMed has revolutionized my practice. The AI-powered
-                insights help me make more informed decisions, and the patient
-                tracking features ensure nothing falls through the cracks."
-              </blockquote>
-              <div className="mt-6 flex items-center gap-4">
-                <div className="h-12 w-12 rounded-full"></div>
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <Clock className="h-5 w-5" />
+                </div>
                 <div>
-                  <p className="font-medium">Dr. Sarah Johnson</p>
-                  <p className="text-muted-foreground text-sm">
-                    Cardiologist, Memorial Hospital
+                  <h3 className="font-semibold text-lg">
+                    Save 5+ hours per week
+                  </h3>
+                  <p className="mt-1 text-muted-foreground">
+                    Reduce administrative burden with automated data entry and
+                    analysis. Focus more on patient care, less on paperwork.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <BrainCog className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">
+                    Improve diagnostic accuracy
+                  </h3>
+                  <p className="mt-1 text-muted-foreground">
+                    AI-assisted technology helps identify potential issues that
+                    might be overlooked, leveraging vast datasets for insights.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <HeartPulse className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">
+                    Enhance patient satisfaction
+                  </h3>
+                  <p className="mt-1 text-muted-foreground">
+                    Provide more personalized and proactive care with
+                    comprehensive patient insights and timely interventions.
                   </p>
                 </div>
               </div>
             </div>
+            <Card className="flex flex-col justify-center">
+              <CardContent className="p-6">
+                <blockquote className="border-primary border-l-4 pl-4 text-lg text-muted-foreground italic">
+                  "SmartMed has revolutionized my practice. The AI-powered
+                  insights help me make more informed decisions, and the patient
+                  tracking features ensure nothing falls through the cracks."
+                </blockquote>
+                <div className="mt-6 flex items-center gap-4">
+                  <Avatar className="h-12 w-12">
+                    {/* Add AvatarImage if an image source is available */}
+                    {/* <AvatarImage src="https://github.com/shadcn.png" alt="Dr. Sarah Johnson" /> */}
+                    <AvatarFallback>SJ</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-semibold">Dr. Piyush Kumar</p>
+                    <p className="text-muted-foreground text-sm">
+                      Dermatologist, ...
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
 
-      <section className="py-20">
+      <section className="bg-muted/40 py-20">
         <div className="container mx-auto px-4 text-center">
           <h2 className="mb-6 font-bold text-3xl">
             Ready to transform your practice?
           </h2>
-          <p className="mx-auto mb-8 max-w-2xl text-muted-foreground text-xl">
+          <p className="mx-auto mb-8 max-w-2xl text-lg text-muted-foreground">
             Join thousands of healthcare professionals who trust SmartMed to
             help them deliver better patient outcomes.
           </p>
-          <Button size="lg" className="rounded-md px-6 py-3">
-            Get Started Today
+          <Button size="lg" asChild className="group rounded-md px-8 py-3">
+            <Link href="/auth/signup" className="flex items-center gap-2">
+              Get Started Today
+              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+            </Link>
           </Button>
         </div>
       </section>
 
-      <Footer />
+      <div className="mt-10">
+        <Footer />
+      </div>
     </>
   )
 }
