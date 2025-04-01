@@ -1,5 +1,4 @@
-import { getDoctorById } from "@/actions/doctor"
-import { getPatientsByDoctorId } from "@/actions/patient"
+import { DoctorWithPatients, getDoctorByIdWithPatients } from "@/actions/doctor"
 import { DataTable } from "@/components/reusable/DataTable"
 import {
   Breadcrumb,
@@ -19,8 +18,7 @@ import { redirect } from "next/navigation"
 import { Suspense } from "react"
 import { columns } from "./columns"
 
-const PatientDataTable = async ({ doctorId }: { doctorId: string }) => {
-  const patients: Patient[] = await getPatientsByDoctorId(doctorId)
+const PatientDataTable = async ({ patients }: { patients: Patient[] }) => {
   return <DataTable columns={columns} data={patients} />
 }
 
@@ -51,9 +49,11 @@ export default async function PatientsPage() {
 
   if (!user) redirect("/auth/login")
 
-  const userData: Doctor | null = await getDoctorById(user.id)
+  const doctor: DoctorWithPatients | null = await getDoctorByIdWithPatients(
+    user.id
+  )
 
-  if (!userData) redirect("/auth/login")
+  if (!doctor) redirect("/auth/login")
 
   return (
     <div>
@@ -71,7 +71,7 @@ export default async function PatientsPage() {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <DoctorHeader doctor={userData} />
+      <DoctorHeader doctor={doctor} />
       <Suspense
         fallback={
           <div className="space-y-8">
@@ -83,7 +83,7 @@ export default async function PatientsPage() {
           </div>
         }
       >
-        <PatientDataTable doctorId={user.id} />
+        <PatientDataTable patients={doctor.patients} />
       </Suspense>
     </div>
   )

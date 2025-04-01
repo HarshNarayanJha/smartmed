@@ -1,7 +1,7 @@
 "use server"
 
 import { prisma } from "@/db/prisma"
-import { Doctor } from "@prisma/client"
+import { Doctor, Prisma } from "@prisma/client"
 
 /**
  * Fetches a doctor by their ID
@@ -13,6 +13,56 @@ export async function getDoctorById(id: string): Promise<Doctor | null> {
     })
   } catch (error) {
     console.error("Error fetching doctor:", error)
+    return null
+  }
+}
+
+export type DoctorWithPatients = Prisma.DoctorGetPayload<{
+  include: {
+    patients: true
+  }
+}>
+
+/**
+ * Fetches doctor by id along with patients
+ */
+export async function getDoctorByIdWithPatients(
+  id: string
+): Promise<DoctorWithPatients | null> {
+  try {
+    return await prisma.doctor.findUnique({
+      where: { id },
+      include: {
+        patients: true
+      }
+    })
+  } catch (error) {
+    console.error("Error fetching doctor with patients:", error)
+    return null
+  }
+}
+
+export type DoctorWithReports = Prisma.DoctorGetPayload<{
+  include: {
+    reports: true
+  }
+}>
+
+/**
+ * Fetches doctor by id along with reports
+ */
+export async function getDoctorByIdWithReports(
+  id: string
+): Promise<DoctorWithReports | null> {
+  try {
+    return await prisma.doctor.findUnique({
+      where: { id },
+      include: {
+        reports: true
+      }
+    })
+  } catch (error) {
+    console.error("Error fetching doctor with reports:", error)
     return null
   }
 }
@@ -62,21 +112,3 @@ export async function updateDoctorProfile(
     return null
   }
 }
-
-// /**
-//  * Gets all appointments for a specific doctor
-//  */
-// export async function getDoctorAppointments(
-//   doctorId: string
-// ): Promise<Appointment[]> {
-//   try {
-//     return await db.appointment.findMany({
-//       where: { doctorId },
-//       include: { patient: true },
-//       orderBy: { startTime: "asc" }
-//     })
-//   } catch (error) {
-//     console.error("Error fetching doctor appointments:", error)
-//     return []
-//   }
-// }

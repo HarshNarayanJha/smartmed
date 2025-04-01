@@ -12,29 +12,46 @@ import {
 import { ColumnDef } from "@tanstack/react-table"
 import {
   CheckCircle,
+  CheckSquare,
   Copy,
   EyeIcon,
-  FileTextIcon,
   MoreHorizontal,
+  Notebook,
   PlusCircle,
   XCircle
 } from "lucide-react"
 import Link from "next/link"
 
+import { markPatientCured } from "@/actions/patient"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger
 } from "@/components/ui/tooltip"
-import { Patient } from "@prisma/client"
 import { calculateAge } from "@/lib/utils"
+import { Patient } from "@prisma/client"
+import { useTransition } from "react"
+import { toast } from "sonner"
 
 const ActionsCell = ({ patient }: { patient: Patient }) => {
+  const [isPending, startTransition] = useTransition()
+
+  const curePatient = () => {
+    startTransition(async () => {
+      toast.promise(markPatientCured(patient.id), {
+        loading: "Curing patient...",
+        success: "Patient cured!",
+        error: "Failed to cure patient"
+      })
+    })
+  }
+
   return (
     <div className="flex flex-row justify-end gap-4">
       <Button variant="outline" asChild>
         <Link href={`/dashboard/patients/${patient.id}`}>
           <EyeIcon />
+          View
         </Link>
       </Button>
       <Button variant="outline" asChild>
@@ -61,12 +78,6 @@ const ActionsCell = ({ patient }: { patient: Patient }) => {
             Copy Patient Name
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          {/* <DropdownMenuItem asChild>
-            <Link href={`/dashboard/patients/${patient.id}/edit`}>
-              <PencilIcon />
-              Edit Patient
-            </Link>
-          </DropdownMenuItem> */}
           <DropdownMenuItem asChild>
             <Link href={`/dashboard/patients/${patient.id}/readings`}>
               <EyeIcon />
@@ -75,10 +86,22 @@ const ActionsCell = ({ patient }: { patient: Patient }) => {
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href={`/dashboard/patients/${patient.id}/reports`}>
-              <FileTextIcon />
+              <Notebook />
               View Reports
             </Link>
           </DropdownMenuItem>
+          {!patient.cured && (
+            <DropdownMenuItem
+              asChild
+              onClick={() => curePatient()}
+              disabled={isPending}
+            >
+              <span className="cursor-pointer font-semibold text-green-500">
+                <CheckSquare className="text-green-500" />
+                Mark Cured
+              </span>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

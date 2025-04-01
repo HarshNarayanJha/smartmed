@@ -1,9 +1,12 @@
-import { getPatientById } from "@/actions/patient"
-import { getReadingsByPatientId } from "@/actions/reading"
+import {
+  PatientWithReadings,
+  getPatientByIdWithReadings
+} from "@/actions/patient"
 import ReadingBarChart from "@/components/dashboard/ReadingBarChart"
 import ReadingLineChart from "@/components/dashboard/ReadingLineChart"
 import { DataTable } from "@/components/reusable/DataTable"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -34,7 +37,8 @@ export default async function PatientReadingsPage({
 }: { params: Promise<{ patientId: string }> }) {
   const { patientId } = await params
 
-  const patient: Patient | null = await getPatientById(patientId)
+  const patient: PatientWithReadings | null =
+    await getPatientByIdWithReadings(patientId)
 
   if (!patient) {
     return (
@@ -47,9 +51,7 @@ export default async function PatientReadingsPage({
     )
   }
 
-  const readings: Reading[] = await getReadingsByPatientId(patientId)
-
-  if (readings.length === 0) {
+  if (patient.readings.length === 0) {
     return (
       <>
         {pageBreadcrumbs(patientId, patient.name)}
@@ -73,9 +75,9 @@ export default async function PatientReadingsPage({
   const K = 5
   const M = 20
 
-  const latestReading: Reading = readings.at(-1)
-  const latestKReadings: Reading[] = readings.slice(-K)
-  const latestMReadings: Reading[] = readings.slice(-M)
+  const latestReading: Reading = patient.readings.at(-1)
+  const latestKReadings: Reading[] = patient.readings.slice(-K)
+  const latestMReadings: Reading[] = patient.readings.slice(-M)
 
   return (
     <div className="container mx-auto">
@@ -94,7 +96,13 @@ export default async function PatientReadingsPage({
             <h1 className="font-bold text-3xl">{patient.name}</h1>
             <p className="text-muted-foreground">
               Age: {calculateAge(patient.dob)} | Patient ID:{" "}
-              {patient.id.slice(0, 6)}
+              {patient.id.slice(0, 6)}{" "}
+              <Badge
+                variant={patient.cured ? "default" : "secondary"}
+                className={`${patient.cured ? "bg-green-500 font-semibold" : "text-white"}`}
+              >
+                {patient.cured ? "Cured" : "Under Treatment"}
+              </Badge>
             </p>
           </div>
         </div>
@@ -126,21 +134,6 @@ export default async function PatientReadingsPage({
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
-          <h2 className="mt-2 mb-4 font-semibold text-2xl">All Readings</h2>
-
-          <DataTable columns={columns} data={readings} />
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Latest Diagnosis</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>
-                {latestReading.diagnosedFor ||
-                  "No diagnosis recorded for this reading."}
-              </p>
-            </CardContent>
-          </Card>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <ReadingBarChart
               title="Blood Pressure"
@@ -307,6 +300,21 @@ export default async function PatientReadingsPage({
               }))}
             />
           </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Latest Diagnosis</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>
+                {latestReading.diagnosedFor ||
+                  "No diagnosis recorded for this reading."}
+              </p>
+            </CardContent>
+          </Card>
+
+          <h2 className="mt-2 mb-4 font-semibold text-2xl">All Readings</h2>
+          <DataTable columns={columns} data={patient.readings} />
         </TabsContent>
 
         <TabsContent value="blood-pressure">

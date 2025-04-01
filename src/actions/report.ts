@@ -36,6 +36,10 @@ Here are the readings in the json format:
 
 `
 
+/**
+ * Generates a report for a given reading and patient ID
+ * This does NOT create a report
+ */
 export async function generateReport(readingId: string, patientId: string) {
   try {
     const reading = await prisma.reading.findUnique({
@@ -86,6 +90,9 @@ export async function generateReport(readingId: string, patientId: string) {
   }
 }
 
+/**
+ * Creates a report for a given reading and patient ID
+ */
 export async function createReport(
   reportData: Omit<Report, "id" | "createdAt" | "updatedAt">
 ): Promise<Report> {
@@ -101,6 +108,9 @@ export async function createReport(
   }
 }
 
+/**
+ * Get a report by its ID
+ */
 export async function getReportById(reportId: string): Promise<Report | null> {
   try {
     const report: Report = await prisma.report.findUnique({
@@ -116,6 +126,9 @@ export async function getReportById(reportId: string): Promise<Report | null> {
   }
 }
 
+/**
+ * Get reports by patient ID
+ */
 export async function getReportsByPatientId(
   patientId: string
 ): Promise<Report[]> {
@@ -133,6 +146,9 @@ export async function getReportsByPatientId(
   }
 }
 
+/**
+ * Get number of reports by patient ID
+ */
 export async function getNumReportsByPatientId(
   patientId: string
 ): Promise<number> {
@@ -150,6 +166,9 @@ export async function getNumReportsByPatientId(
   }
 }
 
+/**
+ * Get reports by doctor ID
+ */
 export async function getReportsByDoctorId(
   doctorId: string
 ): Promise<Report[]> {
@@ -164,6 +183,26 @@ export async function getReportsByDoctorId(
   } catch (error) {
     console.log(error)
     throw new Error("Failed to get reports")
+  }
+}
+
+/**
+ * Get number of reports by doctor ID
+ */
+export async function getNumReportsByDoctorId(
+  doctorId: string
+): Promise<number> {
+  try {
+    const numReports = await prisma.report.count({
+      where: {
+        doctorId
+      }
+    })
+
+    return numReports
+  } catch (error) {
+    console.log(error)
+    throw new Error("Failed to get number of reports")
   }
 }
 

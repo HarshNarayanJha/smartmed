@@ -1,7 +1,7 @@
 "use server"
 
 import { prisma } from "@/db/prisma"
-import { Patient } from "@prisma/client"
+import { Patient, Prisma } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 
 /**
@@ -125,6 +125,54 @@ export async function getPatientById(id: string): Promise<Patient | null> {
   }
 }
 
+export type PatientWithReadings = Prisma.PatientGetPayload<{
+  include: { readings: true }
+}>
+
+/**
+ * Fetch a specific patient by ID with readings
+ */
+export async function getPatientByIdWithReadings(
+  id: string
+): Promise<PatientWithReadings | null> {
+  try {
+    const patient: PatientWithReadings | null = await prisma.patient.findUnique(
+      {
+        where: { id },
+        include: { readings: true }
+      }
+    )
+
+    return patient
+  } catch (error) {
+    console.error(`Failed to fetch patient with id ${id} with readings:`, error)
+    throw new Error("Failed to fetch patient")
+  }
+}
+
+export type PatientWithReports = Prisma.PatientGetPayload<{
+  include: { reports: true }
+}>
+
+/**
+ * Fetch a specific patient by ID with reports
+ */
+export async function getPatientByIdWithReports(
+  id: string
+): Promise<PatientWithReports | null> {
+  try {
+    const patient: PatientWithReports | null = await prisma.patient.findUnique({
+      where: { id },
+      include: { reports: true }
+    })
+
+    return patient
+  } catch (error) {
+    console.error(`Failed to fetch patient with id ${id} with reports:`, error)
+    throw new Error("Failed to fetch patient")
+  }
+}
+
 /**
  * Create a new patient
  */
@@ -137,7 +185,7 @@ export async function createPatient(
       data: patientData
     })
 
-    revalidatePath("/dashboard/patients")
+    revalidatePath("/dashboard")
     return patient
   } catch (error) {
     console.error("Failed to create patient. Error: ", error)
@@ -158,12 +206,27 @@ export async function updatePatient(
       data: patientData
     })
 
-    revalidatePath(`/dashboard/patients/${id}`)
     revalidatePath("/dashboard")
     return patient
   } catch (error) {
     console.error(`Failed to update patient with id ${id}:`, error)
     throw new Error("Failed to update patient")
+  }
+}
+
+/**
+ * Mark a patient as cured
+ */
+export async function markPatientCured(id: string): Promise<void> {
+  try {
+    await prisma.patient.update({
+      where: { id },
+      data: { cured: true }
+    })
+    revalidatePath("/dashboard")
+  } catch (error) {
+    console.error(`Failed to mark patient with id ${id} as cured:`, error)
+    throw new Error("Failed to mark patient as cured")
   }
 }
 
@@ -176,7 +239,7 @@ export async function deletePatient(id: string): Promise<void> {
       where: { id }
     })
 
-    revalidatePath("/dashboard/patients")
+    revalidatePath("/dashboard")
   } catch (error) {
     console.error(`Failed to delete patient with id ${id}:`, error)
     throw new Error("Failed to delete patient")

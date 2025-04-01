@@ -1,5 +1,7 @@
-import { getPatientById } from "@/actions/patient"
-import { getReportsByPatientId } from "@/actions/report"
+import {
+  PatientWithReports,
+  getPatientByIdWithReports
+} from "@/actions/patient"
 import { DataTable } from "@/components/reusable/DataTable"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -13,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { calculateAge } from "@/lib/utils"
-import { Patient, Report } from "@prisma/client"
+import { Report } from "@prisma/client"
 import { Eye, FilePlus } from "lucide-react"
 import Link from "next/link"
 import { columns } from "./columns"
@@ -23,7 +25,8 @@ export default async function PatientReadingsPage({
 }: { params: Promise<{ patientId: string }> }) {
   const { patientId } = await params
 
-  const patient: Patient | null = await getPatientById(patientId)
+  const patient: PatientWithReports | null =
+    await getPatientByIdWithReports(patientId)
 
   if (!patient) {
     return (
@@ -40,9 +43,7 @@ export default async function PatientReadingsPage({
     )
   }
 
-  const reports: Report[] = await getReportsByPatientId(patientId)
-
-  if (reports.length === 0) {
+  if (patient.reports.length === 0) {
     return (
       <>
         {pageBreadcrumbs(patientId, patient.name)}
@@ -63,7 +64,7 @@ export default async function PatientReadingsPage({
     )
   }
 
-  const latestReport: Report = reports.at(-1)
+  const latestReport: Report = patient.reports.at(-1)
 
   return (
     <div className="container mx-auto">
@@ -145,7 +146,7 @@ export default async function PatientReadingsPage({
         </Card>
       )}
 
-      <DataTable columns={columns} data={reports} />
+      <DataTable columns={columns} data={patient.reports} />
     </div>
   )
 }

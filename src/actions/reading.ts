@@ -3,6 +3,9 @@
 import { prisma } from "@/db/prisma"
 import { Reading } from "@prisma/client"
 
+/**
+ * Creates a new reading
+ */
 export async function createReading(
   readingData: Omit<Reading, "id" | "createdAt" | "updatedAt">
 ): Promise<Reading> {
@@ -19,6 +22,9 @@ export async function createReading(
   }
 }
 
+/**
+ * Gets a reading by its ID
+ */
 export async function getReadingById(id: string): Promise<Reading | null> {
   try {
     const reading = await prisma.reading.findUnique({
@@ -32,6 +38,9 @@ export async function getReadingById(id: string): Promise<Reading | null> {
   }
 }
 
+/**
+ * Gets readings by patient ID
+ */
 export async function getReadingsByPatientId(
   patientId: string
 ): Promise<Reading[]> {
@@ -47,6 +56,9 @@ export async function getReadingsByPatientId(
   }
 }
 
+/**
+ * Gets the number of readings by patient ID
+ */
 export async function getNumReadingsByPatientId(
   patientId: string
 ): Promise<number> {
@@ -61,6 +73,32 @@ export async function getNumReadingsByPatientId(
     throw new Error("Failed to get number of readings")
   }
 }
+
+/**
+ * Gets the number of readings by doctor ID
+ */
+export async function getNumReadingsByDoctorId(
+  doctorId: string
+): Promise<number> {
+  try {
+    const numReadings = await prisma.reading.count({
+      where: {
+        patient: {
+          doctorId
+        }
+      }
+    })
+
+    return numReadings
+  } catch (error) {
+    console.log(error)
+    throw new Error("Failed to get number of readings")
+  }
+}
+
+/**
+ * Deletes a reading by its ID
+ */
 export async function deleteReadingById(id: string): Promise<void> {
   try {
     await prisma.reading.delete({

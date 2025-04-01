@@ -3,6 +3,8 @@ import {
   getCuredPatientsCountByDoctorId,
   getPatientsCountByDoctorId
 } from "@/actions/patient"
+import { getNumReadingsByDoctorId } from "@/actions/reading"
+import { getNumReportsByDoctorId } from "@/actions/report"
 import {
   Card,
   CardContent,
@@ -13,7 +15,13 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import getUser from "@/utils/supabase/server"
 import { Doctor } from "@prisma/client"
-import { ActivityIcon, UserPlus2Icon, Users } from "lucide-react"
+import {
+  ActivityIcon,
+  HeartPulse,
+  NotebookIcon,
+  UserPlus2Icon,
+  Users
+} from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { Suspense } from "react"
@@ -37,7 +45,7 @@ export default async function DashboardPage() {
           {userData.name}
         </h1>
         <p className="text-muted-foreground">
-          {new Date().toLocaleDateString("en-US", {
+          {new Date().toLocaleDateString("en-IN", {
             weekday: "long",
             year: "numeric",
             month: "long",
@@ -47,12 +55,20 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Suspense fallback={<PatientCardSkeleton />}>
+        <Suspense fallback={<CardSkeleton />}>
           <PatientCard userId={user.id} />
         </Suspense>
 
-        <Suspense fallback={<CuredPatientCardSkeleton />}>
+        <Suspense fallback={<CardSkeleton />}>
           <CuredPatientCard userId={user.id} />
+        </Suspense>
+
+        <Suspense fallback={<CardSkeleton />}>
+          <ReportsCard userId={user.id} />
+        </Suspense>
+
+        <Suspense fallback={<CardSkeleton />}>
+          <ReadingsCard userId={user.id} />
         </Suspense>
 
         <Card>
@@ -125,7 +141,7 @@ async function PatientCard({ userId }: { userId: string }) {
   )
 }
 
-function PatientCardSkeleton() {
+function CardSkeleton() {
   return (
     <Card className="scale-100 transition-transform hover:scale-105">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -159,16 +175,39 @@ async function CuredPatientCard({ userId }: { userId: string }) {
   )
 }
 
-function CuredPatientCardSkeleton() {
+async function ReportsCard({ userId }: { userId: string }) {
+  const reportsCount = await getNumReportsByDoctorId(userId)
+
+  return (
+    <Link href="/dashboard/reports">
+      <Card className="scale-100 transition-transform hover:scale-105">
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="font-medium">Reports Generated</CardTitle>
+          <NotebookIcon className="h-4 w-4 text-orange-500" />
+        </CardHeader>
+        <CardContent>
+          <div className="font-bold text-2xl">{reportsCount}</div>
+          <p className="text-muted-foreground text-xs">
+            Total Reports Generated
+          </p>
+        </CardContent>
+      </Card>
+    </Link>
+  )
+}
+
+async function ReadingsCard({ userId }: { userId: string }) {
+  const readingsCount = await getNumReadingsByDoctorId(userId)
+
   return (
     <Card className="scale-100 transition-transform hover:scale-105">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <Skeleton className="h-5 w-32" />
-        <Skeleton className="h-4 w-4 rounded-full" />
+        <CardTitle className="font-medium">Readings Taken</CardTitle>
+        <HeartPulse className="h-4 w-4 text-red-500" />
       </CardHeader>
       <CardContent>
-        <Skeleton className="mb-1 h-8 w-12" />
-        <Skeleton className="h-3 w-24" />
+        <div className="font-bold text-2xl">{readingsCount}</div>
+        <p className="text-muted-foreground text-xs">Total Readings Taken</p>
       </CardContent>
     </Card>
   )

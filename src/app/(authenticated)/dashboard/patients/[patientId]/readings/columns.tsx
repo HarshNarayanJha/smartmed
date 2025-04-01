@@ -1,29 +1,55 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
 import { Reading } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
-import { EyeIcon, Notebook } from "lucide-react"
+import { Copy, EyeIcon, MoreHorizontal, Notebook } from "lucide-react"
 import Link from "next/link"
 
 const ActionsCell = ({
   patientId,
-  readingId
-}: { patientId: string; readingId: string }) => {
+  reading
+}: { patientId: string; reading: Reading }) => {
   return (
     <div className="flex flex-row justify-end gap-4">
       <Button variant="outline" asChild>
-        <Link href={`/dashboard/patients/${patientId}/readings/${readingId}`}>
+        <Link href={`/dashboard/patients/${patientId}/readings/${reading.id}`}>
           <EyeIcon />
           View Reading
         </Link>
       </Button>
       <Button variant="outline" asChild>
-        <Link href={`/dashboard/patients/${patientId}/reports/${readingId}`}>
+        <Link href={`/dashboard/patients/${patientId}/reports/${reading.id}`}>
           <Notebook />
           View Report
         </Link>
       </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem
+            onClick={() =>
+              navigator.clipboard.writeText(reading.diagnosedFor.toString())
+            }
+          >
+            <Copy />
+            Copy Diagnosed For
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   )
 }
@@ -119,7 +145,7 @@ export const columns: ColumnDef<Reading>[] = [
     id: "actions",
     cell: ({ row }) => {
       const patientId = row.original.patientId
-      return <ActionsCell patientId={patientId} readingId={row.original.id} />
+      return <ActionsCell patientId={patientId} reading={row.original} />
     }
   }
 ]

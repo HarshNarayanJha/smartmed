@@ -119,7 +119,7 @@ export default async function PatientPage({
               </CardTitle>
               <Badge
                 variant={patient.cured ? "default" : "secondary"}
-                className={`${patient.cured ? "bg-green-700" : ""}`}
+                className={`${patient.cured ? "bg-green-500 font-semibold" : "text-white"}`}
               >
                 {patient.cured ? "Cured" : "Under Treatment"}
               </Badge>
