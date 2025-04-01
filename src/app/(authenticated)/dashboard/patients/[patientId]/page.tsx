@@ -77,13 +77,13 @@ export default async function PatientPage({
       <Breadcrumb className="mb-8">
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink>
+            <BreadcrumbLink asChild>
               <Link href="/dashboard">Dashboard</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink>
+            <BreadcrumbLink asChild>
               <Link href="/dashboard/patients">Patients</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
@@ -146,7 +146,7 @@ export default async function PatientPage({
 
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-md bg-muted/30 p-2">
+                <div className="rounded-md bg-muted/30 p-2 hover:bg-muted/80">
                   <Link href={`/dashboard/patients/${patient.id}/reports`}>
                     <p className="font-medium text-muted-foreground text-xs">
                       Reports
@@ -157,7 +157,7 @@ export default async function PatientPage({
                     </p>
                   </Link>
                 </div>
-                <div className="rounded-md bg-muted/30 p-2">
+                <div className="rounded-md bg-muted/30 p-2 hover:bg-muted/80">
                   <Link href={`/dashboard/patients/${patient.id}/readings`}>
                     <p className="font-medium text-muted-foreground text-xs">
                       Readings

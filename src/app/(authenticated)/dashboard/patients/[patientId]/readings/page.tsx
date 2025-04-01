@@ -126,6 +126,10 @@ export default async function PatientReadingsPage({
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
+          <h2 className="mt-2 mb-4 font-semibold text-2xl">All Readings</h2>
+
+          <DataTable columns={columns} data={readings} />
+
           <Card>
             <CardHeader>
               <CardTitle>Latest Diagnosis</CardTitle>
@@ -589,10 +593,6 @@ export default async function PatientReadingsPage({
           />
         </TabsContent>
       </Tabs>
-
-      <h2 className="mt-8 mb-4 font-semibold text-2xl">All Readings</h2>
-
-      <DataTable columns={columns} data={readings} />
     </div>
   )
 }
@@ -602,19 +602,19 @@ function pageBreadcrumbs(patientId: string, patientName: string) {
     <Breadcrumb className="mb-8">
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink>
+          <BreadcrumbLink asChild>
             <Link href="/dashboard">Dashboard</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink>
+          <BreadcrumbLink asChild>
             <Link href="/dashboard/patients">Patients</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink>
+          <BreadcrumbLink asChild>
             <Link href={`/dashboard/patients/${patientId}`}>{patientName}</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
