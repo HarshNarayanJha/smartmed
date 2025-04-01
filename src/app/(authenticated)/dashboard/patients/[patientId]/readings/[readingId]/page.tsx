@@ -11,6 +11,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator
 } from "@/components/ui/breadcrumb"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -52,7 +53,7 @@ export default async function ReadingPage({
 
   const reading: Reading | null = await getReadingById(readingId)
   const patient: Patient | null = await getPatientById(patientId)
-  const report: Report | null = await getReportById(patientId)
+  const report: Report | null = await getReportById(readingId)
 
   if (!reading) {
     throw new Error("Reading not found")
@@ -97,11 +98,13 @@ export default async function ReadingPage({
               </div>
               <div>
                 {report ? (
-                  <Link
-                    href={`/dashboard/patients/${patient.id}/reports/${report.id}`}
-                  >
-                    View Report
-                  </Link>
+                  <Button asChild>
+                    <Link
+                      href={`/dashboard/patients/${patient.id}/reports/${report.id}`}
+                    >
+                      View Report
+                    </Link>
+                  </Button>
                 ) : (
                   <GenerateReportButton
                     doctorId={doctor.id}

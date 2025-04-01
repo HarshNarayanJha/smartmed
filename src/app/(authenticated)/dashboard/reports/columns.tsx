@@ -25,6 +25,7 @@ const ActionsCell = ({
       <Button variant="outline" asChild>
         <Link href={`/dashboard/patients/${patientId}/reports/${report.id}`}>
           <EyeIcon />
+          View
         </Link>
       </Button>
       <DropdownMenu>
@@ -89,7 +90,7 @@ export const columns: ColumnDef<Report>[] = [
     cell: ({ row }) => {
       return (
         <Link
-          href={`/dashboard/patients/${row.original.patientId}/readings/${row.original.id}`}
+          href={`/dashboard/patients/${row.original.patientId}/reports/${row.original.id}`}
           className="font-bold"
         >
           {row.getValue("createdAt").toLocaleString()}
@@ -99,11 +100,41 @@ export const columns: ColumnDef<Report>[] = [
   },
   {
     accessorKey: "recommendations",
-    header: "Recommendations"
+    header: "Recommendations",
+    cell: ({ row }) => {
+      return (
+        <div className="max-w-28 truncate">
+          {row.getValue("recommendations")}
+        </div>
+      )
+    },
+    meta: {
+      width: 28
+    }
   },
   {
     accessorKey: "summary",
-    header: "Summary"
+    header: "Summary",
+    cell: ({ row }) => {
+      return <div className="max-w-28 truncate">{row.getValue("summary")}</div>
+    },
+    meta: {
+      width: 28
+    }
+  },
+  {
+    accessorKey: "additionalNotes",
+    header: "Additional Notes",
+    cell: ({ row }) => {
+      return (
+        <div className="max-w-28 truncate">
+          {row.getValue("additionalNotes")}
+        </div>
+      )
+    },
+    meta: {
+      width: 28
+    }
   },
   {
     accessorKey: "urgencyLevel",

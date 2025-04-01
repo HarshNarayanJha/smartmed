@@ -123,6 +123,7 @@ export const columns: ColumnDef<Report>[] = [
   },
   {
     accessorKey: "additionalNotes",
+    header: "Additional Notes",
     cell: ({ row }) => {
       return (
         <div className="max-w-28 truncate">
