@@ -5,7 +5,22 @@ import { ThemeProvider } from "@/providers/ThemeProvider"
 
 export const metadata: Metadata = {
   title: "SmartMed",
-  description: "SmartMed, A new place to take care of the medical reports as with SmartMed we provide a cloud-based register for hassle-free report generation",
+  description:
+    "SmartMed, your intelligent patient data management solution to take care of your medical reports with a cloud-based medical readings register for hassle-free report generation",
+  applicationName: "SmartMed",
+  keywords: [
+    "medical",
+    "patient",
+    "data",
+    "management",
+    "solution",
+    "readings",
+    "reports"
+  ],
+  authors: [
+    { name: "Harsh Narayan Jha", url: "https://github.com/HarshNarayanJha" },
+    { name: "Satyam Jha", url: "https://github.com/dev-satyamjha" }
+  ],
   appleWebApp: {
     title: "SmartMed"
   }
