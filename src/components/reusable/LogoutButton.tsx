@@ -47,7 +47,7 @@ export default function LogoutButton({
   }
 
   return textOnly ? (
-    <span onClick={handleLogout} style={{ cursor: "pointer" }}>
+    <span onClick={handleLogout} className="h-full w-full cursor-pointer">
       {loading ? <Loader2 className="animate-spin" /> : "Logout"}
     </span>
   ) : (
