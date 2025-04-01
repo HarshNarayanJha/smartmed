@@ -47,13 +47,13 @@ export default async function AccountMenu() {
         </div>
         <DropdownMenuSeparator className="my-1" />
         <DropdownMenuItem asChild>
-          <Link href="/profile">
+          <Link href="/profile" className="cursor-pointer">
             <UserPen />
             Profile
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/dashboard">
+          <Link href="/dashboard" className="cursor-pointer">
             <LayoutDashboardIcon />
             Dashboard
           </Link>
