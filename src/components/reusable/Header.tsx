@@ -21,8 +21,17 @@ const Header = async () => {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-8">
         <div className="flex items-center gap-4">
-          <Link href="/" className="font-bold text-xl space-x-2">
-            <Image src="/web-app-manifest-512x512.png" alt="app-icon" width={32} height={32} className="inline rounded-lg" />
+          <Link
+            href="/"
+            className="flex items-center justify-center space-x-2 font-bold text-xl"
+          >
+            <Image
+              src="/web-app-manifest-512x512.png"
+              alt="app-icon"
+              width={32}
+              height={32}
+              className="inline rounded-lg"
+            />
             <span>SmartMed</span>
           </Link>
           <NavigationMenu>
@@ -74,7 +83,9 @@ const Header = async () => {
         </div>
         <div className="flex items-center gap-4">
           <ColorModeToggle />
-          {user ? <AccountMenu /> : (
+          {user ? (
+            <AccountMenu />
+          ) : (
             <>
               <Button variant="outline" size="sm" asChild>
                 <Link href="/auth/login">Log in</Link>
