@@ -38,12 +38,12 @@ export default async function AccountMenu() {
         <UserCircle />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-72" align="end">
-        <div className="space-x-1 p-2 flex flex-row">
-          <Avatar className="h-14 w-14 m-auto">
+        <div className="flex flex-row space-x-1 p-2">
+          <Avatar className="m-auto h-14 w-14">
             <AvatarImage
               src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.id}`}
               alt={userData.name}
-              />
+            />
             <AvatarFallback>{userData.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col justify-end">

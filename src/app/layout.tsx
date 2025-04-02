@@ -1,3 +1,4 @@
+import LitAnalytics from "@/components/reusable/LitAnalytics"
 import type { Metadata } from "next"
 import "./globals.css"
 import { Toaster } from "@/components/ui/sonner"
@@ -23,6 +24,9 @@ export const metadata: Metadata = {
   ],
   appleWebApp: {
     title: "SmartMed"
+  },
+  verification: {
+    google: "FzcvzGKLeWAo10V8NUSQJdxd39sif48n5kRQ7iPY-Ek"
   }
 }
 
@@ -31,10 +35,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  console.log("Intializing Lit")
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
       <body className="scroll-smooth">
+        <LitAnalytics />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
           <Toaster richColors closeButton />
