@@ -35,7 +35,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  console.log("Intializing Lit")
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
