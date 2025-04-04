@@ -34,3 +34,33 @@ export function calculateBmi(weight: number, height: number) {
   const bmi = weight / (height / 100) ** 2
   return Math.max(0, bmi).toFixed(2)
 }
+
+export function formatDate(date: Date) {
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "short",
+    day: "numeric"
+  }
+  return date.toLocaleDateString("en-IN", options)
+}
+
+export function formatDateTime(date: Date) {
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  }
+  return date.toLocaleString("en-IN", options)
+}
+
+export function formatTime(date: Date) {
+  const options: Intl.DateTimeFormatOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  }
+  return date.toLocaleTimeString("en-IN", options)
+}

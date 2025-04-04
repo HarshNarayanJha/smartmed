@@ -13,6 +13,7 @@ import {
   CardTitle
 } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { formatDate } from "@/lib/utils"
 import getUser from "@/utils/supabase/server"
 import { Doctor } from "@prisma/client"
 import {
@@ -40,18 +41,8 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
-        <h1 className="font-bold text-3xl">
-          Welcome, {userData.name.includes("Dr.") ? "" : "Dr. "}
-          {userData.name}
-        </h1>
-        <p className="text-muted-foreground">
-          {new Date().toLocaleDateString("en-IN", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric"
-          })}
-        </p>
+        <h1 className="font-bold text-3xl">Welcome, Dr. {userData.name}</h1>
+        <p className="text-muted-foreground">{formatDate(new Date())}</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">

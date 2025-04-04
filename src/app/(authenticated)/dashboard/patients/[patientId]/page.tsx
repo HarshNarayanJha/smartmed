@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { calculateAge } from "@/lib/utils"
+import { calculateAge, formatDate, formatDateTime } from "@/lib/utils"
 import getUser from "@/utils/supabase/server"
 import { Doctor, Patient, SmokingStatus } from "@prisma/client"
 import {
@@ -140,7 +140,7 @@ export default async function PatientPage({
                 {patient.name}
               </h2>
               <p className="text-muted-foreground text-sm">
-                Patient since {patient.createdAt?.toLocaleDateString()}
+                Patient since {formatDate(patient.createdAt)}
               </p>
             </div>
 
@@ -175,7 +175,7 @@ export default async function PatientPage({
                   Date of Birth
                 </p>
                 <p className="flex justify-between">
-                  {patient.dob.toLocaleDateString()}
+                  {formatDate(patient.dob)}
                   <span className="text-muted-foreground text-sm">
                     {calculateAge(patient.dob)} years old
                   </span>
@@ -253,8 +253,7 @@ export default async function PatientPage({
               </CardTitle>
               <div className="flex flex-col gap-2">
                 <Badge variant="outline" className="font-normal">
-                  Last updated:{" "}
-                  {patient.updatedAt?.toLocaleDateString() || "Unknown"}
+                  Last updated: {formatDateTime(patient.updatedAt)}
                 </Badge>
               </div>
             </div>

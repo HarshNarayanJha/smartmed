@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
+import { formatDate } from "@/lib/utils"
 
 export default async function ProfilePage() {
   const user = await getUser()
@@ -197,11 +198,11 @@ const PracticeStatsCard = async ({ doctorId }: { doctorId: string }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-muted-foreground text-sm">Member Since</p>
-                <p>{doctor.createdAt.toLocaleDateString()}</p>
+                <p>{formatDate(doctor.createdAt)}</p>
               </div>
               <div>
                 <p className="text-muted-foreground text-sm">Last Updated</p>
-                <p>{doctor.updatedAt.toLocaleDateString()}</p>
+                <p>{formatDate(doctor.updatedAt)}</p>
               </div>
             </div>
           </div>

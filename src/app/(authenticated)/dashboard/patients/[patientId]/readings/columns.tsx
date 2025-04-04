@@ -8,7 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { calculateBmi } from "@/lib/utils"
+import { calculateBmi, formatDateTime } from "@/lib/utils"
 import { Reading } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
 import { Copy, EyeIcon, MoreHorizontal, Notebook } from "lucide-react"
@@ -65,14 +65,14 @@ export const columns: ColumnDef<Reading>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: () => <div>Reading Taken At</div>,
+    header: () => <div>Reading Taken</div>,
     cell: ({ row }) => {
       return (
         <Link
           href={`/dashboard/patients/${row.original.patientId}/readings/${row.original.id}`}
           className="font-bold"
         >
-          {row.getValue("createdAt").toLocaleString()}
+          {formatDateTime(row.getValue("createdAt"))}
         </Link>
       )
     }

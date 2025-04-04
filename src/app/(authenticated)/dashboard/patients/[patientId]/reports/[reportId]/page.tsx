@@ -14,6 +14,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator
 } from "@/components/ui/breadcrumb"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -23,10 +24,10 @@ import {
   CardTitle
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { calculateAge } from "@/lib/utils"
+import { calculateAge, formatDate, formatDateTime } from "@/lib/utils"
 import getUser from "@/utils/supabase/server"
 import { Doctor, Patient, Reading, Report, UrgencyLevel } from "@prisma/client"
-import { Sparkles } from "lucide-react"
+import { Eye, Sparkles } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
@@ -160,11 +161,7 @@ export default async function ReportDetailPage({
 
   return (
     <div className="container mx-auto space-y-8 px-4">
-      {pageBreadcrumbs(
-        patientId,
-        patient.name,
-        report.createdAt.toLocaleString()
-      )}
+      {pageBreadcrumbs(patientId, patient.name, report.id)}
       <div className="flex flex-row justify-between">
         <h1 className="font-bold text-3xl tracking-tight">
           Medical Report Details
@@ -191,8 +188,8 @@ export default async function ReportDetailPage({
                 {formatUrgency(report.urgencyLevel)}
               </div>
               <div className="pt-2 text-muted-foreground text-sm">
-                Generated on {report.createdAt.toLocaleString()} | Last Updated:{" "}
-                {report.updatedAt.toLocaleString()}
+                Generated on {formatDateTime(report.createdAt)} | Last Updated:{" "}
+                {formatDateTime(report.updatedAt)}
               </div>
             </CardHeader>
             <CardContent className="space-y-5">
@@ -261,9 +258,8 @@ export default async function ReportDetailPage({
                 <strong>Name:</strong> {patient.name}
               </p>
               <p>
-                <strong>Date of Birth:</strong>{" "}
-                {patient.dob.toLocaleDateString()} ({calculateAge(patient.dob)}{" "}
-                y/o)
+                <strong>Date of Birth:</strong> {formatDate(patient.dob)} (
+                {calculateAge(patient.dob)} y/o)
               </p>
               <p>
                 <strong>Gender:</strong> {patient.gender || "N/A"}
@@ -300,6 +296,14 @@ export default async function ReportDetailPage({
                 </ul>
               </div>
             </CardContent>
+            <CardFooter>
+              <Button size="sm" asChild>
+                <Link href={`/dashboard/patients/${patientId}`}>
+                  <Eye />
+                  View Patient
+                </Link>
+              </Button>
+            </CardFooter>
           </Card>
 
           <Card>
@@ -307,7 +311,7 @@ export default async function ReportDetailPage({
               <CardTitle className="text-xl">Associated Reading</CardTitle>
               <CardDescription>
                 Reading ID: {reading.id.substring(0, 6)} (Taken:{" "}
-                {reading.createdAt.toLocaleString()})
+                {formatDateTime(reading.createdAt)})
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-1 text-sm">
@@ -353,6 +357,16 @@ export default async function ReportDetailPage({
                 </p>
               )}
             </CardContent>
+            <CardFooter>
+              <Button size="sm" asChild>
+                <Link
+                  href={`/dashboard/patients/${patientId}/readings/${reading.id}`}
+                >
+                  <Eye />
+                  View Reading
+                </Link>
+              </Button>
+            </CardFooter>
           </Card>
         </div>
       </div>

@@ -20,7 +20,7 @@ import {
   CardTitle
 } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { calculateBmi } from "@/lib/utils"
+import { calculateBmi, formatDateTime } from "@/lib/utils"
 import getUser from "@/utils/supabase/server"
 import { Doctor, Patient, Reading, Report } from "@prisma/client"
 import {
@@ -63,24 +63,9 @@ export default async function ReadingPage({
     throw new Error("Patient not found")
   }
 
-  const formattedDate = new Date(reading.createdAt).toLocaleDateString(
-    undefined,
-    {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit"
-    }
-  )
-
   return (
     <>
-      {pageBreadcrumbs(
-        patientId,
-        patient.name,
-        reading.createdAt.toLocaleString()
-      )}
+      {pageBreadcrumbs(patientId, patient.name, reading.id)}
       <div className="container mx-auto max-w-4xl">
         <Suspense fallback={<ReadingSkeleton />}>
           <Card className="overflow-hidden shadow-lg">
@@ -93,7 +78,7 @@ export default async function ReadingPage({
                   <span className="font-medium">Diagnosed for:</span>{" "}
                   {reading.diagnosedFor} <br />
                   <span className="font-medium">Recorded on:</span>{" "}
-                  {formattedDate}
+                  {formatDateTime(reading.createdAt)}
                 </CardDescription>
               </div>
               <div>

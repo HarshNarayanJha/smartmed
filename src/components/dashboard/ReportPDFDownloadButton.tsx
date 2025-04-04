@@ -1,6 +1,11 @@
 "use client"
 
-import { calculateAge, calculateBmi } from "@/lib/utils"
+import {
+  calculateAge,
+  calculateBmi,
+  formatDate,
+  formatDateTime
+} from "@/lib/utils"
 import { Doctor, Patient, Reading, Report } from "@prisma/client"
 import {
   Document,
@@ -141,30 +146,6 @@ function ReportPDFDocument({
   patient,
   doctor
 }: ReportPDFButtonParams) {
-  const reportDate = new Date(report.createdAt).toLocaleString("en-IN", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric"
-  })
-
-  const readingDate = new Date(reading.createdAt).toLocaleString("en-IN", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric"
-  })
-
-  const patientDOB = new Date(patient.dob).toLocaleString("en-IN", {
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-  })
-
-  const age = calculateAge(patient.dob)
-
   const getUrgencyStyle = () => {
     switch (report.urgencyLevel) {
       case "HIGH":
@@ -193,7 +174,9 @@ function ReportPDFDocument({
             <Text style={styles.text}>
               Report ID: {report.id.substring(0, 6)}
             </Text>
-            <Text style={styles.text}>Date: {reportDate}</Text>
+            <Text style={styles.text}>
+              Date: {formatDateTime(report.createdAt)}
+            </Text>
           </View>
         </View>
 
@@ -210,7 +193,7 @@ function ReportPDFDocument({
           <View style={styles.row}>
             <Text style={styles.label}>DOB:</Text>
             <Text style={styles.text}>
-              {patientDOB} ({age} years)
+              {formatDate(patient.dob)} ({calculateAge(patient.dob)} years)
             </Text>
           </View>
           <View style={styles.row}>
@@ -311,7 +294,7 @@ function ReportPDFDocument({
           </View>
           <View style={{ ...styles.row, marginTop: 32 }}>
             <Text style={styles.label}>Readings Taken At:</Text>
-            <Text style={styles.text}>{readingDate}</Text>
+            <Text style={styles.text}>{formatDateTime(reading.createdAt)}</Text>
           </View>
         </View>
       </Page>
@@ -408,7 +391,7 @@ export default function ReportPDFDownloadButton({
         }
         fileName={REPORT_FILE_NAME}
       >
-        {({ blob, url, loading, error }) => {
+        {({ blob: _blob, url: _url, loading, error }) => {
           if (error) {
             return <div>Error: {error.message}</div>
           }

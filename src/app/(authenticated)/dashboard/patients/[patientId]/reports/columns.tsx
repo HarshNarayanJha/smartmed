@@ -14,6 +14,7 @@ import { Copy, EyeIcon, MoreHorizontal } from "lucide-react"
 import Link from "next/link"
 
 import { Badge } from "@/components/ui/badge"
+import { formatDateTime } from "@/lib/utils"
 import { Report, UrgencyLevel } from "@prisma/client"
 
 const ActionsCell = ({
@@ -86,14 +87,14 @@ export const columns: ColumnDef<Report>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: () => <div>Report Generated At</div>,
+    header: () => <div>Report Generated</div>,
     cell: ({ row }) => {
       return (
         <Link
           href={`/dashboard/patients/${row.original.patientId}/reports/${row.original.id}`}
           className="font-bold"
         >
-          {row.getValue("createdAt").toLocaleString()}
+          {formatDateTime(row.getValue("createdAt"))}
         </Link>
       )
     }

@@ -26,7 +26,7 @@ import {
   TableRow
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { calculateAge, calculateBmi } from "@/lib/utils"
+import { calculateAge, calculateBmi, formatDateTime } from "@/lib/utils"
 import { Patient, Reading } from "@prisma/client"
 import { FilePlus, Notebook, Plus } from "lucide-react"
 import Link from "next/link"
@@ -377,7 +377,7 @@ export default async function PatientReadingsPage({
                       {latestMReadings.map((reading: Reading, idx) => (
                         <TableRow key={idx}>
                           <TableCell className="font-medium">
-                            {reading.createdAt.toLocaleString()}
+                            {formatDateTime(reading.createdAt)}
                           </TableCell>
                           <TableCell>{reading.bpSystolic} mmHg</TableCell>
                           <TableCell>{reading.bpDiastolic} mmHg</TableCell>
@@ -423,7 +423,7 @@ export default async function PatientReadingsPage({
                       {latestMReadings.map((reading: Reading, idx) => (
                         <TableRow key={idx}>
                           <TableCell className="font-medium">
-                            {reading.createdAt.toLocaleString()}
+                            {formatDateTime(reading.createdAt)}
                           </TableCell>
                           <TableCell>{reading.glucoseLevel} mmHg</TableCell>
                         </TableRow>
@@ -470,7 +470,7 @@ export default async function PatientReadingsPage({
                       {latestMReadings.map((reading: Reading, idx) => (
                         <TableRow key={idx}>
                           <TableCell className="font-medium">
-                            {reading.createdAt.toLocaleString()}
+                            {formatDateTime(reading.createdAt)}
                           </TableCell>
                           <TableCell>{reading.height} cm</TableCell>
                         </TableRow>
@@ -517,7 +517,7 @@ export default async function PatientReadingsPage({
                       {latestMReadings.map((reading: Reading, idx) => (
                         <TableRow key={idx}>
                           <TableCell className="font-medium">
-                            {reading.createdAt.toLocaleString()}
+                            {formatDateTime(reading.createdAt)}
                           </TableCell>
                           <TableCell>{reading.weight} kg</TableCell>
                         </TableRow>
@@ -564,7 +564,7 @@ export default async function PatientReadingsPage({
                       {latestMReadings.map((reading: Reading, idx) => (
                         <TableRow key={idx}>
                           <TableCell className="font-medium">
-                            {reading.createdAt.toLocaleString()}
+                            {formatDateTime(reading.createdAt)}
                           </TableCell>
                           <TableCell>
                             {calculateBmi(reading.weight, reading.height)} kg/m²
@@ -611,7 +611,7 @@ export default async function PatientReadingsPage({
                       {latestMReadings.map((reading: Reading, idx) => (
                         <TableRow key={idx}>
                           <TableCell className="font-medium">
-                            {reading.createdAt.toLocaleString()}
+                            {formatDateTime(reading.createdAt)}
                           </TableCell>
                           <TableCell>{reading.temperature} °C</TableCell>
                         </TableRow>
@@ -658,7 +658,7 @@ export default async function PatientReadingsPage({
                       {latestMReadings.map((reading: Reading, idx) => (
                         <TableRow key={idx}>
                           <TableCell className="font-medium">
-                            {reading.createdAt.toLocaleString()}
+                            {formatDateTime(reading.createdAt)}
                           </TableCell>
                           <TableCell>{reading.heartRate} bpm</TableCell>
                         </TableRow>

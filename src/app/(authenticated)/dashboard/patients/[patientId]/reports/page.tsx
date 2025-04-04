@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { calculateAge } from "@/lib/utils"
+import { calculateAge, formatDateTime } from "@/lib/utils"
 import { Report } from "@prisma/client"
 import { Eye, FilePlus } from "lucide-react"
 import Link from "next/link"
@@ -101,7 +101,7 @@ export default async function PatientReadingsPage({
             <CardTitle>Latest Report Summary</CardTitle>
             <p className="text-muted-foreground text-sm">
               Report ID: {latestReport.id.substring(0, 6)} | Generated on:{" "}
-              {latestReport.createdAt.toLocaleDateString()}
+              {formatDateTime(latestReport.createdAt)}
             </p>
           </CardHeader>
           <CardContent>
