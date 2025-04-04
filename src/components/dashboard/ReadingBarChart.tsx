@@ -10,14 +10,13 @@ import {
 import { ReactNode } from "react"
 
 import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis
-} from "recharts"
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent
+} from "@/components/ui/chart"
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
 
 export type BarConfig = {
   dataKey: string
@@ -35,6 +34,8 @@ type ReadingBarChartProps<TData extends Record<string, any>> = {
   table?: ReactNode
   showXAxisTicks?: boolean
   height?: number
+  radius?: number
+  showLabels?: boolean
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -46,7 +47,9 @@ export default function ReadingBarChart<TData extends Record<string, any>>({
   bars,
   table,
   showXAxisTicks = true,
-  height = 200
+  height = 200,
+  radius = 4,
+  showLabels = false
 }: ReadingBarChartProps<TData>) {
   return (
     <Card>
@@ -55,27 +58,41 @@ export default function ReadingBarChart<TData extends Record<string, any>>({
         {description && <CardDescription>{description}</CardDescription>}
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={height}>
-          <BarChart data={data}>
+        <ChartContainer
+          config={Object.fromEntries(
+            bars.map(bar => [bar.dataKey, { label: bar.name, color: bar.fill }])
+          )}
+          className={`min-h-${height}px w-full`}
+        >
+          <BarChart data={data} accessibilityLayer>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey={xAxisKey}
-              tick={showXAxisTicks}
-              tickSize={20}
-              fontSize={16}
-            />
+            <XAxis dataKey={xAxisKey} tick={showXAxisTicks} tickSize={20} />
             <YAxis />
-            <Tooltip />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent indicator="dot" />}
+            />
+            <ChartLegend content={<ChartLegendContent />} />
             {bars.map(bar => (
               <Bar
                 key={bar.dataKey}
                 dataKey={bar.dataKey}
                 fill={bar.fill}
                 name={bar.name}
-              />
+                radius={radius}
+              >
+                {showLabels && (
+                  <LabelList
+                    position={"top"}
+                    offset={12}
+                    className="fill-foreground"
+                    fontSize={12}
+                  />
+                )}
+              </Bar>
             ))}
           </BarChart>
-        </ResponsiveContainer>
+        </ChartContainer>
         {table}
       </CardContent>
     </Card>

@@ -10,11 +10,17 @@ import {
 import { ReactNode } from "react"
 
 import {
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent
+} from "@/components/ui/chart"
+import {
   CartesianGrid,
+  LabelList,
   Line,
   LineChart,
-  ResponsiveContainer,
-  Tooltip,
   XAxis,
   YAxis
 } from "recharts"
@@ -36,7 +42,7 @@ export type LineConfig = {
     | "monotoneY"
     | "step"
     | "stepBefore"
-    | "stepAfter" // Optional line type
+    | "stepAfter"
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -49,6 +55,7 @@ type ReadingLineChartProps<TData extends Record<string, any>> = {
   table?: ReactNode
   showXAxisTicks?: boolean
   height?: number
+  showLabels?: boolean
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -60,7 +67,8 @@ export default function ReadingLineChart<TData extends Record<string, any>>({
   lines,
   table,
   showXAxisTicks = true,
-  height = 200
+  height = 200,
+  showLabels = false
 }: ReadingLineChartProps<TData>) {
   return (
     <Card>
@@ -69,17 +77,24 @@ export default function ReadingLineChart<TData extends Record<string, any>>({
         {description && <CardDescription>{description}</CardDescription>}
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={height}>
-          <LineChart data={data}>
+        <ChartContainer
+          config={Object.fromEntries(
+            lines.map(line => [
+              line.dataKey,
+              { label: line.name, color: line.stroke }
+            ])
+          )}
+          className={`min-h-${height}px w-full`}
+        >
+          <LineChart data={data} accessibilityLayer>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey={xAxisKey}
-              tick={showXAxisTicks}
-              tickSize={20}
-              fontSize={16}
-            />
+            <XAxis dataKey={xAxisKey} tick={showXAxisTicks} />
             <YAxis />
-            <Tooltip />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent indicator="dot" />}
+            />
+            <ChartLegend content={<ChartLegendContent />} />
             {lines.map(line => (
               <Line
                 key={line.dataKey}
@@ -88,11 +103,23 @@ export default function ReadingLineChart<TData extends Record<string, any>>({
                 stroke={line.stroke}
                 name={line.name}
                 strokeWidth={line.strokeWidth || 2}
-                dot={false}
-              />
+                dot={true}
+                activeDot={{
+                  r: 5
+                }}
+              >
+                {showLabels && (
+                  <LabelList
+                    position={"top"}
+                    offset={12}
+                    className="fill-foreground"
+                    fontSize={12}
+                  />
+                )}
+              </Line>
             ))}
           </LineChart>
-        </ResponsiveContainer>
+        </ChartContainer>
         {table}
       </CardContent>
     </Card>

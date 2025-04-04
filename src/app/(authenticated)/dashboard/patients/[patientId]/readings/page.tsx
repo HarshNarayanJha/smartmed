@@ -26,8 +26,13 @@ import {
   TableRow
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { calculateAge, calculateBmi, formatDateTime } from "@/lib/utils"
-import { Patient, Reading } from "@prisma/client"
+import {
+  calculateAge,
+  calculateBmi,
+  formatDate,
+  formatDateTime
+} from "@/lib/utils"
+import { Reading } from "@prisma/client"
 import { FilePlus, Notebook, Plus } from "lucide-react"
 import Link from "next/link"
 import { columns } from "./columns"
@@ -343,7 +348,7 @@ export default async function PatientReadingsPage({
             title="Blood Pressure History"
             description="Systolic and diastolic readings over time"
             data={latestMReadings.map((r: Reading) => ({
-              date: r.createdAt.toLocaleDateString(),
+              date: formatDate(r.createdAt),
               systolic: r.bpSystolic,
               diastolic: r.bpDiastolic
             }))}
@@ -361,6 +366,7 @@ export default async function PatientReadingsPage({
               }
             ]}
             height={400}
+            radius={16}
             table={
               <div className="mt-6">
                 <h3 className="mb-4 font-semibold">Recent Readings</h3>
@@ -396,7 +402,7 @@ export default async function PatientReadingsPage({
             title="Glucose Readings"
             description="Blood glucose levels over time"
             data={latestMReadings.map((r: Reading) => ({
-              date: r.createdAt.toLocaleDateString(),
+              date: formatDate(r.createdAt),
               value: r.glucoseLevel
             }))}
             xAxisKey="date"
@@ -408,6 +414,7 @@ export default async function PatientReadingsPage({
               }
             ]}
             height={400}
+            radius={16}
             table={
               <div className="mt-6">
                 <h3 className="mb-4 font-semibold">Recent Readings</h3>
@@ -584,8 +591,9 @@ export default async function PatientReadingsPage({
             title="Body Temperature Tracking"
             description="Patient body temperature over time"
             height={400}
+            radius={16}
             data={latestMReadings.map((r: Reading) => ({
-              date: r.createdAt.toLocaleDateString(),
+              date: formatDate(r.createdAt),
               value: r.temperature
             }))}
             xAxisKey="date"
