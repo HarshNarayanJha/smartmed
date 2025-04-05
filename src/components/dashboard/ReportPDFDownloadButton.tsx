@@ -30,7 +30,7 @@ const PDFDownloadLink = dynamic(
   }
 )
 
-type ReportPDFButtonParams = {
+export type ReportPDFButtonParams = {
   report: Report
   reading: Reading
   patient: Patient
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   }
 })
 
-function ReportPDFDocument({
+export function ReportPDFDocument({
   report,
   reading,
   patient,
@@ -302,12 +302,12 @@ function ReportPDFDocument({
         </View>
       </Page>
       <Page style={styles.page}>
-        <View style={styles.section}>
+        <View style={styles.section} wrap={false}>
           <Text style={styles.sectionTitle}>Medical History</Text>
           <Text style={styles.text}>{patient.medicalHistory}</Text>
         </View>
 
-        <View style={styles.section}>
+        <View style={styles.section} wrap={false}>
           <Text style={styles.sectionTitle}>Allergies</Text>
           {patient.allergies.split(",").map((allergy, index) => (
             <Text key={index} style={styles.text}>
@@ -317,46 +317,44 @@ function ReportPDFDocument({
           ))}
         </View>
 
-        <View style={styles.section}>
+        <View style={styles.section} wrap={false}>
           <Text style={styles.sectionTitle}>Report Summary</Text>
           <Text style={styles.text}>{report.summary}</Text>
         </View>
 
-        <View style={styles.section}>
+        <View style={styles.section} wrap={false}>
           <Text style={styles.sectionTitle}>Detailed Analysis</Text>
           <Text style={styles.text}>{report.detailedAnalysis}</Text>
         </View>
 
-        <View style={styles.section}>
+        <View style={styles.section} wrap={false}>
           <Text style={styles.sectionTitle}>Diagnosis</Text>
           <Text style={styles.text}>{report.diagnosis}</Text>
         </View>
 
-        <View style={styles.section}>
+        <View style={styles.section} wrap={false}>
           <Text style={styles.sectionTitle}>Recommendations</Text>
           <Text style={styles.text}>{report.recommendations}</Text>
         </View>
 
-        <View style={styles.section}>
+        <View style={styles.section} wrap={false}>
           <Text style={styles.sectionTitle}>Urgency Level</Text>
           <Text style={[styles.text, getUrgencyStyle()]}>
             {report.urgencyLevel}
           </Text>
         </View>
 
-        <View style={styles.section}>
+        <View style={styles.section} wrap={false}>
           <Text style={styles.sectionTitle}>Tests</Text>
           <Text style={styles.text}>{report.tests}</Text>
         </View>
 
-        {report.additionalNotes && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Additional Notes</Text>
-            <Text style={styles.text}>{report.additionalNotes}</Text>
-          </View>
-        )}
+        <View style={styles.section} wrap={false}>
+          <Text style={styles.sectionTitle}>Additional Notes</Text>
+          <Text style={styles.text}>{report.additionalNotes}</Text>
+        </View>
 
-        <View style={styles.footer}>
+        <View style={styles.footer} wrap={false}>
           <Text>
             Generated on {report.createdAt.toLocaleString()} by AI based on
             readings taken by Dr. {doctor.name}

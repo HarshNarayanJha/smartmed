@@ -32,13 +32,16 @@ export default function GenerateReportButton({
         console.log("Response Generated")
         console.log("Saving response into db")
 
-        const report: Report = await createReport({
-          ...data,
-          urgencyLevel: data.urgencyLevel.toUpperCase() as UrgencyLevel,
-          id: reading.id,
-          patientId: patient.id,
-          doctorId
-        }, reading.diagnosedFor)
+        const report: Report = await createReport(
+          {
+            ...data,
+            urgencyLevel: data.urgencyLevel.toUpperCase() as UrgencyLevel,
+            id: reading.id,
+            patientId: patient.id,
+            doctorId
+          },
+          reading.diagnosedFor
+        )
 
         router.push(`/dashboard/patients/${patient.id}/reports/${report.id}`)
 

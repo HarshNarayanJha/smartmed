@@ -6,6 +6,7 @@ import { createClient } from "@/utils/supabase/server"
 import { GoogleGenAI, Type } from "@google/genai"
 import { Patient, Prisma, Reading, Report } from "@prisma/client"
 import { revalidatePath } from "next/cache"
+import { sendEmailOnReportGeneration } from "./email"
 
 const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY!
 const ai = new GoogleGenAI({ apiKey })
@@ -37,7 +38,10 @@ Your report should:
 - Format all values with appropriate units
 - Prioritize patient's health and safety in all recommendations being economical at the same time
 - Also, mention the ranges if the readings come severe for any reading
-- It should include cron job schedule for patient followup visit as per their condition or empty string if no followup is required. Be careful in this as if a patient is not given a proper treatment on time then it may cause a lot of harm to them even DEATH also.
+- It should include cron job schedule for patient followup visit as per their condition or empty string if no followup is required.
+Be careful in this as if a patient is not given a proper treatment on time then it may cause a lot of harm to them even DEATH also.
+Make sure to set the time hour in the cronjob to a suitable office hours time, not midnight. Be sure to consider the today's date also.
+Today is: ${new Date().toJSON()}
 
 Also, NEVER use markdown syntax. Respond in plaintext only.
 
@@ -235,34 +239,38 @@ export async function createReport(
   diagnosedFor: string
 ): Promise<Report> {
   try {
-    const report: ReportWithPatientAndDoctorEmail = await prisma.report.create({
-      data: reportData,
-      include: {
-        patient: {
-          select: {
-            name: true,
-            email: true
-          }
-        },
-        doctor: {
-          select: {
-            name: true,
-            email: true
+    const reportWithEmail: ReportWithPatientAndDoctorEmail =
+      await prisma.report.create({
+        data: reportData,
+        include: {
+          patient: {
+            select: {
+              name: true,
+              email: true
+            }
+          },
+          doctor: {
+            select: {
+              name: true,
+              email: true
+            }
           }
         }
-      }
-    })
+      })
 
-    const jobId = await scheduleFollowup(report, diagnosedFor)
+    const jobId = await scheduleFollowup(reportWithEmail, diagnosedFor)
 
-    await prisma.report.update({
+    const report: Report = await prisma.report.update({
       where: {
-        id: report.id
+        id: reportWithEmail.id
       },
       data: {
         jobId
       }
     })
+
+    console.log("Will send report in email here")
+    // await sendEmailOnReportGeneration(reportWithEmail)
 
     revalidatePath(
       `/dashboard/patient/${report.patientId}/reports/${report.id}`
