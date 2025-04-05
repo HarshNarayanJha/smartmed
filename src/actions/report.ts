@@ -22,7 +22,10 @@ Your response should follow this exact JSON schema:
   "diagnosis": "Life-saving diagnosis methods based on the readings",
   "recommendations": "Try to give Accurate Treatment recommendations and follow-up suggestions everytime",
   "urgencyLevel": "Low/Medium/High - Include these parameters according to your findings and alert the patient accordingly",
-  "additionalNotes": "Any other relevant medical observations or concerns you want to give from your experience"
+  "additionalNotes": "Any other relevant medical observations or concerns you want to give from your experience. It should also give the patient a safe/proper diet and yoga/exercise plan for speedy recovery in a short and concise manner in a plain text",
+  "tests": "Includes information about all the tests that are needed to be done in plain english sentence. Keep this very concise.",
+  "followupSchedule": "A single cron job schedule for followup visits to doctor without any additional text as per their condition or leave empty string if not required. Do not use nonstandard cron formats."
+
 }
 
 Your report should:
@@ -34,6 +37,7 @@ Your report should:
 - Format all values with appropriate units
 - Prioritize patient's health and safety in all recommendations being economical at the same time
 - Also, mention the ranges if the readings come severe for any reading
+- It should include cron job schedule for patient followup visit as per their condition or empty string if no followup is required. Be careful in this as if a patient is not given a proper treatment on time then it may cause a lot of harm to them even DEATH also.
 
 Also, NEVER use markdown syntax. Respond in plaintext only.
 
@@ -166,7 +170,9 @@ export async function generateReport(
             diagnosis: { type: Type.STRING, nullable: false },
             recommendations: { type: Type.STRING, nullable: false },
             urgencyLevel: { type: Type.STRING, nullable: false },
-            additionalNotes: { type: Type.STRING, nullable: false }
+            additionalNotes: { type: Type.STRING, nullable: false },
+            tests: { type: Type.STRING, nullable: false },
+            followupSchedule: { type: Type.STRING, nullable: false }
           },
           required: [
             "summary",
@@ -174,7 +180,9 @@ export async function generateReport(
             "diagnosis",
             "recommendations",
             "urgencyLevel",
-            "additionalNotes"
+            "additionalNotes",
+            "tests",
+            "followupSchedule"
           ]
         }
       }
@@ -265,7 +273,7 @@ export async function getReportById(reportId: string): Promise<Report | null> {
     return report
   } catch (error) {
     console.log(error)
-    throw new Error("Failed to get report")
+    throw new Error("Failed to get report", error)
   }
 }
 
