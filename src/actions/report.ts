@@ -21,7 +21,10 @@ Your response should follow this exact JSON schema:
   "diagnosis": "Life-saving diagnosis methods based on the readings",
   "recommendations": "Try to give Accurate Treatment recommendations and follow-up suggestions everytime",
   "urgencyLevel": "Low/Medium/High - Include these parameters according to your findings and alert the patient accordingly",
-  "additionalNotes": "Any other relevant medical observations or concerns you want to give from your experience"
+  "additionalNotes": "Any other relevant medical observations or concerns you want to give from your experience and It should also give the patient a safe/proper diet and yoga/exercise plan for speedy recovery in a short and concise manner and in a plain text",
+  "tests": "Include information about all the tests that has to be done in plain english test with schedule like hourly, daily, weekly, monthly, quaterly, yearly according to your intelligence in this section",
+  followupSchedule": "It should include a single cron job schedule only for patients as per their situations like daily, hourly, weekly, monthly,quaterly,half yearly,yearly in cron job format "
+
 }
 
 Your report should:
@@ -33,6 +36,8 @@ Your report should:
 - Format all values with appropriate units
 - Prioritize patient's health and safety in all recommendations being economical at the same time
 - Also, mention the ranges if the readings come severe for any reading
+- It should include cron job scheduling for patients as per their situations like daily, hourly, weekly, monthly,quaterly,half yearly,yearly and be careful in this as if a patient is not given a proper treatment on time then it may cause a lot of harm to them even DEATH also
+- And be careful job scheduling as if a patient is not given a proper treatment on time then it may cause a lot of harm to them even DEATH also
 
 Also, NEVER use markdown syntax. Respond in plaintext only.
 
@@ -109,7 +114,9 @@ export async function generateReport(
             diagnosis: { type: Type.STRING, nullable: false },
             recommendations: { type: Type.STRING, nullable: false },
             urgencyLevel: { type: Type.STRING, nullable: false },
-            additionalNotes: { type: Type.STRING, nullable: false }
+            additionalNotes: { type: Type.STRING, nullable: false },
+            tests: { type: Type.STRING, nullable: false},
+            followupSchedule: {type: Type.STRING , nullable: false}
           },
           required: [
             "summary",
@@ -117,7 +124,9 @@ export async function generateReport(
             "diagnosis",
             "recommendations",
             "urgencyLevel",
-            "additionalNotes"
+            "additionalNotes",
+            "tests",
+            "followupSchedule"
           ]
         }
       }
