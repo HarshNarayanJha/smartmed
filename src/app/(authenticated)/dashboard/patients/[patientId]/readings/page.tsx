@@ -171,10 +171,11 @@ export default async function PatientReadingsPage({
               description={`Latest: ${latestReading.glucoseLevel} mg/dL`}
               xAxisKey="date"
               showXAxisTicks={false}
+              referenceYValue={75}
               lines={[
                 {
                   dataKey: "glucoseLevel",
-                  type: "monotone",
+                  type: "natural",
                   name: "Glucose",
                   stroke: "#ff7300"
                 }
@@ -194,7 +195,7 @@ export default async function PatientReadingsPage({
               lines={[
                 {
                   dataKey: "height",
-                  type: "monotone",
+                  type: "natural",
                   name: "Height",
                   stroke: "#2e7d32"
                 }
@@ -214,7 +215,7 @@ export default async function PatientReadingsPage({
               lines={[
                 {
                   dataKey: "weight",
-                  type: "monotone",
+                  type: "natural",
                   name: "Weight",
                   stroke: "#ffc658"
                 }
@@ -231,10 +232,11 @@ export default async function PatientReadingsPage({
               description={`Latest: ${calculateBmi(latestReading.weight, latestReading.height)} kg/m²`}
               xAxisKey="date"
               showXAxisTicks={false}
+              referenceYValue={20}
               lines={[
                 {
                   dataKey: "bmi",
-                  type: "monotone",
+                  type: "natural",
                   name: "BMI kg/m²",
                   stroke: "#9c27b0"
                 }
@@ -251,10 +253,11 @@ export default async function PatientReadingsPage({
               description={`Latest: ${latestReading.temperature} °C`}
               xAxisKey="date"
               showXAxisTicks={false}
+              referenceYValue={37}
               lines={[
                 {
                   dataKey: "value",
-                  type: "monotone",
+                  type: "natural",
                   name: "Body Temperature",
                   stroke: "#ff5733"
                 }
@@ -271,10 +274,11 @@ export default async function PatientReadingsPage({
               description={`Latest: ${latestReading.heartRate} bpm`}
               xAxisKey="date"
               showXAxisTicks={false}
+              referenceYValue={72}
               lines={[
                 {
                   dataKey: "value",
-                  type: "monotone",
+                  type: "natural",
                   name: "Heart Rate",
                   stroke: "#e53935"
                 }
@@ -291,10 +295,11 @@ export default async function PatientReadingsPage({
               description={`Latest: ${latestReading.respiratoryRate} bpm`}
               xAxisKey="date"
               showXAxisTicks={false}
+              referenceYValue={16}
               lines={[
                 {
                   dataKey: "value",
-                  type: "monotone",
+                  type: "natural",
                   name: "Respiratory Rate",
                   stroke: "#1976d2"
                 }
@@ -311,10 +316,11 @@ export default async function PatientReadingsPage({
               description={`Latest: ${latestReading.oxygenSaturation} %`}
               xAxisKey="date"
               showXAxisTicks={false}
+              referenceYValue={98}
               lines={[
                 {
                   dataKey: "value",
-                  type: "monotone",
+                  type: "natural",
                   name: "Oxygen Saturation",
                   stroke: "#009688"
                 }
@@ -455,7 +461,7 @@ export default async function PatientReadingsPage({
             xAxisKey="date"
             lines={[
               {
-                type: "monotone",
+                type: "natural",
                 dataKey: "value",
                 name: "Height (cm)",
                 stroke: "#4287f5",
@@ -502,7 +508,7 @@ export default async function PatientReadingsPage({
             xAxisKey="date"
             lines={[
               {
-                type: "monotone",
+                type: "natural",
                 dataKey: "value",
                 name: "Weight (kg)",
                 stroke: "#2e7d32",
@@ -547,9 +553,10 @@ export default async function PatientReadingsPage({
               value: calculateBmi(r.weight, r.height)
             }))}
             xAxisKey="date"
+            referenceYValue={20}
             lines={[
               {
-                type: "monotone",
+                type: "natural",
                 dataKey: "value",
                 name: "BMI (kg/m²)",
                 stroke: "#9c27b0",
@@ -636,6 +643,7 @@ export default async function PatientReadingsPage({
           <ReadingLineChart
             title="Heart Rate Tracking"
             description="Patient heart rate over time"
+            referenceYValue={72}
             height={400}
             data={latestMReadings.map((r: Reading) => ({
               date: r.createdAt.toLocaleDateString(),
@@ -644,7 +652,7 @@ export default async function PatientReadingsPage({
             xAxisKey="date"
             lines={[
               {
-                type: "monotone",
+                type: "natural",
                 dataKey: "value",
                 name: "Heart Rate (bpm)",
                 stroke: "#e53935",

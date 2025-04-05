@@ -21,6 +21,7 @@ import {
   LabelList,
   Line,
   LineChart,
+  ReferenceLine,
   XAxis,
   YAxis
 } from "recharts"
@@ -53,6 +54,7 @@ type ReadingLineChartProps<TData extends Record<string, any>> = {
   xAxisKey: keyof TData & string
   lines: LineConfig[]
   table?: ReactNode
+  referenceYValue?: number
   showXAxisTicks?: boolean
   height?: number
   showLabels?: boolean
@@ -66,6 +68,7 @@ export default function ReadingLineChart<TData extends Record<string, any>>({
   xAxisKey,
   lines,
   table,
+  referenceYValue = null,
   showXAxisTicks = true,
   height = 200,
   showLabels = false
@@ -94,6 +97,14 @@ export default function ReadingLineChart<TData extends Record<string, any>>({
               cursor={false}
               content={<ChartTooltipContent indicator="dot" />}
             />
+            {referenceYValue && (
+              <ReferenceLine
+                y={referenceYValue}
+                label="Normal"
+                stroke="green"
+                strokeDasharray="3 3"
+              />
+            )}
             <ChartLegend content={<ChartLegendContent />} />
             {lines.map(line => (
               <Line
