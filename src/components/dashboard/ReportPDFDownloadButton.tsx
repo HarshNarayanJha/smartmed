@@ -177,6 +177,9 @@ function ReportPDFDocument({
             <Text style={styles.text}>
               Date: {formatDateTime(report.createdAt)}
             </Text>
+            <Text style={styles.text}>
+              Scheduled: {report.followupSchedule}
+            </Text>
           </View>
         </View>
 
@@ -339,6 +342,11 @@ function ReportPDFDocument({
           <Text style={[styles.text, getUrgencyStyle()]}>
             {report.urgencyLevel}
           </Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Tests</Text>
+          <Text style={styles.text}>{report.tests}</Text>
         </View>
 
         {report.additionalNotes && (

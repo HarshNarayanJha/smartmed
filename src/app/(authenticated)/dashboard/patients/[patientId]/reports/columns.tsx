@@ -56,6 +56,14 @@ const ActionsCell = ({
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() =>
+              navigator.clipboard.writeText(report.tests.toString())
+            }
+          >
+            <Copy />
+            Copy Tests
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
               navigator.clipboard.writeText(report.recommendations.toString())
             }
           >
@@ -118,6 +126,16 @@ export const columns: ColumnDef<Report>[] = [
     header: () => <span className="font-bold">Summary</span>,
     cell: ({ row }) => {
       return <div className="max-w-28 truncate">{row.getValue("summary")}</div>
+    },
+    meta: {
+      width: 28
+    }
+  },
+  {
+    accessorKey: "tests",
+    header: () => <span className="font-bold">Tests</span>,
+    cell: ({ row }) => {
+      return <div className="max-w-28 truncate">{row.getValue("tests")}</div>
     },
     meta: {
       width: 28

@@ -38,7 +38,7 @@ export default function GenerateReportButton({
           id: reading.id,
           patientId: patient.id,
           doctorId
-        })
+        }, reading.diagnosedFor)
 
         router.push(`/dashboard/patients/${patient.id}/reports/${report.id}`)
 

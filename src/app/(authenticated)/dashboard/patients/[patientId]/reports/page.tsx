@@ -130,6 +130,14 @@ export default async function PatientReadingsPage({
                   {latestReport.urgencyLevel}
                 </p>
               </div>
+              {latestReport.tests && (
+                <div>
+                  <h4 className="font-semibold text-sm">Tests</h4>
+                  <p className="text-muted-foreground text-sm">
+                    {latestReport.tests}
+                  </p>
+                </div>
+              )}
               {latestReport.additionalNotes && (
                 <div>
                   <h4 className="font-semibold text-sm">Additional Notes</h4>

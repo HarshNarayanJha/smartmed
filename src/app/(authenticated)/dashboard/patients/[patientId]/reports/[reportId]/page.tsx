@@ -27,7 +27,16 @@ import { Separator } from "@/components/ui/separator"
 import { calculateAge, formatDate, formatDateTime } from "@/lib/utils"
 import getUser from "@/utils/supabase/server"
 import { Doctor, Patient, Reading, Report, UrgencyLevel } from "@prisma/client"
-import { Eye, Sparkles } from "lucide-react"
+import {
+  Eye,
+  FlaskConical,
+  ListChecks,
+  Microscope,
+  Sparkles,
+  Stethoscope,
+  StickyNote,
+  Text
+} from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
@@ -192,46 +201,67 @@ export default async function ReportDetailPage({
               <div className="pt-2 text-muted-foreground text-sm">
                 Generated on {formatDateTime(report.createdAt)} | Last Updated:{" "}
                 {formatDateTime(report.updatedAt)}
+                <br />
+                Scheduled {report.followupSchedule}
               </div>
             </CardHeader>
             <CardContent className="space-y-5">
               <div>
-                <h3 className="mb-1 font-semibold text-md">Summary</h3>
-                <p className=" text-sm">
+                <h3 className="mb-1 flex items-center font-semibold text-md">
+                  <Text className="mr-2 h-4 w-4" /> Summary
+                </h3>
+                <p className="pl-6 text-sm">
                   {report.summary || "No summary provided."}
                 </p>
               </div>
               <Separator />
               <div>
-                <h3 className="mb-1 font-semibold text-md">
-                  Detailed Analysis
+                <h3 className="mb-1 flex items-center font-semibold text-md">
+                  <Microscope className="mr-2 h-4 w-4" /> Detailed Analysis
                 </h3>
-                <p className="whitespace-pre-wrap text-sm">
+                <p className="whitespace-pre-wrap pl-6 text-sm">
                   {report.detailedAnalysis || "No detailed analysis provided."}
                 </p>
               </div>
               <Separator />
               <div>
-                <h3 className="mb-1 font-semibold text-md">Diagnosis</h3>
-                <p className="whitespace-pre-wrap text-sm">
+                <h3 className="mb-1 flex items-center font-semibold text-md">
+                  <Stethoscope className="mr-2 h-4 w-4" /> Diagnosis
+                </h3>
+                <p className="whitespace-pre-wrap pl-6 text-sm">
                   {report.diagnosis || "No diagnosis provided."}
                 </p>
               </div>
               <Separator />
               <div>
-                <h3 className="mb-1 font-semibold text-md">Recommendations</h3>
-                <p className="whitespace-pre-wrap text-sm">
+                <h3 className="mb-1 flex items-center font-semibold text-md">
+                  <ListChecks className="mr-2 h-4 w-4" /> Recommendations
+                </h3>
+                <p className="whitespace-pre-wrap pl-6 text-sm">
                   {report.recommendations || "No recommendations provided."}
                 </p>
               </div>
+              {report.tests && (
+                <>
+                  <Separator />
+                  <div>
+                    <h3 className="mb-1 flex items-center font-semibold text-md">
+                      <FlaskConical className="mr-2 h-4 w-4" /> Tests
+                    </h3>
+                    <p className="whitespace-pre-wrap pl-6 text-sm">
+                      {report.tests}
+                    </p>
+                  </div>
+                </>
+              )}
               {report.additionalNotes && (
                 <>
                   <Separator />
                   <div>
-                    <h3 className="mb-1 font-semibold text-md">
-                      Additional Notes
+                    <h3 className="mb-1 flex items-center font-semibold text-md">
+                      <StickyNote className="mr-2 h-4 w-4" /> Additional Notes
                     </h3>
-                    <p className="whitespace-pre-wrap text-sm">
+                    <p className="whitespace-pre-wrap pl-6 text-sm">
                       {report.additionalNotes}
                     </p>
                   </div>

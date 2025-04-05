@@ -51,15 +51,28 @@ Here are the readings in the json format:
  * Schedule a followup for a report
  */
 export async function scheduleFollowup(
-  report: ReportWithPatientAndDoctorEmail
+  report: ReportWithPatientAndDoctorEmail,
+  diagnosedFor: string
 ): Promise<number> {
   const client = await createClient()
   console.log("Creating cron job followup schedule for report id", report.id)
 
+  const EMAIL_JS_API_URL = process.env.EMAIL_JS_API_URL
+  const EMAIL_JS_SERVICE_ID = process.env.EMAIL_JS_SERVICE_ID
+  const EMAIL_JS_FOLLOWUP_TEMPLATE_ID =
+    process.env.EMAIL_JS_FOLLOWUP_TEMPLATE_ID
+  const EMAIL_JS_PUBLIC_KEY = process.env.EMAIL_JS_PUBLIC_KEY
+
   const { data, error } = await client.schema("cron").rpc("schedule", {
     job_name: `followup-${report.id}`,
     schedule: report.followupSchedule,
-    command: `Send mail to ${report.patient.email} and ${report.doctor.email}`
+    command: `select
+      net.http_post(
+          url:='${EMAIL_JS_API_URL}',
+          headers:=jsonb_build_object('Content-Type', 'application/json'),
+          body:='{"service_id": "${EMAIL_JS_SERVICE_ID}", "template_id": "${EMAIL_JS_FOLLOWUP_TEMPLATE_ID}", "user_id": "${EMAIL_JS_PUBLIC_KEY}", "template_params": {"patient_name": "${report.patient.name}", "doctor_name": "${report.doctor.name}", "followup_reason": "${diagnosedFor}", "email": "${report.patient.email}"}}',
+          timeout_milliseconds:=2500
+      );`
   })
 
   if (error) {
@@ -201,11 +214,13 @@ export type ReportWithPatientAndDoctorEmail = Prisma.ReportGetPayload<{
   include: {
     patient: {
       select: {
+        name: true
         email: true
       }
     }
     doctor: {
       select: {
+        name: true
         email: true
       }
     }
@@ -216,7 +231,8 @@ export type ReportWithPatientAndDoctorEmail = Prisma.ReportGetPayload<{
  * Creates a report for a given reading and patient ID
  */
 export async function createReport(
-  reportData: Omit<Report, "createdAt" | "updatedAt">
+  reportData: Omit<Report, "createdAt" | "updatedAt">,
+  diagnosedFor: string
 ): Promise<Report> {
   try {
     const report: ReportWithPatientAndDoctorEmail = await prisma.report.create({
@@ -224,18 +240,20 @@ export async function createReport(
       include: {
         patient: {
           select: {
+            name: true,
             email: true
           }
         },
         doctor: {
           select: {
+            name: true,
             email: true
           }
         }
       }
     })
 
-    const jobId = await scheduleFollowup(report)
+    const jobId = await scheduleFollowup(report, diagnosedFor)
 
     await prisma.report.update({
       where: {
@@ -322,7 +340,7 @@ export async function getNumReportsByPatientId(
 
 export async function getReportJobIdsByPatientId(
   patientId: string
-): Promise<string[]> {
+): Promise<number[]> {
   try {
     const jobIds = await prisma.report.findMany({
       where: {
@@ -342,7 +360,7 @@ export async function getReportJobIdsByPatientId(
 
 export async function getReportJobIdsByDoctorId(
   doctorId: string
-): Promise<string[]> {
+): Promise<number[]> {
   try {
     const jobIds = await prisma.report.findMany({
       where: {
