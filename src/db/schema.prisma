@@ -90,9 +90,9 @@ model Report {
   recommendations  String       @db.Text
   urgencyLevel     UrgencyLevel
   additionalNotes  String       @db.Text
-  jobId            Int?
   tests            String
   followupSchedule String
+  jobId            Int?
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @default(now()) @updatedAt
 }
