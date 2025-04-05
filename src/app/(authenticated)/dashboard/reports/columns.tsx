@@ -10,7 +10,14 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
-import { Copy, EyeIcon, MoreHorizontal } from "lucide-react"
+import {
+  ArrowUpDown,
+  Copy,
+  EyeIcon,
+  MoreHorizontal,
+  SortAsc,
+  SortDesc
+} from "lucide-react"
 import Link from "next/link"
 
 import { Badge } from "@/components/ui/badge"
@@ -80,14 +87,38 @@ const ActionsCell = ({
 export const columns: ColumnDef<Report>[] = [
   {
     accessorKey: "index",
-    header: () => <div>#</div>,
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting()}>
+          #
+          <ArrowUpDown className="ml-2 h-2 w-2" />
+        </Button>
+      )
+    },
     cell: ({ row }) => {
       return <div>{row.index + 1}</div>
     }
   },
   {
     accessorKey: "createdAt",
-    header: () => <div>Report Generated</div>,
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="text-start"
+        >
+          Report Generated
+          {column.getIsSorted() === "asc" ? (
+            <SortAsc className="ml-2 h-4 w-4" />
+          ) : column.getIsSorted() === "desc" ? (
+            <SortDesc className="ml-2 h-4 w-4" />
+          ) : (
+            <ArrowUpDown className="ml-2 h-2 w-2" />
+          )}
+        </Button>
+      )
+    },
     cell: ({ row }) => {
       return (
         <Link
@@ -97,7 +128,8 @@ export const columns: ColumnDef<Report>[] = [
           {formatDateTime(row.getValue("createdAt"))}
         </Link>
       )
-    }
+    },
+    sortingFn: "datetime"
   },
   {
     accessorKey: "recommendations",

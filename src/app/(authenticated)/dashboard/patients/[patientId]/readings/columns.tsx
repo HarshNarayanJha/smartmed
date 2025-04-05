@@ -11,7 +11,15 @@ import {
 import { calculateBmi, formatDateTime } from "@/lib/utils"
 import { Reading } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
-import { Copy, EyeIcon, MoreHorizontal, Notebook } from "lucide-react"
+import {
+  ArrowUpDown,
+  Copy,
+  EyeIcon,
+  MoreHorizontal,
+  Notebook,
+  SortAsc,
+  SortDesc
+} from "lucide-react"
 import Link from "next/link"
 
 const ActionsCell = ({
@@ -58,14 +66,35 @@ const ActionsCell = ({
 export const columns: ColumnDef<Reading>[] = [
   {
     accessorKey: "index",
-    header: () => <div>#</div>,
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting()}>
+          #
+          <ArrowUpDown className="h-1 w-1" />
+        </Button>
+      )
+    },
     cell: ({ row }) => {
       return <div>{row.index + 1}</div>
     }
   },
   {
     accessorKey: "createdAt",
-    header: () => <div>Reading Taken</div>,
+    header: ({ column }) => {
+      return (
+        <span
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="cursor-pointer text-foreground hover:text-muted-foreground "
+        >
+          Reading Taken{" "}
+          {column.getIsSorted() === "asc" ? (
+            <SortAsc className="inline h-4 w-4" />
+          ) : column.getIsSorted() === "desc" ? (
+            <SortDesc className="inline h-4 w-4" />
+          ) : null}
+        </span>
+      )
+    },
     cell: ({ row }) => {
       return (
         <Link
@@ -75,7 +104,8 @@ export const columns: ColumnDef<Reading>[] = [
           {formatDateTime(row.getValue("createdAt"))}
         </Link>
       )
-    }
+    },
+    sortingFn: "datetime"
   },
   {
     accessorKey: "diagnosedFor",
@@ -91,64 +121,138 @@ export const columns: ColumnDef<Reading>[] = [
   },
   {
     accessorKey: "height",
-    header: "Height",
+    header: ({ column }) => {
+      return (
+        <span
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="cursor-pointer text-foreground hover:text-muted-foreground "
+        >
+          Height{" "}
+          {column.getIsSorted() === "asc" ? (
+            <SortAsc className="inline h-4 w-4" />
+          ) : column.getIsSorted() === "desc" ? (
+            <SortDesc className="inline h-4 w-4" />
+          ) : null}
+        </span>
+      )
+    },
     cell: ({ row }) => {
       const height = row.getValue("height")
       return <div>{`${height} cm`}</div>
     },
-    meta: {
-      width: 50
-    }
+    maxSize: 50
   },
   {
     accessorKey: "weight",
-    header: "Weight",
+    header: ({ column }) => {
+      return (
+        <span
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="cursor-pointer text-foreground hover:text-muted-foreground "
+        >
+          Weight{" "}
+          {column.getIsSorted() === "asc" ? (
+            <SortAsc className="inline h-4 w-4" />
+          ) : column.getIsSorted() === "desc" ? (
+            <SortDesc className="inline h-4 w-4" />
+          ) : null}
+        </span>
+      )
+    },
     cell: ({ row }) => {
       const weight = row.getValue("weight")
       return <div>{`${weight} kg`}</div>
     },
-    meta: {
-      width: 50
-    }
+    maxSize: 50
   },
   {
     accessorKey: "bmi",
-    header: "BMI",
+    header: ({ column }) => {
+      return (
+        <span
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="cursor-pointer text-foreground hover:text-muted-foreground "
+        >
+          BMI{" "}
+          {column.getIsSorted() === "asc" ? (
+            <SortAsc className="inline h-4 w-4" />
+          ) : column.getIsSorted() === "desc" ? (
+            <SortDesc className="inline h-4 w-4" />
+          ) : null}
+        </span>
+      )
+    },
     cell: ({ row }) => {
       const weight: number = row.getValue("weight")
       const height: number = row.getValue("height")
       const bmi = calculateBmi(weight, height)
       return <div>{`${bmi} kg/m²`}</div>
     },
-    meta: {
-      width: 25
-    }
+    maxSize: 25
   },
   {
     accessorKey: "temperature",
-    header: "Temperature",
+    header: ({ column }) => {
+      return (
+        <span
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="cursor-pointer text-foreground hover:text-muted-foreground "
+        >
+          Body Temperature{" "}
+          {column.getIsSorted() === "asc" ? (
+            <SortAsc className="inline h-4 w-4" />
+          ) : column.getIsSorted() === "desc" ? (
+            <SortDesc className="inline h-4 w-4" />
+          ) : null}
+        </span>
+      )
+    },
     cell: ({ row }) => {
       const temperature = row.getValue("temperature")
       return <div>{`${temperature} °C`}</div>
     },
-    meta: {
-      width: 50
-    }
+    maxSize: 50
   },
   {
     accessorKey: "heartRate",
-    header: "Heart Rate",
+    header: ({ column }) => {
+      return (
+        <span
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="cursor-pointer text-foreground hover:text-muted-foreground "
+        >
+          Heart Rate{" "}
+          {column.getIsSorted() === "asc" ? (
+            <SortAsc className="inline h-4 w-4" />
+          ) : column.getIsSorted() === "desc" ? (
+            <SortDesc className="inline h-4 w-4" />
+          ) : null}
+        </span>
+      )
+    },
     cell: ({ row }) => {
       const heartRate = row.getValue("heartRate")
       return <div>{`${heartRate} bpm`}</div>
     },
-    meta: {
-      width: 50
-    }
+    maxSize: 50
   },
   {
     accessorKey: "bp",
-    header: "Blood Pressure",
+    header: ({ column }) => {
+      return (
+        <span
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="cursor-pointer text-foreground hover:text-muted-foreground "
+        >
+          Blood Pressure{" "}
+          {column.getIsSorted() === "asc" ? (
+            <SortAsc className="inline h-4 w-4" />
+          ) : column.getIsSorted() === "desc" ? (
+            <SortDesc className="inline h-4 w-4" />
+          ) : null}
+        </span>
+      )
+    },
     cell: ({ row }) => {
       const bpSystolic = row.original.bpSystolic
       const bpDiastolic = row.original.bpDiastolic
@@ -159,6 +263,22 @@ export const columns: ColumnDef<Reading>[] = [
           {` ${bpDiastolic} mmHg`}
         </div>
       )
+    },
+    sortingFn: (a, b, _1columnId) => {
+      const systolicA = new Date(a.original.bpSystolic)
+      const diastolicA = new Date(a.original.bpDiastolic)
+      const systolicB = new Date(b.original.bpSystolic)
+      const diastolicB = new Date(b.original.bpDiastolic)
+
+      return systolicA > systolicB
+        ? 1
+        : systolicA < systolicB
+          ? -1
+          : diastolicA > diastolicB
+            ? 1
+            : diastolicA < diastolicB
+              ? -1
+              : 0
     }
   },
   {

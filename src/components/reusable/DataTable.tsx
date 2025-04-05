@@ -31,6 +31,7 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table"
+import { Filter } from "lucide-react"
 import { DataTablePagination } from "./DatatablePagination"
 
 interface DataTableProps<TData, TValue> {
@@ -83,6 +84,7 @@ export function DataTable<TData, TValue>({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
+              <Filter />
               Columns
             </Button>
           </DropdownMenuTrigger>

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
 import {
+  ArrowUpDown,
   CheckCircle,
   CheckSquare,
   Copy,
@@ -18,6 +19,8 @@ import {
   MoreHorizontal,
   Notebook,
   PlusCircle,
+  SortAsc,
+  SortDesc,
   XCircle
 } from "lucide-react"
 import Link from "next/link"
@@ -111,14 +114,39 @@ const ActionsCell = ({ patient }: { patient: Patient }) => {
 export const columns: ColumnDef<Patient>[] = [
   {
     accessorKey: "index",
-    header: () => <div>#</div>,
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting()}>
+          #
+          <ArrowUpDown className="ml-2 h-2 w-2" />
+        </Button>
+      )
+    },
     cell: ({ row }) => {
       return <div>{row.index + 1}</div>
-    }
+    },
+    sortingFn: "alphanumeric"
   },
   {
     accessorKey: "name",
-    header: () => <div>Name</div>,
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="text-start"
+        >
+          Name
+          {column.getIsSorted() === "asc" ? (
+            <SortAsc className="ml-2 h-4 w-4" />
+          ) : column.getIsSorted() === "desc" ? (
+            <SortDesc className="ml-2 h-4 w-4" />
+          ) : (
+            <ArrowUpDown className="ml-2 h-2 w-2" />
+          )}
+        </Button>
+      )
+    },
     cell: ({ row }) => {
       return (
         <Link
@@ -128,7 +156,8 @@ export const columns: ColumnDef<Patient>[] = [
           {row.getValue("name")}
         </Link>
       )
-    }
+    },
+    sortingFn: "alphanumeric"
   },
   {
     accessorKey: "email",
@@ -140,11 +169,29 @@ export const columns: ColumnDef<Patient>[] = [
   },
   {
     accessorKey: "dob",
-    header: "Age",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="text-start"
+        >
+          Age
+          {column.getIsSorted() === "asc" ? (
+            <SortAsc className="ml-2 h-4 w-4" />
+          ) : column.getIsSorted() === "desc" ? (
+            <SortDesc className="ml-2 h-4 w-4" />
+          ) : (
+            <ArrowUpDown className="ml-2 h-2 w-2" />
+          )}
+        </Button>
+      )
+    },
     cell: ({ row }) => {
       const age = calculateAge(row.getValue("dob"))
       return <div>{age}</div>
-    }
+    },
+    sortingFn: "alphanumeric"
   },
   {
     accessorKey: "gender",
