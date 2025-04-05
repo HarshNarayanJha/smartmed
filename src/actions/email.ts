@@ -10,8 +10,6 @@ import { ReportWithPatientAndDoctorEmail } from "./report"
 export async function sendEmailOnReportGeneration(
   report: ReportWithPatientAndDoctorEmail
 ) {
-  console.log("Sending email to patient on creation of report", report.id)
-
   const EMAIL_JS_API_URL = process.env.EMAIL_JS_API_URL
   const EMAIL_JS_SERVICE_ID = process.env.EMAIL_JS_SERVICE_ID
   const EMAIL_JS_REPORT_TEMPLATE_ID = process.env.EMAIL_JS_REPORT_TEMPLATE_ID
@@ -49,7 +47,7 @@ export async function sendEmailOnReportGeneration(
       throw new Error(`Email send failed with status: ${response.status}`)
     }
 
-    const data = response.text
+    const data = await response.text()
     console.log(`Email sent successfully for report id ${report.id}`, data)
     return data
   } catch (error) {

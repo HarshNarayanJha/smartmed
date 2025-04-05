@@ -2,7 +2,6 @@
 
 import { signup } from "@/actions/auth"
 import { Button } from "@/components/ui/button"
-import { CardContent, CardFooter } from "@/components/ui/card"
 import {
   Form,
   FormControl,
@@ -29,7 +28,6 @@ import {
   Stethoscope,
   User
 } from "lucide-react"
-import Link from "next/link"
 import { useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -287,6 +285,20 @@ export default function SignupForm() {
             )}
           />
         </div>
+        <Button
+          type="submit"
+          className="w-full py-6 font-medium text-base transition-all duration-200 hover:scale-[1.01]"
+          disabled={isPending}
+        >
+          {isPending ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Creating account...
+            </>
+          ) : (
+            "Create Account"
+          )}
+        </Button>
       </form>
     </Form>
   )

@@ -273,7 +273,6 @@ export async function createReport(
       data
     })
 
-    console.log("Will send report in email here")
     sendEmailOnReportGeneration(reportWithEmail)
 
     revalidatePath(
