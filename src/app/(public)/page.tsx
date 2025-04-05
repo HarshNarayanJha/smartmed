@@ -52,7 +52,7 @@ export default function Home() {
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
                   <Activity className="h-6 w-6 text-primary" />
                 </div>
-                <CardTitle className="mb-2 text-xl">
+                <CardTitle className="mb-2 font-title text-xl">
                   Patient Data Tracking
                 </CardTitle>
               </CardHeader>
@@ -68,7 +68,7 @@ export default function Home() {
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
                   <BrainCircuit className="h-6 w-6 text-primary" />
                 </div>
-                <CardTitle className="mb-2 text-xl">
+                <CardTitle className="mb-2 font-title text-xl">
                   AI-Powered Diagnosis
                 </CardTitle>
               </CardHeader>
@@ -84,7 +84,7 @@ export default function Home() {
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
                   <CalendarClock className="h-6 w-6 text-primary" />
                 </div>
-                <CardTitle className="mb-2 text-xl">
+                <CardTitle className="mb-2 font-title text-xl">
                   Automated Reminders
                 </CardTitle>
               </CardHeader>

@@ -71,7 +71,7 @@ export default async function ReadingPage({
           <Card className="overflow-hidden shadow-lg">
             <CardHeader className="flex flex-row justify-between border-b">
               <div>
-                <CardTitle className="font-bold text-2xl text-primary">
+                <CardTitle className="font-bold font-title text-2xl text-primary">
                   {patient.name}'s Reading Details
                 </CardTitle>
                 <CardDescription className="pt-1 text-muted-foreground">

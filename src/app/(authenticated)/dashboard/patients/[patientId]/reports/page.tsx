@@ -74,14 +74,14 @@ export default async function PatientReadingsPage({
         <div className="flex items-center gap-4">
           <Avatar className="h-16 w-16">
             <AvatarImage
-              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${patient.name}`}
+              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${patient.id}`}
               alt={patient.name}
             />
             <AvatarFallback>{patient.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
             <h1 className="font-bold text-3xl">{patient.name}</h1>
-            <p className="text-muted-foreground">
+            <p className="mt-1 text-muted-foreground">
               Age: {calculateAge(patient.dob)} | Patient ID:{" "}
               {patient.id.slice(0, 6)}
             </p>
@@ -98,7 +98,7 @@ export default async function PatientReadingsPage({
       {latestReport && (
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Latest Report Summary</CardTitle>
+            <CardTitle className="font-title">Latest Report Summary</CardTitle>
             <p className="text-muted-foreground text-sm">
               Report ID: {latestReport.id.substring(0, 6)} | Generated on:{" "}
               {formatDateTime(latestReport.createdAt)}

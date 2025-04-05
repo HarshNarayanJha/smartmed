@@ -134,7 +134,7 @@ export const columns: ColumnDef<Patient>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-start"
+          className="text-start font-bold"
         >
           Name
           {column.getIsSorted() === "asc" ? (
@@ -161,11 +161,11 @@ export const columns: ColumnDef<Patient>[] = [
   },
   {
     accessorKey: "email",
-    header: "Email"
+    header: () => <span className="font-bold">Email</span>
   },
   {
     accessorKey: "phoneNumber",
-    header: "Phone Number"
+    header: () => <span className="font-bold">Phone Number</span>
   },
   {
     accessorKey: "dob",
@@ -174,7 +174,7 @@ export const columns: ColumnDef<Patient>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-start"
+          className="text-start font-bold"
         >
           Age
           {column.getIsSorted() === "asc" ? (
@@ -195,15 +195,15 @@ export const columns: ColumnDef<Patient>[] = [
   },
   {
     accessorKey: "gender",
-    header: "Gender"
+    header: () => <span className="font-bold">Gender</span>
   },
   {
     accessorKey: "bloodGroup",
-    header: "Blood Group"
+    header: () => <span className="font-bold">Blood Group</span>
   },
   {
     accessorKey: "cured",
-    header: "Cured",
+    header: () => <span className="font-bold">Cured</span>,
     cell: ({ row }) => {
       const cured: boolean = row.getValue("cured")
       return (

@@ -8,7 +8,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator
 } from "@/components/ui/breadcrumb"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import getUser from "@/utils/supabase/server"
 import { Doctor } from "@prisma/client"
 import Link from "next/link"
@@ -51,7 +51,9 @@ export default async function NewPatientPage() {
 
       <Card>
         <CardHeader>
-          <h2 className="font-semibold text-xl">Patient Information</h2>
+          <CardTitle className="font-semibold font-title text-xl">
+            Patient Information
+          </CardTitle>
           <p className="text-muted-foreground">
             Please enter the patient's clinical data in the form below to
             register them in the system

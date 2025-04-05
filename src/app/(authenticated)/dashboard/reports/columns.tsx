@@ -106,7 +106,7 @@ export const columns: ColumnDef<Report>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-start"
+          className="text-start font-bold"
         >
           Report Generated
           {column.getIsSorted() === "asc" ? (
@@ -133,7 +133,7 @@ export const columns: ColumnDef<Report>[] = [
   },
   {
     accessorKey: "recommendations",
-    header: "Recommendations",
+    header: () => <span className="font-bold">Recommendations</span>,
     cell: ({ row }) => {
       return (
         <div className="max-w-28 truncate">
@@ -147,7 +147,7 @@ export const columns: ColumnDef<Report>[] = [
   },
   {
     accessorKey: "summary",
-    header: "Summary",
+    header: () => <span className="font-bold">Summary</span>,
     cell: ({ row }) => {
       return <div className="max-w-28 truncate">{row.getValue("summary")}</div>
     },
@@ -157,7 +157,7 @@ export const columns: ColumnDef<Report>[] = [
   },
   {
     accessorKey: "additionalNotes",
-    header: "Additional Notes",
+    header: () => <span className="font-bold">Additional Notes</span>,
     cell: ({ row }) => {
       return (
         <div className="max-w-28 truncate">
@@ -171,7 +171,7 @@ export const columns: ColumnDef<Report>[] = [
   },
   {
     accessorKey: "urgencyLevel",
-    header: "Urgency Level",
+    header: () => <span className="font-bold">Urgency Level</span>,
     cell: ({ row }) => {
       const urgencyLevel: UrgencyLevel = row.getValue("urgencyLevel")
       switch (urgencyLevel) {

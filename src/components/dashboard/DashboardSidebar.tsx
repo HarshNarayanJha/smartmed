@@ -62,16 +62,16 @@ export default async function DashboardSidebar() {
   return (
     <Sidebar variant="sidebar">
       <SidebarHeader className="p-4 font-bold text-xl shadow-md">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          {userData.name}'s Dashboard
+        <Link href="/dashboard" className="flex items-center gap-2 font-title">
+          Dr. {userData.name}'s Dashboard
         </Link>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Patients</SidebarGroupLabel>
+          <SidebarGroupLabel className="font-title">Patients</SidebarGroupLabel>
           <SidebarGroupAction title="Add Patient">
             <Link href="/dashboard/patients/new">
-              <Plus /> <span className="sr-only">New Patient</span>
+              <Plus size={16} /> <span className="sr-only">New Patient</span>
             </Link>
           </SidebarGroupAction>
           <SidebarGroupContent>
@@ -93,7 +93,9 @@ export default async function DashboardSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarGroup>
-            <SidebarGroupLabel>SmartMed</SidebarGroupLabel>
+            <SidebarGroupLabel className="font-body">
+              SmartMed
+            </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
@@ -124,7 +126,7 @@ export default async function DashboardSidebar() {
             <SidebarMenuItem>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton>
+                  <SidebarMenuButton className="font-title">
                     <User2 /> {userData.name}
                     <ChevronUp className="ml-auto" />
                   </SidebarMenuButton>

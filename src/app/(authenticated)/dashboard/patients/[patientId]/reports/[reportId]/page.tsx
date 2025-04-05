@@ -180,7 +180,9 @@ export default async function ReportDetailPage({
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div>
-                  <CardTitle className="text-xl">Report Overview</CardTitle>
+                  <CardTitle className="font-title text-xl">
+                    Report Overview
+                  </CardTitle>
                   <CardDescription>
                     Report ID: {report.id.substring(0, 6)}
                   </CardDescription>
@@ -248,7 +250,9 @@ export default async function ReportDetailPage({
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-xl">Patient Information</CardTitle>
+              <CardTitle className="font-title text-xl">
+                Patient Information
+              </CardTitle>
               <CardDescription>
                 Patient ID: {patient.id.substring(0, 6)}
               </CardDescription>
@@ -308,7 +312,9 @@ export default async function ReportDetailPage({
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-xl">Associated Reading</CardTitle>
+              <CardTitle className="font-title text-xl">
+                Associated Reading
+              </CardTitle>
               <CardDescription>
                 Reading ID: {reading.id.substring(0, 6)} (Taken:{" "}
                 {formatDateTime(reading.createdAt)})

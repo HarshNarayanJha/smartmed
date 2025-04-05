@@ -335,7 +335,7 @@ export default async function PatientReadingsPage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Latest Diagnosis</CardTitle>
+              <CardTitle className="font-title">Latest Diagnosis</CardTitle>
             </CardHeader>
             <CardContent>
               <p>

@@ -27,7 +27,6 @@ import getUser from "@/utils/supabase/server"
 import { Doctor, Patient, SmokingStatus } from "@prisma/client"
 import {
   Clipboard,
-  Eye,
   FileText,
   Heart,
   HeartPulse,
@@ -113,7 +112,7 @@ export default async function PatientPage({
         <Card className="md:col-span-1">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center">
+              <CardTitle className="flex items-center font-title">
                 <User className="mr-2 h-5 w-5 text-primary" />
                 Patient Profile
               </CardTitle>
@@ -247,7 +246,7 @@ export default async function PatientPage({
         <Card className="shadow-md md:col-span-2">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center">
+              <CardTitle className="flex items-center font-title">
                 <Clipboard className="mr-2 h-5 w-5 text-primary" />
                 Medical Information
               </CardTitle>

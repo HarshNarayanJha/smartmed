@@ -26,7 +26,9 @@ const DoctorHeader = ({ doctor }: { doctor: Doctor }) => {
   return (
     <div className="my-8 flex flex-row justify-between">
       <div className="flex flex-col">
-        <h1 className="font-bold text-2xl">{doctor.name}'s Patient Registry</h1>
+        <h1 className="mb-4 font-bold text-2xl">
+          Dr. {doctor.name}'s Patient Registry
+        </h1>
         <p className="text-muted-foreground">
           Comprehensive patient management portal for healthcare professionals.
           Access medical histories, appointment schedules, and treatment plans

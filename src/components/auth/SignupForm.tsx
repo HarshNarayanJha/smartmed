@@ -121,67 +121,19 @@ export default function SignupForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <CardContent className="space-y-6 pt-6">
-          <div className="grid gap-6 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    Name
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter your name"
-                      disabled={isPending}
-                      className="bg-background"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Mail className="h-4 w-4" />
-                    Email
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="Enter your email"
-                      disabled={isPending}
-                      className="bg-background"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
+        <div className="grid gap-6 md:grid-cols-2">
           <FormField
             control={form.control}
-            name="password"
+            name="name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="flex items-center gap-2">
-                  <Lock className="h-4 w-4" />
-                  Password
+                  <User className="h-4 w-4" />
+                  Name
                 </FormLabel>
                 <FormControl>
                   <Input
-                    type="password"
-                    placeholder="Create a password"
+                    placeholder="Enter your name"
                     disabled={isPending}
                     className="bg-background"
                     {...field}
@@ -192,129 +144,149 @@ export default function SignupForm() {
             )}
           />
 
-          <div className="grid gap-6 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="practiceStarted"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    Practice Started (Year)
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="YYYY"
-                      disabled={isPending}
-                      className="bg-background"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="gender"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Gender</FormLabel>
-                  <Select
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  Email
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="email"
+                    placeholder="Enter your email"
                     disabled={isPending}
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl className="w-full">
-                      <SelectTrigger className="bg-background">
-                        <SelectValue placeholder="Select your gender" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="MALE">Male</SelectItem>
-                      <SelectItem value="FEMALE">Female</SelectItem>
-                      <SelectItem value="OTHER">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="degree"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <GraduationCap className="h-4 w-4" />
-                    Degree
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter your degree"
-                      disabled={isPending}
-                      className="bg-background"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="speciality"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Stethoscope className="h-4 w-4" />
-                    Speciality
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter your speciality"
-                      disabled={isPending}
-                      className="bg-background"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </CardContent>
-
-        <CardFooter className="flex flex-col space-y-4 pb-6">
-          <Button
-            type="submit"
-            className="w-full py-6 font-medium text-base transition-all duration-200 hover:scale-[1.01]"
-            disabled={isPending}
-          >
-            {isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Creating account...
-              </>
-            ) : (
-              "Create Account"
+                    className="bg-background"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-          </Button>
-          <div className="text-center text-muted-foreground text-sm">
-            Already have an account?{" "}
-            <Link
-              href="/auth/login"
-              className="font-medium text-primary transition-all hover:underline"
-            >
-              Log in
-            </Link>
-          </div>
-        </CardFooter>
+          />
+        </div>
+
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2">
+                <Lock className="h-4 w-4" />
+                Password
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="password"
+                  placeholder="Create a password"
+                  disabled={isPending}
+                  className="bg-background"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="grid gap-6 md:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="practiceStarted"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  Practice Started (Year)
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="YYYY"
+                    disabled={isPending}
+                    className="bg-background"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="gender"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Gender</FormLabel>
+                <Select
+                  disabled={isPending}
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl className="w-full">
+                    <SelectTrigger className="bg-background">
+                      <SelectValue placeholder="Select your gender" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="MALE">Male</SelectItem>
+                    <SelectItem value="FEMALE">Female</SelectItem>
+                    <SelectItem value="OTHER">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="degree"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-2">
+                  <GraduationCap className="h-4 w-4" />
+                  Degree
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter your degree"
+                    disabled={isPending}
+                    className="bg-background"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="speciality"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-2">
+                  <Stethoscope className="h-4 w-4" />
+                  Speciality
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter your speciality"
+                    disabled={isPending}
+                    className="bg-background"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
       </form>
     </Form>
   )

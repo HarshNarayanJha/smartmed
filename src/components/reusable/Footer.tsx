@@ -100,7 +100,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-12 border-slate-800 border-t pt-8 text-slate-400 text-sm">
-          <p>© 2025 SmartMed. All rights reserved.</p>
+          <p>© 2025 Harsh Narayan Jha. All rights reserved.</p>
         </div>
       </div>
     </footer>

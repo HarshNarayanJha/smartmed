@@ -76,7 +76,7 @@ export default function ReadingLineChart<TData extends Record<string, any>>({
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle>{title}</CardTitle>
+        <CardTitle className="font-title">{title}</CardTitle>
         {description && <CardDescription>{description}</CardDescription>}
       </CardHeader>
       <CardContent>

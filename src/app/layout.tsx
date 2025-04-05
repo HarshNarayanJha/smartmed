@@ -1,8 +1,33 @@
 import LitAnalytics from "@/components/reusable/LitAnalytics"
 import type { Metadata } from "next"
+import {
+  Crimson_Text,
+  Martian_Mono,
+  Montserrat,
+  Open_Sans
+} from "next/font/google"
 import "./globals.css"
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/providers/ThemeProvider"
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
+  display: "swap"
+})
+
+const openSans = Open_Sans({
+  subsets: ["latin"],
+  variable: "--font-open-sans",
+  weight: "500",
+  display: "swap"
+})
+
+const martianMono = Martian_Mono({
+  subsets: ["latin"],
+  variable: "--font-martian-mono",
+  display: "swap"
+})
 
 export const metadata: Metadata = {
   title: "SmartMed",
@@ -38,7 +63,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className="scroll-smooth">
+      <body
+        className={`${montserrat.variable} ${openSans.variable} ${martianMono.variable} antialiased`}
+      >
         <LitAnalytics />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}

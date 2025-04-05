@@ -37,7 +37,7 @@ export default async function AccountMenu() {
       <DropdownMenuTrigger>
         <UserCircle />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-72" align="end">
+      <DropdownMenuContent className="mt-2 w-auto max-w-80" align="end">
         <div className="flex flex-row space-x-1 p-2">
           <Avatar className="m-auto h-14 w-14">
             <AvatarImage
@@ -47,7 +47,7 @@ export default async function AccountMenu() {
             <AvatarFallback>{userData.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col justify-end">
-            <DropdownMenuLabel className="font-bold text-lg">
+            <DropdownMenuLabel className="font-bold font-title text-lg">
               {userData.name}
             </DropdownMenuLabel>
             <DropdownMenuLabel className="truncate text-muted-foreground text-sm">

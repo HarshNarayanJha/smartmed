@@ -26,7 +26,7 @@ export default async function WelcomeAboard() {
             <div className="mb-4 flex items-center justify-center">
               <CheckCircle2 className="h-12 w-12 text-green-500" />
             </div>
-            <CardTitle className="text-center text-2xl">
+            <CardTitle className="text-center font-title text-2xl">
               Welcome Aboard!
             </CardTitle>
             <CardDescription className="text-center">
@@ -46,13 +46,25 @@ export default async function WelcomeAboard() {
                 </div>
                 <div className="flex items-center">
                   <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
+                  <span>Take quick readings</span>
+                </div>
+                <div className="flex items-center">
+                  <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
+                  <span>Fast Reports Generation</span>
+                </div>
+                <div className="flex items-center">
+                  <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
+                  <span>Automatic Follow-up Schedules</span>
+                </div>
+                <div className="flex items-center">
+                  <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
                   <span>Advance AI features</span>
                 </div>
               </div>
             </div>
           </CardContent>
           <CardFooter className="flex justify-center">
-            <Button>
+            <Button className="mt-4 font-semibold">
               <Link href="/dashboard">Go To Your Dashboard</Link>
             </Button>
           </CardFooter>

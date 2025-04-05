@@ -52,6 +52,17 @@ export default function AboutPage() {
                 to your health or treatment. Do not rely on information from
                 this prototype.
               </p>
+              <p>
+                This project is open source and the source code is available on{" "}
+                <a
+                  href="https://github.com/HarshNarayanJha/smartmed"
+                  className="text-red-200 hover:underline"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  GitHub
+                </a>
+              </p>
             </div>
           </div>
         </div>

@@ -57,13 +57,13 @@ export default async function PatientReadingsPage() {
         <div className="flex items-center gap-4">
           <Avatar className="h-16 w-16">
             <AvatarImage
-              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${doctor.name}`}
+              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${doctor.id}`}
               alt={doctor.name}
             />
             <AvatarFallback>{doctor.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
-            <h1 className="font-bold text-3xl">Reports by {doctor.name}</h1>
+            <h1 className="font-bold text-3xl">Reports by Dr. {doctor.name}</h1>
           </div>
         </div>
       </div>

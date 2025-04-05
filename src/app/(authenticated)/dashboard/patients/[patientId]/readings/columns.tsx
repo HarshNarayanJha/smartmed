@@ -84,7 +84,7 @@ export const columns: ColumnDef<Reading>[] = [
       return (
         <span
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="cursor-pointer text-foreground hover:text-muted-foreground "
+          className="cursor-pointer font-bold text-foreground hover:text-muted-foreground"
         >
           Reading Taken{" "}
           {column.getIsSorted() === "asc" ? (
@@ -109,7 +109,7 @@ export const columns: ColumnDef<Reading>[] = [
   },
   {
     accessorKey: "diagnosedFor",
-    header: "Diagnosed For",
+    header: () => <span className="font-bold">Diagnosed For</span>,
     cell: ({ row }) => {
       return (
         <div className="max-w-28 truncate">{row.getValue("diagnosedFor")}</div>
@@ -125,7 +125,7 @@ export const columns: ColumnDef<Reading>[] = [
       return (
         <span
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="cursor-pointer text-foreground hover:text-muted-foreground "
+          className="cursor-pointer font-bold text-foreground hover:text-muted-foreground"
         >
           Height{" "}
           {column.getIsSorted() === "asc" ? (
@@ -148,7 +148,7 @@ export const columns: ColumnDef<Reading>[] = [
       return (
         <span
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="cursor-pointer text-foreground hover:text-muted-foreground "
+          className="cursor-pointer font-bold text-foreground hover:text-muted-foreground"
         >
           Weight{" "}
           {column.getIsSorted() === "asc" ? (
@@ -171,7 +171,7 @@ export const columns: ColumnDef<Reading>[] = [
       return (
         <span
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="cursor-pointer text-foreground hover:text-muted-foreground "
+          className="cursor-pointer font-bold text-foreground hover:text-muted-foreground"
         >
           BMI{" "}
           {column.getIsSorted() === "asc" ? (
@@ -196,7 +196,7 @@ export const columns: ColumnDef<Reading>[] = [
       return (
         <span
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="cursor-pointer text-foreground hover:text-muted-foreground "
+          className="cursor-pointer font-bold text-foreground hover:text-muted-foreground"
         >
           Body Temperature{" "}
           {column.getIsSorted() === "asc" ? (
@@ -219,7 +219,7 @@ export const columns: ColumnDef<Reading>[] = [
       return (
         <span
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="cursor-pointer text-foreground hover:text-muted-foreground "
+          className="cursor-pointer font-bold text-foreground hover:text-muted-foreground"
         >
           Heart Rate{" "}
           {column.getIsSorted() === "asc" ? (
@@ -242,7 +242,7 @@ export const columns: ColumnDef<Reading>[] = [
       return (
         <span
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="cursor-pointer text-foreground hover:text-muted-foreground "
+          className="cursor-pointer font-bold text-foreground hover:text-muted-foreground"
         >
           Blood Pressure{" "}
           {column.getIsSorted() === "asc" ? (

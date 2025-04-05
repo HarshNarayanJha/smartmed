@@ -64,7 +64,9 @@ export default async function DashboardPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="font-medium">Schedule Status</CardTitle>
+            <CardTitle className="font-medium font-title">
+              Schedule Status
+            </CardTitle>
             <ActivityIcon className="h-4 w-4 animate-pulse text-green-500" />
           </CardHeader>
           <CardContent>
@@ -80,7 +82,7 @@ export default async function DashboardPage() {
         <Suspense fallback={<AppointmentsCardSkeleton />}>
           <Card>
             <CardHeader>
-              <CardTitle>Recent Appointments</CardTitle>
+              <CardTitle className="font-title">Recent Appointments</CardTitle>
               <CardDescription>Your upcoming appointments</CardDescription>
             </CardHeader>
             <CardContent>
@@ -94,7 +96,7 @@ export default async function DashboardPage() {
         <Suspense fallback={<ActivityCardSkeleton />}>
           <Card>
             <CardHeader>
-              <CardTitle>Activity Overview</CardTitle>
+              <CardTitle className="font-title">Activity Overview</CardTitle>
               <CardDescription>
                 Your activity for the last 30 days
               </CardDescription>
@@ -120,7 +122,7 @@ async function PatientCard({ userId }: { userId: string }) {
     <Link href="/dashboard/patients">
       <Card className="scale-100 transition-transform hover:scale-105">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="font-medium">Patients</CardTitle>
+          <CardTitle className="font-medium font-title">Patients</CardTitle>
           <Users className="h-4 w-4 text-purple-500" />
         </CardHeader>
         <CardContent>
@@ -154,7 +156,9 @@ async function CuredPatientCard({ userId }: { userId: string }) {
     <Link href="/dashboard/patients?cured=true">
       <Card className="scale-100 transition-transform hover:scale-105">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="font-medium">Cured Patients</CardTitle>
+          <CardTitle className="font-medium font-title">
+            Cured Patients
+          </CardTitle>
           <UserPlus2Icon className="h-4 w-4 text-green-500" />
         </CardHeader>
         <CardContent>
@@ -173,7 +177,9 @@ async function ReportsCard({ userId }: { userId: string }) {
     <Link href="/dashboard/reports">
       <Card className="scale-100 transition-transform hover:scale-105">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="font-medium">Reports Generated</CardTitle>
+          <CardTitle className="font-medium font-title">
+            Reports Generated
+          </CardTitle>
           <NotebookIcon className="h-4 w-4 text-orange-500" />
         </CardHeader>
         <CardContent>
@@ -193,7 +199,7 @@ async function ReadingsCard({ userId }: { userId: string }) {
   return (
     <Card className="scale-100 transition-transform hover:scale-105">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="font-medium">Readings Taken</CardTitle>
+        <CardTitle className="font-medium font-title">Readings Taken</CardTitle>
         <HeartPulse className="h-4 w-4 text-red-500" />
       </CardHeader>
       <CardContent>

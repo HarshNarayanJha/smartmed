@@ -21,7 +21,7 @@ export default async function LoginPage() {
   return (
     <Card className="m-auto w-full max-w-md">
       <CardHeader>
-        <CardTitle className="text-center font-bold text-2xl">
+        <CardTitle className="text-center font-bold font-title text-2xl tracking-tight">
           Log in to your Account
         </CardTitle>
         <CardDescription className="text-center">

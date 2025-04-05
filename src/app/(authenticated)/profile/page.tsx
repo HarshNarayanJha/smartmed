@@ -4,6 +4,8 @@ import { Doctor } from "@prisma/client"
 import {
   CalendarIcon,
   GraduationCapIcon,
+  HeartPulse,
+  Notebook,
   UserIcon,
   UsersIcon
 } from "lucide-react"
@@ -14,6 +16,8 @@ import {
   getCuredPatientsCountByDoctorId,
   getPatientsCountByDoctorId
 } from "@/actions/patient"
+import { getNumReadingsByDoctorId } from "@/actions/reading"
+import { getNumReportsByDoctorId } from "@/actions/report"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -39,7 +43,7 @@ export default async function ProfilePage() {
   return (
     <main className="flex flex-1 flex-col px-4 pt-10 xl:px-8">
       <div className="mx-auto w-full max-w-4xl">
-        <h1 className="mb-6 font-bold text-3xl">Doctor Profile</h1>
+        <h1 className="mb-6 font-bold font-title text-3xl">Doctor Profile</h1>
 
         <div className="grid gap-6 md:grid-cols-2">
           <Suspense fallback={<PersonalInfoSkeleton />}>
@@ -65,7 +69,7 @@ const PersonalInfoCard = async ({ doctorId }: { doctorId: string }) => {
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle>Personal Information</CardTitle>
+        <CardTitle className="font-title">Personal Information</CardTitle>
         <CardDescription>Your professional profile details</CardDescription>
       </CardHeader>
       <CardContent className="pt-4">
@@ -90,7 +94,7 @@ const PersonalInfoCard = async ({ doctorId }: { doctorId: string }) => {
 
         <div className="space-y-4">
           <div className="flex items-center">
-            <GraduationCapIcon className="mr-2 h-5 w-5 text-muted-foreground" />
+            <GraduationCapIcon className="mr-4 h-5 w-5 text-muted-foreground" />
             <div>
               <p className="font-medium text-muted-foreground text-sm">
                 Degree
@@ -100,7 +104,7 @@ const PersonalInfoCard = async ({ doctorId }: { doctorId: string }) => {
           </div>
 
           <div className="flex items-center">
-            <UserIcon className="mr-2 h-5 w-5 text-muted-foreground" />
+            <UserIcon className="mr-4 h-5 w-5 text-muted-foreground" />
             <div>
               <p className="font-medium text-muted-foreground text-sm">
                 Speciality
@@ -110,7 +114,7 @@ const PersonalInfoCard = async ({ doctorId }: { doctorId: string }) => {
           </div>
 
           <div className="flex items-center">
-            <CalendarIcon className="mr-2 h-5 w-5 text-muted-foreground" />
+            <CalendarIcon className="mr-4 h-5 w-5 text-muted-foreground" />
             <div>
               <p className="font-medium text-muted-foreground text-sm">
                 Experience
@@ -148,7 +152,7 @@ const PersonalInfoSkeleton = () => {
         <div className="space-y-4">
           {[1, 2, 3].map(item => (
             <div key={item} className="flex items-center">
-              <Skeleton className="mr-2 h-5 w-5" />
+              <Skeleton className="mr-4 h-5 w-5" />
               <div>
                 <Skeleton className="h-4 w-20" />
                 <Skeleton className="mt-1 h-4 w-32" />
@@ -168,17 +172,19 @@ const PracticeStatsCard = async ({ doctorId }: { doctorId: string }) => {
 
   const patientsCount = await getPatientsCountByDoctorId(doctor.id)
   const curedPatientsCount = await getCuredPatientsCountByDoctorId(doctor.id)
+  const reportsCount = await getNumReportsByDoctorId(doctor.id)
+  const readingsCount = await getNumReadingsByDoctorId(doctor.id)
 
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle>Practice Statistics</CardTitle>
+        <CardTitle className="font-title">Practice Statistics</CardTitle>
         <CardDescription>Overview of your medical practice</CardDescription>
       </CardHeader>
       <CardContent className="pt-4">
-        <div className="space-y-8">
+        <div className="space-y-6">
           <div className="flex items-center">
-            <UsersIcon className="mr-2 h-5 w-5 text-muted-foreground" />
+            <UsersIcon className="mr-4 h-5 w-5 text-muted-foreground" />
             <div>
               <p className="font-medium text-sm">Patients</p>
               <p className="font-bold text-2xl">{patientsCount}</p>
@@ -186,14 +192,30 @@ const PracticeStatsCard = async ({ doctorId }: { doctorId: string }) => {
           </div>
 
           <div className="flex items-center">
-            <UsersIcon className="mr-2 h-5 w-5 text-green-500" />
+            <UsersIcon className="mr-4 h-5 w-5 text-green-500" />
             <div>
               <p className="font-medium text-sm">Cured Patients</p>
               <p className="font-bold text-2xl">{curedPatientsCount}</p>
             </div>
           </div>
 
-          <div>
+          <div className="flex items-center">
+            <Notebook className="mr-4 h-5 w-5" />
+            <div>
+              <p className="font-medium text-sm">Reports Generated</p>
+              <p className="font-bold text-2xl">{reportsCount}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center">
+            <HeartPulse className="mr-4 h-5 w-5" />
+            <div>
+              <p className="font-medium text-sm">Readings Taken</p>
+              <p className="font-bold text-2xl">{readingsCount}</p>
+            </div>
+          </div>
+
+          <div className="mt-8">
             <p className="mb-2 font-medium text-sm">Account Information</p>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -223,7 +245,7 @@ const PracticeStatsSkeleton = () => {
         <div className="space-y-8">
           {[1, 2].map(item => (
             <div key={item} className="flex items-center">
-              <Skeleton className="mr-2 h-5 w-5" />
+              <Skeleton className="mr-4 h-5 w-5" />
               <div>
                 <Skeleton className="h-4 w-24" />
                 <Skeleton className="mt-1 h-8 w-16" />

@@ -32,7 +32,7 @@ const Header = async () => {
               height={32}
               className="inline rounded-lg"
             />
-            <span>SmartMed</span>
+            <span className="font-title">SmartMed</span>
           </Link>
           <NavigationMenu>
             <NavigationMenuList>
@@ -46,7 +46,7 @@ const Header = async () => {
                           className="flex h-full w-full flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
                           href="/dashboard"
                         >
-                          <div className="mt-4 mb-2 font-medium text-lg">
+                          <div className="mt-4 mb-2 font-medium font-title text-lg">
                             Dashboard
                           </div>
                           <p className="text-muted-foreground text-sm leading-tight">
@@ -59,8 +59,8 @@ const Header = async () => {
                     <li>
                       <Link href="/profile" legacyBehavior passHref>
                         <NavigationMenuLink className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                          <div className="font-medium text-sm leading-none">
-                            Settings
+                          <div className="font-medium font-title text-sm leading-none">
+                            Profile
                           </div>
                           <p className="line-clamp-2 text-muted-foreground text-sm leading-snug">
                             Customize your profile and preferences
