@@ -270,7 +270,7 @@ export async function createReport(
     })
 
     console.log("Will send report in email here")
-    // await sendEmailOnReportGeneration(reportWithEmail)
+    sendEmailOnReportGeneration(reportWithEmail)
 
     revalidatePath(
       `/dashboard/patient/${report.patientId}/reports/${report.id}`

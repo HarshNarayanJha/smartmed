@@ -1,7 +1,6 @@
 import LitAnalytics from "@/components/reusable/LitAnalytics"
 import type { Metadata } from "next"
 import {
-  Crimson_Text,
   Martian_Mono,
   Montserrat,
   Open_Sans
