@@ -116,11 +116,13 @@ export default async function ReadingPage({
                   value={
                     reading.temperature ? `${reading.temperature} °C` : "N/A"
                   }
+                  hoverColor="hover:bg-red-100 dark:hover:bg-red-900/30"
                 />
                 <ReadingItem
                   Icon={HeartPulse}
                   title="Heart Rate"
                   value={reading.heartRate ? `${reading.heartRate} bpm` : "N/A"}
+                  hoverColor="hover:bg-pink-100 dark:hover:bg-pink-900/30"
                 />
                 <ReadingItem
                   Icon={Activity}
@@ -130,6 +132,7 @@ export default async function ReadingPage({
                       ? `${reading.bpSystolic}/${reading.bpDiastolic} mmHg`
                       : "N/A"
                   }
+                  hoverColor="hover:bg-blue-100 dark:hover:bg-blue-900/30"
                 />
                 <ReadingItem
                   Icon={Wind}
@@ -139,6 +142,7 @@ export default async function ReadingPage({
                       ? `${reading.respiratoryRate} breaths/min`
                       : "N/A"
                   }
+                  hoverColor="hover:bg-cyan-100 dark:hover:bg-cyan-900/30"
                 />
                 <ReadingItem
                   Icon={Percent}
@@ -148,6 +152,7 @@ export default async function ReadingPage({
                       ? `${reading.oxygenSaturation}%`
                       : "N/A"
                   }
+                  hoverColor="hover:bg-sky-100 dark:hover:bg-sky-900/30"
                 />
                 <ReadingItem
                   Icon={Droplet}
@@ -157,16 +162,19 @@ export default async function ReadingPage({
                       ? `${reading.glucoseLevel} mg/dL`
                       : "N/A"
                   }
+                  hoverColor="hover:bg-indigo-100 dark:hover:bg-indigo-900/30"
                 />
                 <ReadingItem
                   Icon={Ruler}
                   title="Height"
                   value={reading.height ? `${reading.height} cm` : "N/A"}
+                  hoverColor="hover:bg-green-100 dark:hover:bg-green-900/30"
                 />
                 <ReadingItem
                   Icon={Scale}
                   title="Weight"
                   value={reading.weight ? `${reading.weight} kg` : "N/A"}
+                  hoverColor="hover:bg-amber-100 dark:hover:bg-amber-900/30"
                 />
                 <ReadingItem
                   Icon={Gauge}
@@ -176,6 +184,7 @@ export default async function ReadingPage({
                       ? `${calculateBmi(reading.weight, reading.height)} kg/m²`
                       : "N/A"
                   }
+                  hoverColor="hover:bg-orange-100 dark:hover:bg-orange-900/30"
                 />
               </div>
             </CardContent>
@@ -224,12 +233,20 @@ interface ReadingItemProps {
   Icon: LucideIcon
   title: string
   value: string | number | null | undefined
+  hoverColor?: string
 }
 
-function ReadingItem({ Icon, title, value }: ReadingItemProps) {
+function ReadingItem({
+  Icon,
+  title,
+  value,
+  hoverColor = "hover:bg-muted/50"
+}: ReadingItemProps) {
   const displayValue = value ?? "N/A"
   return (
-    <div className="flex items-center space-x-4 rounded-lg border bg-background p-4 transition-colors hover:bg-muted/50">
+    <div
+      className={`flex items-center space-x-4 rounded-lg border bg-background p-4 transition-colors ${hoverColor}`}
+    >
       <Icon className="h-7 w-7 flex-shrink-0 text-primary" strokeWidth={1.5} />
       <div className="flex-1">
         <h3 className="font-medium text-muted-foreground text-sm">{title}</h3>
