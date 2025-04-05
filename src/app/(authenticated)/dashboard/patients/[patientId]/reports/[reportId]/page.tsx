@@ -27,6 +27,7 @@ import { Separator } from "@/components/ui/separator"
 import { calculateAge, formatDate, formatDateTime } from "@/lib/utils"
 import getUser from "@/utils/supabase/server"
 import { Doctor, Patient, Reading, Report, UrgencyLevel } from "@prisma/client"
+import cronstrue from "cronstrue"
 import {
   Eye,
   FlaskConical,
@@ -202,7 +203,11 @@ export default async function ReportDetailPage({
                 Generated on {formatDateTime(report.createdAt)} | Last Updated:{" "}
                 {formatDateTime(report.updatedAt)}
                 <br />
-                Scheduled {report.followupSchedule}
+                {!patient.cured && report.followupSchedule && (
+                  <span>
+                    Scheduled: {cronstrue.toString(report.followupSchedule)}
+                  </span>
+                )}
               </div>
             </CardHeader>
             <CardContent className="space-y-5">

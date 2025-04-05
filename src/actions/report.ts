@@ -25,7 +25,7 @@ Your response should follow this exact JSON schema:
   "urgencyLevel": "Low/Medium/High - Include these parameters according to your findings and alert the patient accordingly",
   "additionalNotes": "Any other relevant medical observations or concerns you want to give from your experience. It should also give the patient a safe/proper diet and yoga/exercise plan for speedy recovery in a short and concise manner in a plain text",
   "tests": "Includes information about all the tests that are needed to be done in plain english sentence. Keep this very concise.",
-  "followupSchedule": "A single cron job schedule for followup visits to doctor without any additional text as per their condition or leave empty string if not required. Do not use nonstandard cron formats."
+  "followupSchedule": "A single cron job schedule for followup visits to doctor without any additional text as per their condition or if diagnosedFor mentions a followup, or leave empty string if not required. Do not use nonstandard cron formats."
 
 }
 
@@ -38,7 +38,7 @@ Your report should:
 - Format all values with appropriate units
 - Prioritize patient's health and safety in all recommendations being economical at the same time
 - Also, mention the ranges if the readings come severe for any reading
-- It should include cron job schedule for patient followup visit as per their condition or empty string if no followup is required.
+- It should include cron job schedule for patient followup visit as per their condition or if diagnosedFor mentions a followup, otherwise empty string if no followup is required.
 Be careful in this as if a patient is not given a proper treatment on time then it may cause a lot of harm to them even DEATH also.
 Make sure to set the time hour in the cronjob to a suitable office hours time, not midnight. Be sure to consider the today's date also.
 Today is: ${new Date().toJSON()}
@@ -258,15 +258,19 @@ export async function createReport(
         }
       })
 
-    const jobId = await scheduleFollowup(reportWithEmail, diagnosedFor)
+    const data = {
+      jobId: null
+    }
+
+    if (reportWithEmail.followupSchedule) {
+      data.jobId = await scheduleFollowup(reportWithEmail, diagnosedFor)
+    }
 
     const report: Report = await prisma.report.update({
       where: {
         id: reportWithEmail.id
       },
-      data: {
-        jobId
-      }
+      data
     })
 
     console.log("Will send report in email here")
