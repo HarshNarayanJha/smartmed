@@ -2,8 +2,9 @@
 
 import { prisma } from "@/db/prisma"
 import { calculateAge, calculateBmi } from "@/lib/utils"
+import { createClient } from "@/utils/supabase/server"
 import { GoogleGenAI, Type } from "@google/genai"
-import { Patient, Reading, Report } from "@prisma/client"
+import { Patient, Prisma, Reading, Report } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 
 const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY!
@@ -41,6 +42,62 @@ Remember to be thorough but concise. This report will be used by healthcare prof
 Here are the readings in the json format:
 
 `
+
+/**
+ * Schedule a followup for a report
+ */
+export async function scheduleFollowup(
+  report: ReportWithPatientAndDoctorEmail
+): Promise<number> {
+  const client = await createClient()
+  console.log("Creating cron job followup schedule for report id", report.id)
+
+  const { data, error } = await client.schema("cron").rpc("schedule", {
+    job_name: `followup-${report.id}`,
+    schedule: report.followupSchedule,
+    command: `Send mail to ${report.patient.email} and ${report.doctor.email}`
+  })
+
+  if (error) {
+    console.error("Error while create an followup cron job", error)
+    return null
+  }
+
+  console.log(
+    `Schedule Followup created for report id ${report.id} with id ${data}`
+  )
+  return data
+}
+
+/**
+ * Unschedules all followups for a patient
+ * This gets done when patient is marked cured or get's removed
+ */
+export async function unscheduleAllFollowupsByPatientId(patientId: string) {
+  const client = await createClient()
+  const jobIds = await getReportJobIdsByPatientId(patientId)
+
+  console.log("Unscheduling all followups for patient id", patientId)
+  jobIds.forEach(async jid => {
+    await client.schema("cron").rpc("unschedule", { job_id: jid })
+    console.log("Unscheduled followup with id", jid)
+  })
+}
+
+/**
+ * Unschedules all followups for a doctor
+ * This gets done when doctor delete's account
+ */
+export async function unscheduleAllFollowupsByDoctorId(doctorId: string) {
+  const client = await createClient()
+  const jobIds = await getReportJobIdsByDoctorId(doctorId)
+
+  console.log("Unscheduling all followups for doctor id", doctorId)
+  jobIds.forEach(async jid => {
+    await client.schema("cron").rpc("unschedule", { job_id: jid })
+    console.log("Unscheduled followup with id", jid)
+  })
+}
 
 /**
  * Generates a report for a given reading and patient ID
@@ -132,6 +189,21 @@ export async function generateReport(
   }
 }
 
+export type ReportWithPatientAndDoctorEmail = Prisma.ReportGetPayload<{
+  include: {
+    patient: {
+      select: {
+        email: true
+      }
+    }
+    doctor: {
+      select: {
+        email: true
+      }
+    }
+  }
+}>
+
 /**
  * Creates a report for a given reading and patient ID
  */
@@ -139,8 +211,31 @@ export async function createReport(
   reportData: Omit<Report, "createdAt" | "updatedAt">
 ): Promise<Report> {
   try {
-    const report: Report = await prisma.report.create({
-      data: reportData
+    const report: ReportWithPatientAndDoctorEmail = await prisma.report.create({
+      data: reportData,
+      include: {
+        patient: {
+          select: {
+            email: true
+          }
+        },
+        doctor: {
+          select: {
+            email: true
+          }
+        }
+      }
+    })
+
+    const jobId = await scheduleFollowup(report)
+
+    await prisma.report.update({
+      where: {
+        id: report.id
+      },
+      data: {
+        jobId
+      }
     })
 
     revalidatePath(
@@ -214,6 +309,46 @@ export async function getNumReportsByPatientId(
   } catch (error) {
     console.log(error)
     throw new Error("Failed to get number of reports")
+  }
+}
+
+export async function getReportJobIdsByPatientId(
+  patientId: string
+): Promise<string[]> {
+  try {
+    const jobIds = await prisma.report.findMany({
+      where: {
+        patientId
+      },
+      select: {
+        jobId: true
+      }
+    })
+
+    return jobIds.map(job => job.jobId)
+  } catch (error) {
+    console.log(error)
+    throw new Error("Failed to get report job IDs")
+  }
+}
+
+export async function getReportJobIdsByDoctorId(
+  doctorId: string
+): Promise<string[]> {
+  try {
+    const jobIds = await prisma.report.findMany({
+      where: {
+        doctorId
+      },
+      select: {
+        jobId: true
+      }
+    })
+
+    return jobIds.map(job => job.jobId)
+  } catch (error) {
+    console.log(error)
+    throw new Error("Failed to get report job IDs")
   }
 }
 

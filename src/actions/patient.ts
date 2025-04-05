@@ -3,6 +3,7 @@
 import { prisma } from "@/db/prisma"
 import { Patient, Prisma } from "@prisma/client"
 import { revalidatePath } from "next/cache"
+import { unscheduleAllFollowupsByPatientId } from "./report"
 
 /**
  * Fetch all patients from the database
@@ -228,6 +229,8 @@ export async function markPatientCured(id: string): Promise<void> {
       where: { id },
       data: { cured: true }
     })
+
+    await unscheduleAllFollowupsByPatientId(id)
 
     revalidatePath("/dashboard")
     revalidatePath("/dashboard/patients")
