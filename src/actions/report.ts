@@ -38,10 +38,11 @@ Your report should:
 - Format all values with appropriate units
 - Prioritize patient's health and safety in all recommendations being economical at the same time
 - Also, mention the ranges if the readings come severe for any reading
-- It should include cron job schedule for patient followup visit as per their condition or if the doctor mentions a followup in their diagnosis,
 - Add why you picked the followup schedule based on the patient's condition and the doctor's recommendation into the tests section.
-DO NOT mention about cron or anything since this is a report read by non technical people. Use words like "followup" and "scheduled"
-make sure to use the schedule, otherwise empty string if no followup is required. DO NOT USE NON STANDARD CRON JOB FORMATS
+DO NOT mention about cron or anything since this is a report read by non technical people. Use words like "followup" and "scheduled".
+- followupSchedule should include cron job schedule for patient followup visits as per their condition or if the doctor mentions a followup request in their diagnosis,
+make sure to use that only, otherwise empty string if no followup is required. DO NOT USE NON STANDARD CRON JOB FORMATS.
+
 Be careful in this as if a patient is not given a proper treatment on time then it may cause a lot of harm to them even DEATH also.
 Make sure to set the time hour in the cronjob to a suitable office hours time, not midnight. Be sure to consider the today's date also.
 

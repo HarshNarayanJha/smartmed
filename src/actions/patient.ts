@@ -272,3 +272,21 @@ export async function deletePatient(id: string): Promise<void> {
     throw new Error("Failed to delete patient")
   }
 }
+
+export async function deletePatientsByDoctorId(
+  doctorId: string
+): Promise<void> {
+  try {
+    const patients: Patient[] = await getPatientsByDoctorId(doctorId)
+
+    await Promise.all(
+      patients.map(async (patient: Patient) => await deletePatient(patient.id))
+    )
+
+    revalidatePath(`/dashboard`)
+    revalidatePath(`/`)
+  } catch (error) {
+    console.error(`Failed to delete patients by doctor ID ${doctorId}:`, error)
+    throw new Error("Failed to delete patients by doctor ID")
+  }
+}

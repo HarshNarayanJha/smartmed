@@ -2,7 +2,7 @@
 
 import { prisma } from "@/db/prisma"
 import { handleError } from "@/lib/utils"
-import { createClient } from "@/utils/supabase/server"
+import { createClient, createServiceClient } from "@/utils/supabase/server"
 import { Doctor, Gender } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { getDoctorByEmail } from "./doctor"
@@ -91,6 +91,22 @@ export async function signup(formData: FormData) {
     })
 
     revalidatePath("/", "layout") // Revalidate the root layout after signup
+    return { errorMessage: null }
+  } catch (error) {
+    return handleError(error)
+  }
+}
+
+export async function deleteAccount(id: string) {
+  try {
+    const supabase = await createServiceClient()
+
+    console.log("Deleting account with ID:", id)
+    const { error } = await supabase.auth.admin.deleteUser(id)
+
+    if (error) throw error
+
+    revalidatePath("/", "layout")
     return { errorMessage: null }
   } catch (error) {
     return handleError(error)

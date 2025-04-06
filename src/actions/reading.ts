@@ -146,7 +146,7 @@ export async function deleteReadingsByPatientId(
     const readings: Reading[] = await getReadingsByPatientId(patientId)
 
     await Promise.all(
-      readings.map(async reading => {
+      readings.map(async (reading: Reading) => {
         await deleteReading(reading.id)
       })
     )

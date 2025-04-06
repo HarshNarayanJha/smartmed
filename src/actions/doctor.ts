@@ -1,7 +1,9 @@
 "use server"
 
+import { deletePatientsByDoctorId } from "@/actions/patient"
 import { prisma } from "@/db/prisma"
 import { Doctor, Prisma } from "@prisma/client"
+import { revalidatePath } from "next/cache"
 
 /**
  * Fetches a doctor by their ID
@@ -110,5 +112,32 @@ export async function updateDoctorProfile(
   } catch (error) {
     console.error("Error updating doctor profile:", error)
     return null
+  }
+}
+
+export async function deleteDoctor(id: string): Promise<void> {
+  try {
+    const doctor = await prisma.doctor.findUnique({
+      where: { id },
+      select: { id: true }
+    })
+
+    if (!doctor) {
+      console.warn(`Doctor with ID ${id} not found for deletion.`)
+      return
+    }
+
+    console.warn(`Preparing to delete doctor with ID ${id}.`)
+
+    await deletePatientsByDoctorId(id)
+
+    await prisma.doctor.delete({
+      where: { id }
+    })
+
+    revalidatePath(`/`)
+  } catch (error) {
+    console.error("Error deleting doctor:", error)
+    throw new Error("Failed to delete doctor")
   }
 }

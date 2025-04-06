@@ -28,6 +28,7 @@ import {
   Stethoscope,
   User
 } from "lucide-react"
+import { redirect } from "next/navigation"
 import { useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -113,6 +114,8 @@ export default function SignupForm() {
           }
         }
       )
+
+      redirect("/onboarding")
     })
   }
 

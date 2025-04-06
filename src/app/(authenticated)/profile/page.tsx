@@ -1,45 +1,30 @@
-import { deleteDoctor, getDoctorById } from "@/actions/doctor"
+import { getDoctorById } from "@/actions/doctor"
 import getUser from "@/utils/supabase/server"
 import { Doctor } from "@prisma/client"
 import {
-  AlertTriangle,
   CalendarIcon,
   GraduationCapIcon,
   HeartPulse,
   Notebook,
-  Trash2,
   UserIcon,
   UsersIcon
 } from "lucide-react"
 import { redirect } from "next/navigation"
 import { Suspense } from "react"
 
-import { logout } from "@/actions/auth"
 import {
   getCuredPatientsCountByDoctorId,
   getPatientsCountByDoctorId
 } from "@/actions/patient"
 import { getNumReadingsByDoctorId } from "@/actions/reading"
 import { getNumReportsByDoctorId } from "@/actions/report"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from "@/components/ui/alert-dialog"
+import DeleteDoctorButton from "@/components/dashboard/DeleteDoctorButton"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle
 } from "@/components/ui/card"
@@ -61,7 +46,7 @@ export default async function ProfilePage() {
       <div className="mx-auto w-full max-w-4xl">
         <h1 className="mb-6 font-bold font-title text-3xl">Doctor Profile</h1>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="mb-8 grid gap-6 md:grid-cols-2">
           <Suspense fallback={<PersonalInfoSkeleton />}>
             <PersonalInfoCard doctorId={user.id} />
           </Suspense>
@@ -69,6 +54,21 @@ export default async function ProfilePage() {
           <Suspense fallback={<PracticeStatsSkeleton />}>
             <PracticeStatsCard doctorId={user.id} />
           </Suspense>
+        </div>
+        <div className="my-8">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="font-title text-destructive">
+                Danger Section
+              </CardTitle>
+              <CardDescription className="font-bold">
+                Deleting your account is permanent and cannot be undone.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              <DeleteDoctorButton doctor={doctor} />
+            </CardContent>
+          </Card>
         </div>
       </div>
     </main>
@@ -142,40 +142,6 @@ const PersonalInfoCard = async ({ doctorId }: { doctorId: string }) => {
           </div>
         </div>
       </CardContent>
-      <CardFooter className="pt-4">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive" className="w-full">
-              <Trash2 className="mr-2 h-4 w-4" /> Delete Account
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-destructive" />
-                Delete Doctor Account
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                doctor account and remove your data from our servers.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                className="bg-destructive text-destructive-foreground"
-                onClick={async () => {
-                  await deleteDoctor(doctor.id)
-                  await logout()
-                  redirect("/")
-                }}
-              >
-                Delete
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </CardFooter>
     </Card>
   )
 }
