@@ -46,18 +46,7 @@ export default function GenerateReportButton({
         router.push(`/dashboard/patients/${patient.id}/reports/${report.id}`)
 
         toast.success("Report Generated", {
-          description: `Report for this reading has been generated successfully.`,
-          action: (
-            <Button
-              onClick={() =>
-                router.push(
-                  `/dashboard/patient/${report.patientId}/reports/${report.id}`
-                )
-              }
-            >
-              View
-            </Button>
-          )
+          description: `Report for this reading has been generated successfully. It will open automatically.`
         })
       } catch (error) {
         toast.error("Error", {

@@ -371,6 +371,10 @@ export function CreatePatientForm({ doctorId }: { doctorId: string }) {
                     Add
                   </Button>
                 </div>
+                <p className="mt-1 text-muted-foreground text-sm">
+                  Press Enter or click the Add button to insert allergies,
+                  otherwise they won't be added.
+                </p>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {allergies.map((allergy, i) => (
                     <Badge
