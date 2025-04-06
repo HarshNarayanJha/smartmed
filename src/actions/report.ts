@@ -485,17 +485,33 @@ export async function getNumReportsByDoctorId(
   }
 }
 
-export async function deleteReport(reportId: string): Promise<void> {
+export async function deleteReport(id: string): Promise<void> {
   try {
-    const { id, jobId } = await prisma.report.delete({
+    const report = await prisma.report.findUnique({
+      where: { id },
+      select: { patientId: true, id: true, jobId: true, doctorId: true }
+    })
+
+    if (!report) {
+      console.warn(`Report with ID ${id} not found for deletion.`)
+      return
+    }
+
+    console.log(`Deleting report with ID ${id}...`)
+
+    await prisma.report.delete({
       where: {
-        id: reportId
+        id
       }
     })
 
-    await unscheduleFollowupById(jobId, id, false)
+    await unscheduleFollowupById(report.jobId, report.id, false)
+
+    revalidatePath(`/dashboard/patients/${report.patientId}`)
+    revalidatePath(`/dashboard/patients/${report.patientId}/reports`)
+    revalidatePath("/dashboard")
   } catch (error) {
-    console.error(`Failed to delete report ${reportId}:`, error)
-    throw new Error(`Failed to delete report with ID ${reportId}.`)
+    console.error(`Failed to delete report ${id}:`, error)
+    throw new Error(`Failed to delete report with ID ${id}.`)
   }
 }

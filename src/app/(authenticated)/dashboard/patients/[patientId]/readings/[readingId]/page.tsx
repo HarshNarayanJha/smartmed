@@ -2,6 +2,7 @@ import { getDoctorById } from "@/actions/doctor"
 import { getPatientById } from "@/actions/patient"
 import { getReadingById } from "@/actions/reading"
 import { getReportById } from "@/actions/report"
+import DeleteReadingButton from "@/components/dashboard/DeleteReadingButton"
 import GenerateReportButton from "@/components/dashboard/GenerateReportButton"
 import {
   Breadcrumb,
@@ -37,7 +38,7 @@ import {
   Wind
 } from "lucide-react"
 import Link from "next/link"
-import { redirect } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import { Suspense } from "react"
 
 export default async function ReadingPage({
@@ -56,11 +57,11 @@ export default async function ReadingPage({
   const report: Report | null = await getReportById(readingId)
 
   if (!reading) {
-    throw new Error("Reading not found")
+    notFound()
   }
 
   if (!patient) {
-    throw new Error("Patient not found")
+    notFound()
   }
 
   return (
@@ -68,7 +69,7 @@ export default async function ReadingPage({
       {pageBreadcrumbs(patientId, patient.name, reading.id)}
       <div className="container mx-auto max-w-4xl">
         <Suspense fallback={<ReadingSkeleton />}>
-          <Card className="overflow-hidden shadow-lg">
+          <Card className="mb-8 overflow-hidden shadow-lg">
             <CardHeader className="flex flex-row justify-between border-b">
               <div>
                 <CardTitle className="font-bold font-title text-2xl text-primary">
@@ -189,6 +190,7 @@ export default async function ReadingPage({
               </div>
             </CardContent>
           </Card>
+          <DeleteReadingButton reading={reading} />
         </Suspense>
       </div>
     </>

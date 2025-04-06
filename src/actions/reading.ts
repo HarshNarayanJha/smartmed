@@ -3,6 +3,7 @@
 import { prisma } from "@/db/prisma"
 import { Reading } from "@prisma/client"
 import { revalidatePath } from "next/cache"
+import { deleteReport } from "./report"
 
 /**
  * Creates a new reading
@@ -107,18 +108,22 @@ export async function getNumReadingsByDoctorId(
 /**
  * Deletes a reading by its ID
  */
-export async function deleteReadingById(id: string): Promise<void> {
+export async function deleteReading(id: string): Promise<void> {
   let patientId: string | null = null
   try {
     const reading = await prisma.reading.findUnique({
       where: { id },
-      select: { patientId: true } // Only select patientId
+      select: { patientId: true }
     })
 
     if (!reading) {
       console.warn(`Reading with ID ${id} not found for deletion.`)
       return
     }
+
+    console.log(`Preparing to delete reading with ID ${id}`)
+    await deleteReport(id)
+
     patientId = reading.patientId
 
     await prisma.reading.delete({
@@ -127,8 +132,8 @@ export async function deleteReadingById(id: string): Promise<void> {
 
     revalidatePath(`/dashboard/patients/${patientId}`)
     revalidatePath(`/dashboard/patients/${patientId}/readings`)
-
     revalidatePath("/dashboard")
+
   } catch (error) {
     console.error("Failed to delete reading:", error)
     throw new Error("Failed to delete reading")
