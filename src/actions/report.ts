@@ -99,6 +99,8 @@ export async function scheduleFollowup(
  * Unschedules a followup by its job id
  */
 export async function unscheduleFollowupById(jobId: number, reportId: string) {
+  if (!jobId) return
+
   const client = await createClient()
   await client.schema("cron").rpc("unschedule", { job_id: jobId.toString() })
   await updateReportById(reportId, { jobId: null, followupSchedule: "" })

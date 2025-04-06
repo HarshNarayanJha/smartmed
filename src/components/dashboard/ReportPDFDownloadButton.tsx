@@ -1,24 +1,12 @@
 "use client"
 
+import { Button } from "@/components/ui/button"
 import getPDFHTMLTemplate from "@/utils/getPDFHTMLTemplate"
 import { Doctor, Patient, Reading, Report } from "@prisma/client"
-import { Document, Font, Page } from "@react-pdf/renderer"
+import { Document, Font, Page, pdf } from "@react-pdf/renderer"
 import { Download, Loader2 } from "lucide-react"
-import dynamic from "next/dynamic"
+import { useTransition } from "react"
 import { Html } from "react-pdf-html"
-import { Button } from "../ui/button"
-const PDFDownloadLink = dynamic(
-  () => import("@/components/dashboard/PDFDownloadLink"),
-  {
-    ssr: false,
-    loading: () => (
-      <Button disabled style={{ opacity: 0.4 }}>
-        <Loader2 className="mr-2 animate-spin" />
-        Baking PDF
-      </Button>
-    )
-  }
-)
 
 export type ReportPDFButtonParams = {
   report: Report
@@ -254,47 +242,57 @@ export default function ReportPDFDownloadButton({
   patient,
   doctor
 }: ReportPDFButtonParams) {
+  const [isPending, startTransition] = useTransition()
+
   if (!report || !reading || !patient || !doctor) {
     return null
   }
 
   const REPORT_FILE_NAME = `SmartMed-Medical-Report-${report.id.substring(0, 6)}-${patient.id.substring(0, 6)}-${doctor.name}`
 
-  return (
-    <div>
-      <PDFDownloadLink
-        document={
+  const handleDownload = () => {
+    startTransition(async () => {
+      let url = ""
+      try {
+        const blob = await pdf(
           <ReportPDFDocument
             report={report}
             reading={reading}
             patient={patient}
             doctor={doctor}
           />
-        }
-        fileName={REPORT_FILE_NAME}
-      >
-        {({ blob: _blob, url: _url, loading, error }) => {
-          if (error) {
-            return <div>Error: {error.message}</div>
-          }
+        ).toBlob()
+        url = URL.createObjectURL(blob)
 
-          return (
-            <Button className="group" disabled={loading}>
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 animate-spin" />
-                  Loading PDF
-                </>
-              ) : (
-                <>
-                  <Download className="translate-y-0 transition-transform ease-out group-hover:translate-y-1" />
-                  Download PDF
-                </>
-              )}
-            </Button>
-          )
-        }}
-      </PDFDownloadLink>
-    </div>
+        const response = await fetch(url)
+        const blobData = await response.blob()
+        const blobUrl = window.URL.createObjectURL(blobData)
+
+        const link = document.createElement("a")
+        link.href = blobUrl
+        link.download = REPORT_FILE_NAME + ".pdf"
+        link.click()
+      } catch (error) {
+        console.error("Error in download process:", error)
+      } finally {
+        if (url) URL.revokeObjectURL(url)
+      }
+    })
+  }
+
+  return (
+    <Button className="group" onClick={handleDownload}>
+      {isPending ? (
+        <>
+          <Loader2 className="mr-2 animate-spin" />
+          Loading PDF
+        </>
+      ) : (
+        <>
+          <Download className="translate-y-0 transition-transform ease-out group-hover:translate-y-1" />
+          Download PDF
+        </>
+      )}
+    </Button>
   )
 }
