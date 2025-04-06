@@ -172,16 +172,25 @@ export default async function ReportDetailPage({
   return (
     <div className="container mx-auto space-y-8 px-4">
       {pageBreadcrumbs(patientId, patient.name, report.id)}
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:gap-0">
         <h1 className="font-bold text-3xl tracking-tight">
           Medical Report Details
         </h1>
-        <ReportPDFDownloadButton
-          report={report}
-          reading={reading}
-          patient={patient}
-          doctor={doctor}
-        />
+        <div className="flex items-center gap-4">
+          <ReportPDFDownloadButton
+            report={report}
+            reading={reading}
+            patient={patient}
+            doctor={doctor}
+          />
+          <Button
+            variant="secondary"
+            className="text-muted-foreground "
+            disabled={!report.followupSchedule}
+          >
+            Stop Followup Schedule
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">

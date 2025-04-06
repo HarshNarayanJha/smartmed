@@ -80,7 +80,16 @@ export default async function PatientReadingsPage({
   const K = 5
   const M = 20
 
-  const latestReading: Reading = patient.readings.at(-1)
+  const latestReading: Reading = patient.readings.findLast(
+    (r: Reading) =>
+      r.height &&
+      r.weight &&
+      r.bpSystolic &&
+      r.bpDiastolic &&
+      r.temperature &&
+      r.oxygenSaturation &&
+      r.respiratoryRate
+  )
   const latestKReadings: Reading[] = patient.readings.slice(-K)
   const latestMReadings: Reading[] = patient.readings.slice(-M)
 
@@ -485,7 +494,7 @@ export default async function PatientReadingsPage({
                           <TableCell className="font-medium">
                             {formatDateTime(reading.createdAt)}
                           </TableCell>
-                          <TableCell>{reading.height} cm</TableCell>
+                          <TableCell>{reading.height ? reading.height : '-'} cm</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

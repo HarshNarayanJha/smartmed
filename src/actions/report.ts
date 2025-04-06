@@ -24,8 +24,8 @@ Your response should follow this exact JSON schema:
   "recommendations": "Try to give Accurate Treatment recommendations and follow-up suggestions everytime",
   "urgencyLevel": "Low/Medium/High - Include these parameters according to your findings and alert the patient accordingly",
   "additionalNotes": "Any other relevant medical observations or concerns you want to give from your experience. It should also give the patient a safe/proper diet and yoga/exercise plan for speedy recovery in a short and concise manner in a plain text",
-  "tests": "Includes information about all the tests that are needed to be done in plain english sentence. Keep this very concise.",
-  "followupSchedule": "A single cron job schedule for followup visits to doctor without any additional text as per their condition or if diagnosedFor mentions a followup, or leave empty string if not required. Do not use nonstandard cron formats."
+  "tests": "Includes information about all the tests that are needed to be done in plain english sentence. Keep this very concise. Include info about the followupSchedule you decided here",
+  "followupSchedule": "A single cron job schedule for followup visits to doctor without any additional text as per their condition."
 
 }
 
@@ -38,10 +38,15 @@ Your report should:
 - Format all values with appropriate units
 - Prioritize patient's health and safety in all recommendations being economical at the same time
 - Also, mention the ranges if the readings come severe for any reading
-- It should include cron job schedule for patient followup visit as per their condition or if diagnosedFor mentions a followup, otherwise empty string if no followup is required.
+- It should include cron job schedule for patient followup visit as per their condition or if the doctor mentions a followup in their diagnosis,
+- Add why you picked the followup schedule based on the patient's condition and the doctor's recommendation into the tests section.
+DO NOT mention about cron or anything since this is a report read by non technical people. Use words like "followup" and "scheduled"
+make sure to use the schedule, otherwise empty string if no followup is required. DO NOT USE NON STANDARD CRON JOB FORMATS
 Be careful in this as if a patient is not given a proper treatment on time then it may cause a lot of harm to them even DEATH also.
 Make sure to set the time hour in the cronjob to a suitable office hours time, not midnight. Be sure to consider the today's date also.
-Today is: ${new Date().toJSON()}
+
+Right now the date and time in UTC is: ${new Date().toJSON()}
+Make the cron job schedule based on this. Keep in mind the date.
 
 Also, NEVER use markdown syntax. Respond in plaintext only.
 

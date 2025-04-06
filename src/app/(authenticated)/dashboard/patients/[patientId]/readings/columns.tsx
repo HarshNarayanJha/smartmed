@@ -138,7 +138,7 @@ export const columns: ColumnDef<Reading>[] = [
     },
     cell: ({ row }) => {
       const height = row.getValue("height")
-      return <div>{`${height} cm`}</div>
+      return <div>{`${height ? `${height} cm` : "-"}`}</div>
     },
     maxSize: 50
   },
@@ -161,7 +161,7 @@ export const columns: ColumnDef<Reading>[] = [
     },
     cell: ({ row }) => {
       const weight = row.getValue("weight")
-      return <div>{`${weight} kg`}</div>
+      return <div>{`${weight ? `${weight} kg` : "-"}`}</div>
     },
     maxSize: 50
   },
@@ -186,7 +186,7 @@ export const columns: ColumnDef<Reading>[] = [
       const weight: number = row.getValue("weight")
       const height: number = row.getValue("height")
       const bmi = calculateBmi(weight, height)
-      return <div>{`${bmi} kg/m²`}</div>
+      return <div>{`${bmi !== "NaN" ? `${bmi} kg/m²` : "-"}`}</div>
     },
     maxSize: 25
   },
