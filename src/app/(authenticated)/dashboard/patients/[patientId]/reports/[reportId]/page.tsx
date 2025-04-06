@@ -26,7 +26,12 @@ import {
   CardTitle
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { calculateAge, formatDate, formatDateTime } from "@/lib/utils"
+import {
+  calculateAge,
+  calculateBmi,
+  formatDate,
+  formatDateTime
+} from "@/lib/utils"
 import getUser from "@/utils/supabase/server"
 import { Doctor, Patient, Reading, Report, UrgencyLevel } from "@prisma/client"
 import cronstrue from "cronstrue"
@@ -400,6 +405,12 @@ export default async function ReportDetailPage({
               {reading.weight !== null && (
                 <p>
                   <strong>Weight:</strong> {reading.weight} kg
+                </p>
+              )}
+              {reading.weight !== null && reading.weight !== null && (
+                <p>
+                  <strong>BMI:</strong>{" "}
+                  {calculateBmi(reading.weight, reading.height)} kg/m²
                 </p>
               )}
             </CardContent>
