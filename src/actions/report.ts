@@ -96,17 +96,27 @@ export async function scheduleFollowup(
 }
 
 /**
+ * Unschedules a followup by its job id
+ */
+export async function unscheduleFollowupById(jobId: number, reportId: string) {
+  const client = await createClient()
+  await client.schema("cron").rpc("unschedule", { job_id: jobId.toString() })
+  await updateReportById(reportId, { jobId: null, followupSchedule: "" })
+  console.log("Unscheduled followup with id", jobId)
+}
+
+/**
  * Unschedules all followups for a patient
  * This gets done when patient is marked cured or get's removed
  */
 export async function unscheduleAllFollowupsByPatientId(patientId: string) {
-  const client = await createClient()
   const jobIds = await getReportJobIdsByPatientId(patientId)
 
   console.log("Unscheduling all followups for patient id", patientId)
-  jobIds.forEach(async jid => {
-    await client.schema("cron").rpc("unschedule", { job_id: jid })
-    console.log("Unscheduled followup with id", jid)
+  jobIds.forEach(async ({ jobId, reportId }) => {
+    await unscheduleFollowupById(jobId, reportId)
+    await updateReportById(reportId, { jobId: null, followupSchedule: "" })
+    console.log("Unscheduled followup with id", jobId)
   })
 }
 
@@ -115,13 +125,13 @@ export async function unscheduleAllFollowupsByPatientId(patientId: string) {
  * This gets done when doctor delete's account
  */
 export async function unscheduleAllFollowupsByDoctorId(doctorId: string) {
-  const client = await createClient()
   const jobIds = await getReportJobIdsByDoctorId(doctorId)
 
   console.log("Unscheduling all followups for doctor id", doctorId)
-  jobIds.forEach(async jid => {
-    await client.schema("cron").rpc("unschedule", { job_id: jid })
-    console.log("Unscheduled followup with id", jid)
+  jobIds.forEach(async ({ jobId, reportId }) => {
+    await unscheduleFollowupById(jobId, reportId)
+    await updateReportById(reportId, { jobId: null, followupSchedule: "" })
+    console.log("Unscheduled followup with id", jobId)
   })
 }
 
@@ -312,6 +322,35 @@ export async function getReportById(reportId: string): Promise<Report | null> {
 }
 
 /**
+ * Update a report by its ID
+ */
+export async function updateReportById(
+  reportId: string,
+  data: Partial<Report>
+): Promise<Report | null> {
+  try {
+    const report: Report | null = await prisma.report.update({
+      where: {
+        id: reportId
+      },
+      data
+    })
+
+    revalidatePath(
+      `/dashboard/patient/${report.patientId}/reports/${report.id}`
+    )
+    revalidatePath(`/dashboard/patient/${report.patientId}/reports`)
+    revalidatePath(`/dashboard/patient/${report.patientId}`)
+    revalidatePath(`/dashboard/`)
+
+    return report
+  } catch (error) {
+    console.log(error)
+    throw new Error("Failed to update report", error)
+  }
+}
+
+/**
  * Get reports by patient ID
  */
 export async function getReportsByPatientId(
@@ -356,18 +395,19 @@ export async function getNumReportsByPatientId(
 
 export async function getReportJobIdsByPatientId(
   patientId: string
-): Promise<number[]> {
+): Promise<{ jobId: number; reportId: string }[]> {
   try {
-    const jobIds = await prisma.report.findMany({
+    const reports = await prisma.report.findMany({
       where: {
         patientId
       },
       select: {
+        id: true,
         jobId: true
       }
     })
 
-    return jobIds.map(job => job.jobId)
+    return reports.map(report => ({ jobId: report.jobId, reportId: report.id }))
   } catch (error) {
     console.log(error)
     throw new Error("Failed to get report job IDs")
@@ -376,18 +416,19 @@ export async function getReportJobIdsByPatientId(
 
 export async function getReportJobIdsByDoctorId(
   doctorId: string
-): Promise<number[]> {
+): Promise<{ jobId: number; reportId: string }[]> {
   try {
-    const jobIds = await prisma.report.findMany({
+    const reports = await prisma.report.findMany({
       where: {
         doctorId
       },
       select: {
+        id: true,
         jobId: true
       }
     })
 
-    return jobIds.map(job => job.jobId)
+    return reports.map(report => ({ jobId: report.jobId, reportId: report.id }))
   } catch (error) {
     console.log(error)
     throw new Error("Failed to get report job IDs")

@@ -2,6 +2,7 @@ import { getDoctorById } from "@/actions/doctor"
 import { getPatientById } from "@/actions/patient"
 import { getReadingById } from "@/actions/reading"
 import { getReportById } from "@/actions/report"
+import CancelFollowupButton from "@/components/dashboard/CancelFollowupButton"
 import GenerateReportButton from "@/components/dashboard/GenerateReportButton"
 import ReportPDFDownloadButton from "@/components/dashboard/ReportPDFDownloadButton"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -183,13 +184,7 @@ export default async function ReportDetailPage({
             patient={patient}
             doctor={doctor}
           />
-          <Button
-            variant="secondary"
-            className="text-muted-foreground "
-            disabled={!report.followupSchedule}
-          >
-            Stop Followup Schedule
-          </Button>
+          <CancelFollowupButton report={report} />
         </div>
       </div>
 
