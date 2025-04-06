@@ -98,12 +98,17 @@ export async function scheduleFollowup(
 /**
  * Unschedules a followup by its job id
  */
-export async function unscheduleFollowupById(jobId: number, reportId: string) {
+export async function unscheduleFollowupById(
+  jobId: number,
+  reportId: string,
+  update: boolean = true
+) {
   if (!jobId) return
 
   const client = await createClient()
   await client.schema("cron").rpc("unschedule", { job_id: jobId.toString() })
-  await updateReportById(reportId, { jobId: null, followupSchedule: "" })
+  if (update)
+    await updateReportById(reportId, { jobId: null, followupSchedule: "" })
   console.log("Unscheduled followup with id", jobId)
 }
 
@@ -482,11 +487,13 @@ export async function getNumReportsByDoctorId(
 
 export async function deleteReport(reportId: string): Promise<void> {
   try {
-    await prisma.report.delete({
+    const { id, jobId } = await prisma.report.delete({
       where: {
         id: reportId
       }
     })
+
+    await unscheduleFollowupById(jobId, id, false)
   } catch (error) {
     console.error(`Failed to delete report ${reportId}:`, error)
     throw new Error(`Failed to delete report with ID ${reportId}.`)

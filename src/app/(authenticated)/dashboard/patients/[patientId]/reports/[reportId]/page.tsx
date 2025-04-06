@@ -3,6 +3,7 @@ import { getPatientById } from "@/actions/patient"
 import { getReadingById } from "@/actions/reading"
 import { getReportById } from "@/actions/report"
 import CancelFollowupButton from "@/components/dashboard/CancelFollowupButton"
+import DeleteReportButton from "@/components/dashboard/DeleteReportButton"
 import GenerateReportButton from "@/components/dashboard/GenerateReportButton"
 import ReportPDFDownloadButton from "@/components/dashboard/ReportPDFDownloadButton"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -171,7 +172,7 @@ export default async function ReportDetailPage({
   }
 
   return (
-    <div className="container mx-auto space-y-8 px-4">
+    <div className="container mx-auto space-y-8 px-4 py-4">
       {pageBreadcrumbs(patientId, patient.name, report.id)}
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:gap-0">
         <h1 className="font-bold text-3xl tracking-tight">
@@ -413,6 +414,7 @@ export default async function ReportDetailPage({
               </Button>
             </CardFooter>
           </Card>
+          <DeleteReportButton report={report} />
         </div>
       </div>
     </div>
