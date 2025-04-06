@@ -2,6 +2,7 @@ import { getDoctorById } from "@/actions/doctor"
 import { getPatientById } from "@/actions/patient"
 import { getNumReadingsByPatientId } from "@/actions/reading"
 import { getNumReportsByPatientId } from "@/actions/report"
+import DeletePatientButton from "@/components/dashboard/DeletePatientButton"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -72,7 +73,7 @@ export default async function PatientPage({
   const numReadings = await getNumReadingsByPatientId(patient.id)
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto space-y-8 py-8">
       <Breadcrumb className="mb-8">
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -311,6 +312,8 @@ export default async function PatientPage({
           </CardContent>
         </Card>
       </div>
+
+      <DeletePatientButton patient={patient} />
     </div>
   )
 }

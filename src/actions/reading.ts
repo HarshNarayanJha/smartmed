@@ -133,9 +133,29 @@ export async function deleteReading(id: string): Promise<void> {
     revalidatePath(`/dashboard/patients/${patientId}`)
     revalidatePath(`/dashboard/patients/${patientId}/readings`)
     revalidatePath("/dashboard")
-
   } catch (error) {
     console.error("Failed to delete reading:", error)
     throw new Error("Failed to delete reading")
+  }
+}
+
+export async function deleteReadingsByPatientId(
+  patientId: string
+): Promise<void> {
+  try {
+    const readings: Reading[] = await getReadingsByPatientId(patientId)
+
+    await Promise.all(
+      readings.map(async reading => {
+        await deleteReading(reading.id)
+      })
+    )
+
+    revalidatePath(`/dashboard/patients/${patientId}`)
+    revalidatePath(`/dashboard/patients/${patientId}/readings`)
+    revalidatePath("/dashboard")
+  } catch (error) {
+    console.error("Failed to delete readings by patient ID:", error)
+    throw new Error("Failed to delete readings")
   }
 }

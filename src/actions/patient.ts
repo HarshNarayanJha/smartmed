@@ -3,6 +3,7 @@
 import { prisma } from "@/db/prisma"
 import { Patient, Prisma } from "@prisma/client"
 import { revalidatePath } from "next/cache"
+import { deleteReadingsByPatientId } from "./reading"
 import { unscheduleAllFollowupsByPatientId } from "./report"
 
 /**
@@ -246,12 +247,26 @@ export async function markPatientCured(id: string): Promise<void> {
  */
 export async function deletePatient(id: string): Promise<void> {
   try {
+    const patient = await prisma.patient.findUnique({
+      where: { id },
+      select: { id: true }
+    })
+
+    if (!patient) {
+      console.warn(`Patient with ID ${id} not found for deletion.`)
+      return
+    }
+
+    console.warn(`Preparing to delete patient with ID ${id}.`)
+
+    await deleteReadingsByPatientId(id)
+
     await prisma.patient.delete({
       where: { id }
     })
 
-    revalidatePath("/dashboard")
     revalidatePath("/dashboard/patients")
+    revalidatePath("/dashboard")
   } catch (error) {
     console.error(`Failed to delete patient with id ${id}:`, error)
     throw new Error("Failed to delete patient")
