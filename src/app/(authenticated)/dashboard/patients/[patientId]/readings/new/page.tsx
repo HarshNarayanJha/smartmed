@@ -10,7 +10,18 @@ import {
 } from "@/components/ui/breadcrumb"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Patient } from "@prisma/client"
+import { Metadata } from "next"
 import Link from "next/link"
+
+export async function generateMetadata({
+  params
+}: { params: { patientId: string } }): Promise<Metadata> {
+  const patient: Patient = await getPatientById(params.patientId)
+
+  return {
+    title: `New Reading for ${patient.name} | SmartMed`
+  }
+}
 
 export default async function NewPatientReadingPage({
   params

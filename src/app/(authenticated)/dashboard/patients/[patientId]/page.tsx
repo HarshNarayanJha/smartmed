@@ -36,7 +36,18 @@ import {
   Plus,
   User
 } from "lucide-react"
+import { Metadata } from "next"
 import Link from "next/link"
+
+export async function generateMetadata({
+  params
+}: { params: { patientId: string } }): Promise<Metadata> {
+  const patient: Patient = await getPatientById(params.patientId)
+
+  return {
+    title: `${patient.name} | Your Patient's | SmartMed`
+  }
+}
 
 export default async function PatientPage({
   params
@@ -119,7 +130,7 @@ export default async function PatientPage({
               </CardTitle>
               <Badge
                 variant={patient.cured ? "default" : "secondary"}
-                className={`${patient.cured ? "bg-green-500 font-semibold" : "text-white"}`}
+                className={`${patient.cured ? "bg-green-500 font-semibold" : ""}`}
               >
                 {patient.cured ? "Cured" : "Under Treatment"}
               </Badge>

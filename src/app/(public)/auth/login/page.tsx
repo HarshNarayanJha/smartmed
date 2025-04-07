@@ -8,8 +8,16 @@ import {
   CardTitle
 } from "@/components/ui/card"
 import getUser from "@/utils/supabase/server"
+import { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Login | SmartMed",
+    description: "Log in to your SmartMed account",
+  }
+}
 
 export default async function LoginPage() {
   const user = await getUser()

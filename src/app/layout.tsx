@@ -1,10 +1,6 @@
 import LitAnalytics from "@/components/reusable/LitAnalytics"
 import type { Metadata } from "next"
-import {
-  Martian_Mono,
-  Montserrat,
-  Open_Sans
-} from "next/font/google"
+import { Martian_Mono, Montserrat, Open_Sans } from "next/font/google"
 import "./globals.css"
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/providers/ThemeProvider"
@@ -51,6 +47,22 @@ export const metadata: Metadata = {
   },
   verification: {
     google: "FzcvzGKLeWAo10V8NUSQJdxd39sif48n5kRQ7iPY-Ek"
+  },
+  openGraph: {
+    type: "website",
+    url: "https://smartmed-wli7.onrender.com",
+    title: "SmartMed",
+    description:
+      "SmartMed, your intelligent patient data management solution to take care of your medical reports with a cloud-based medical readings register for hassle-free report generation",
+    countryName: "India",
+    images: [
+      {
+        url: "https://smartmed-wli7.onrender.com/smartmed.png",
+        width: 512,
+        height: 512,
+        alt: "SmartMed"
+      }
+    ]
   }
 }
 

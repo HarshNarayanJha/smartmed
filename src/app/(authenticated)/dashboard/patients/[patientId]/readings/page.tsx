@@ -1,5 +1,6 @@
 import {
   PatientWithReadings,
+  getPatientById,
   getPatientByIdWithReadings
 } from "@/actions/patient"
 import ReadingBarChart from "@/components/dashboard/ReadingBarChart"
@@ -32,10 +33,22 @@ import {
   formatDate,
   formatDateTime
 } from "@/lib/utils"
-import { Reading } from "@prisma/client"
+import { Patient, Reading } from "@prisma/client"
 import { FilePlus, Notebook, Plus } from "lucide-react"
+import { Metadata } from "next"
 import Link from "next/link"
 import { columns } from "./columns"
+
+export async function generateMetadata({
+  params
+}: { params: { patientId: string } }): Promise<Metadata> {
+  const patient: Patient = await getPatientById(params.patientId)
+
+  return {
+    title: `${patient.name}'s Readings | SmartMed`,
+    description: `View and take ${patient.name}'s readings on SmartMed`
+  }
+}
 
 export default async function PatientReadingsPage({
   params
@@ -113,7 +126,7 @@ export default async function PatientReadingsPage({
               {patient.id.slice(0, 6)}{" "}
               <Badge
                 variant={patient.cured ? "default" : "secondary"}
-                className={`${patient.cured ? "bg-green-500 font-semibold" : "text-white"}`}
+                className={`${patient.cured ? "bg-green-500 font-semibold" : ""}`}
               >
                 {patient.cured ? "Cured" : "Under Treatment"}
               </Badge>
@@ -494,7 +507,9 @@ export default async function PatientReadingsPage({
                           <TableCell className="font-medium">
                             {formatDateTime(reading.createdAt)}
                           </TableCell>
-                          <TableCell>{reading.height ? reading.height : '-'} cm</TableCell>
+                          <TableCell>
+                            {reading.height ? reading.height : "-"} cm
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

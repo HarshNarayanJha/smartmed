@@ -10,8 +10,16 @@ import {
 } from "@/components/ui/card"
 import getUser from "@/utils/supabase/server"
 import { CheckCircle2 } from "lucide-react"
+import { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Account Confirmed | SmartMed",
+    description: "Welcome to SmartMed.",
+  }
+}
 
 export default async function WelcomeAboard() {
   const user = await getUser()

@@ -1,5 +1,6 @@
 import {
   PatientWithReports,
+  getPatientById,
   getPatientByIdWithReports
 } from "@/actions/patient"
 import { DataTable } from "@/components/reusable/DataTable"
@@ -15,10 +16,22 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { calculateAge, formatDateTime } from "@/lib/utils"
-import { Report } from "@prisma/client"
+import { Patient, Report } from "@prisma/client"
 import { Eye, FilePlus } from "lucide-react"
+import { Metadata } from "next"
 import Link from "next/link"
 import { columns } from "./columns"
+
+export async function generateMetadata({
+  params
+}: { params: { patientId: string } }): Promise<Metadata> {
+  const patient: Patient = await getPatientById(params.patientId)
+
+  return {
+    title: `${patient.name}'s Reports | SmartMed`,
+    description: `View and manage ${patient.name}'s medical reports on SmartMed`
+  }
+}
 
 export default async function PatientReadingsPage({
   params
@@ -87,12 +100,20 @@ export default async function PatientReadingsPage({
             </p>
           </div>
         </div>
-        <Button asChild>
-          <Link href={`/dashboard/patients/${patientId}/readings/new`}>
-            <FilePlus />
-            New Reading
-          </Link>
-        </Button>
+        <div className="flex flex-row gap-2">
+          <Button asChild>
+            <Link href={`/dashboard/patients/${patientId}/readings/new`}>
+              <FilePlus />
+              New Reading
+            </Link>
+          </Button>
+          <Button asChild variant="secondary">
+            <Link href={`/dashboard/patients/${patientId}/readings`}>
+              <Eye />
+              View Readings
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {latestReport && (
@@ -108,44 +129,30 @@ export default async function PatientReadingsPage({
             <div className="space-y-4">
               <div>
                 <h4 className="font-semibold text-sm">Summary</h4>
-                <p className="text-muted-foreground text-sm">
-                  {latestReport.summary}
-                </p>
+                <p className="text-sm">{latestReport.summary}</p>
               </div>
               <div>
                 <h4 className="font-semibold text-sm">Diagnosis</h4>
-                <p className="text-muted-foreground text-sm">
-                  {latestReport.diagnosis}
-                </p>
+                <p className="text-sm">{latestReport.diagnosis}</p>
               </div>
               <div>
                 <h4 className="font-semibold text-sm">Recommendations</h4>
-                <p className="text-muted-foreground text-sm">
-                  {latestReport.recommendations}
-                </p>
+                <p className="text-sm">{latestReport.recommendations}</p>
               </div>
               <div>
                 <h4 className="font-semibold text-sm">Urgency Level</h4>
-                <p className="text-muted-foreground text-sm">
-                  {latestReport.urgencyLevel}
-                </p>
+                <p className="text-sm">{latestReport.urgencyLevel}</p>
               </div>
               {latestReport.tests && (
                 <div>
                   <h4 className="font-semibold text-sm">Tests</h4>
-                  <p className="text-muted-foreground text-sm">
-                    {latestReport.tests}
-                  </p>
+                  <p className="text-sm">{latestReport.tests}</p>
                 </div>
               )}
-              {latestReport.additionalNotes && (
-                <div>
-                  <h4 className="font-semibold text-sm">Additional Notes</h4>
-                  <p className="text-muted-foreground text-sm">
-                    {latestReport.additionalNotes}
-                  </p>
-                </div>
-              )}
+              <div>
+                <h4 className="font-semibold text-sm">Additional Notes</h4>
+                <p className="text-sm">{latestReport.additionalNotes}</p>
+              </div>
               <Button variant="outline">
                 <Link
                   href={`/dashboard/patients/${patientId}/reports/${latestReport.id}`}

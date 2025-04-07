@@ -10,7 +10,13 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
-import { Copy, EyeIcon, MoreHorizontal } from "lucide-react"
+import {
+  CircleCheckIcon,
+  CircleXIcon,
+  Copy,
+  EyeIcon,
+  MoreHorizontal
+} from "lucide-react"
 import Link from "next/link"
 
 import { Badge } from "@/components/ui/badge"
@@ -165,7 +171,7 @@ export const columns: ColumnDef<Report>[] = [
           return (
             <Badge
               variant="default"
-              className="bg-green-500 hover:bg-green-600"
+              className="bg-green-600 text-white hover:bg-green-700 dark:text-black"
             >
               Low
             </Badge>
@@ -184,6 +190,23 @@ export const columns: ColumnDef<Report>[] = [
         default:
           return <Badge variant="outline">{urgencyLevel || "N/A"}</Badge>
       }
+    }
+  },
+  {
+    id: "followupSchedule",
+    header: () => <span className="font-bold">Followup Schedule</span>,
+    cell: ({ row }) => {
+      const followupSchedule = row.original.followupSchedule
+      console.log(followupSchedule)
+      return (
+        <div className="max-w-28 truncate text-center">
+          {followupSchedule !== "" ? (
+            <CircleCheckIcon className="m-auto h-4 w-4 text-green-500" />
+          ) : (
+            <CircleXIcon className="m-auto h-4 w-4 text-red-500" />
+          )}
+        </div>
+      )
     }
   },
   {

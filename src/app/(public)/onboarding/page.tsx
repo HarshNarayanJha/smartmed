@@ -8,7 +8,15 @@ import {
   CardTitle
 } from "@/components/ui/card"
 import { Mail } from "lucide-react"
+import { Metadata } from "next"
 import Link from "next/link"
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Account Confirmation | SmartMed",
+    description: "Check your inbox and confirm your account to continue.",
+  }
+}
 
 export default function ConfirmEmail() {
   return (

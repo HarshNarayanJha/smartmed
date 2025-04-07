@@ -1,6 +1,14 @@
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar"
 import Header from "@/components/reusable/Header"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { Metadata } from "next"
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Your Profile | SmartMed",
+    description: "Your SmartMed profile."
+  }
+}
 
 export default function DashboardLayout({
   children

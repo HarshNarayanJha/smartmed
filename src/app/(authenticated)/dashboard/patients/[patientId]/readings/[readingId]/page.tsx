@@ -37,9 +37,20 @@ import {
   Thermometer,
   Wind
 } from "lucide-react"
+import { Metadata } from "next"
 import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
 import { Suspense } from "react"
+
+export async function generateMetadata({
+  params
+}: { params: { patientId: string } }): Promise<Metadata> {
+  const patient: Patient = await getPatientById(params.patientId)
+
+  return {
+    title: `Reading for ${patient.name} | SmartMed`
+  }
+}
 
 export default async function ReadingPage({
   params

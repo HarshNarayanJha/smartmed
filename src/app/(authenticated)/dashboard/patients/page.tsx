@@ -13,10 +13,18 @@ import { Skeleton } from "@/components/ui/skeleton"
 import getUser from "@/utils/supabase/server"
 import { Doctor, Patient } from "@prisma/client"
 import { UserPlus2Icon } from "lucide-react"
+import { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { Suspense } from "react"
 import { columns } from "./columns"
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Your Patients | SmartMed",
+    description: "Manage your patients on SmartMed."
+  }
+}
 
 const PatientDataTable = async ({ patients }: { patients: Patient[] }) => {
   return <DataTable columns={columns} data={patients} />

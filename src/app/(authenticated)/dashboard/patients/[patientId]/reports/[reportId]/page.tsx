@@ -45,8 +45,19 @@ import {
   StickyNote,
   Text
 } from "lucide-react"
+import { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+
+export async function generateMetadata({
+  params
+}: { params: { patientId: string } }): Promise<Metadata> {
+  const patient: Patient = await getPatientById(params.patientId)
+
+  return {
+    title: `Medical Report for ${patient.name} | SmartMed`
+  }
+}
 
 export default async function ReportDetailPage({
   params

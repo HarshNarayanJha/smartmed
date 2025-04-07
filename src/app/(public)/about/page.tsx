@@ -1,4 +1,12 @@
 import Footer from "@/components/reusable/Footer"
+import { Metadata } from "next"
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "About SmartMed",
+    description: "SmartMed is a healthcare platform that aims to improve patient outcomes through innovative technology solutions.",
+  }
+}
 
 export default function AboutPage() {
   return (
