@@ -13,6 +13,12 @@ export const handleError = (error: unknown) => {
   }
 }
 
+/**
+ * Calculates the age based on the date of birth.
+ *
+ * @param dob - The date of birth.
+ * @returns The calculated age.
+ */
 export function calculateAge(dob: Date) {
   const today = new Date()
   const age = today.getFullYear() - dob.getFullYear()
@@ -35,6 +41,12 @@ export function calculateBmi(weight: number, height: number) {
   return Math.max(0, bmi).toFixed(2)
 }
 
+/**
+ * Formats a date object into a string representation.
+ *
+ * @param date - The date object to format.
+ * @returns The formatted date string.
+ */
 export function formatDate(date: Date) {
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
@@ -44,6 +56,12 @@ export function formatDate(date: Date) {
   return date.toLocaleDateString("en-IN", options)
 }
 
+/**
+ * Formats a date object into a string representation with time.
+ *
+ * @param date - The date object to format.
+ * @returns The formatted date string with time.
+ */
 export function formatDateTime(date: Date) {
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
@@ -56,6 +74,12 @@ export function formatDateTime(date: Date) {
   return date.toLocaleString("en-IN", options)
 }
 
+/**
+ * Formats a date object into a string representation with time.
+ *
+ * @param date - The date object to format.
+ * @returns The formatted date string with time.
+ */
 export function formatTime(date: Date) {
   const options: Intl.DateTimeFormatOptions = {
     hour: "2-digit",

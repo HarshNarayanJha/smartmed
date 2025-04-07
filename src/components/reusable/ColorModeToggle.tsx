@@ -26,15 +26,15 @@ export function ColorModeToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
-          <Sun />
+          <Sun className="not-dark:text-black" />
           Light
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
-          <Moon />
+          <Moon className="not-dark:text-black" />
           Dark
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
-          <Monitor />
+          <Monitor className="not-dark:text-black" />
           System
         </DropdownMenuItem>
       </DropdownMenuContent>

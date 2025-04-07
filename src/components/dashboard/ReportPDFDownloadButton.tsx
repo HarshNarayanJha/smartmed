@@ -281,7 +281,7 @@ export default function ReportPDFDownloadButton({
   }
 
   return (
-    <Button className="group" onClick={handleDownload}>
+    <Button className="group" onClick={handleDownload} disabled={isPending}>
       {isPending ? (
         <>
           <Loader2 className="mr-2 animate-spin" />
