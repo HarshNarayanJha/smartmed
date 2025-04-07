@@ -130,8 +130,8 @@ export async function deleteReading(id: string): Promise<void> {
       where: { id }
     })
 
-    revalidatePath(`/dashboard/patients/${patientId}`)
-    revalidatePath(`/dashboard/patients/${patientId}/readings`)
+    revalidatePath(`/dashboard/patients/${patientId}`, "page")
+    revalidatePath(`/dashboard/patients/${patientId}/readings`, "page")
     revalidatePath("/dashboard")
   } catch (error) {
     console.error("Failed to delete reading:", error)

@@ -51,8 +51,9 @@ import { redirect } from "next/navigation"
 
 export async function generateMetadata({
   params
-}: { params: { patientId: string } }): Promise<Metadata> {
-  const patient: Patient = await getPatientById(params.patientId)
+}: { params: Promise<{ patientId: string }> }): Promise<Metadata> {
+  const { patientId } = await params
+  const patient: Patient = await getPatientById(patientId)
 
   return {
     title: `Medical Report for ${patient.name} | SmartMed`

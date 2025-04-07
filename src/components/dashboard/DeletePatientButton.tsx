@@ -47,6 +47,9 @@ export default function DeletePatientButton({ patient }: { patient: Patient }) {
                 success: "Patient deleted successfully",
                 error: "Failed to delete patient"
               })
+              // FIXME: This actually is a workaround as after deletePatient (and revalidatePath inside it)
+              // redirect occurs, but the deleted patient is still visible in the list
+              await new Promise(resolve => setTimeout(resolve, 500))
               redirect(`/dashboard/patients`)
             }}
           >

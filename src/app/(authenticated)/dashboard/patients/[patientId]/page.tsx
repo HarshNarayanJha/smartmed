@@ -41,8 +41,9 @@ import Link from "next/link"
 
 export async function generateMetadata({
   params
-}: { params: { patientId: string } }): Promise<Metadata> {
-  const patient: Patient = await getPatientById(params.patientId)
+}: { params: Promise<{ patientId: string }> }): Promise<Metadata> {
+  const { patientId } = await params
+  const patient: Patient = await getPatientById(patientId)
 
   return {
     title: `${patient.name} | Your Patient's | SmartMed`
