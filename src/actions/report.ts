@@ -28,7 +28,7 @@ Your response should follow this exact JSON schema:
   "urgencyLevel": "Low/Medium/High - Include these parameters according to your findings and alert the patient accordingly",
   "additionalNotes": "Any other relevant medical observations or concerns you want to give from your experience. It should also give the patient a safe/proper diet and yoga/exercise plan for speedy recovery in a short and concise manner in plain text (you may use formatting and numbering, but not markdown)",
   "tests": "Includes information about all the tests that are needed to be done in plain english sentence. Keep this very concise. Include info about the followupSchedule you decided here",
-  "followupSchedule": "A single cron job schedule for followup visits to doctor without any additional text as per their condition."
+  "followupSchedule": "A single cron job schedule for recurring followup visits to doctor without any additional text as per their condition."
 }
 
 Your report should:
@@ -40,10 +40,10 @@ Your report should:
 - Format all values with appropriate units
 - Prioritize patient's health and safety in all recommendations while being economical at the same time
 - Also, mention the ranges if the readings come severe for any reading
-- Add why you picked the followup schedule based on the patient's condition and the doctor's recommendation into the tests section.
+- Add why you picked the recurring followup schedule based on the patient's condition and the doctor's recommendation into the tests section.
 DO NOT mention about cron or anything since this is a report read by non technical people. Use words like "followup" and "scheduled".
-- followupSchedule should include cron job schedule for patient followup visits as per their condition or if the doctor mentions a followup request in their diagnosis,
-make sure to use that only, otherwise empty string if no followup is required.
+- followupSchedule should include cron job schedule for patient's recurring followup visits as per their condition or if the doctor mentions a recurring followup request in their diagnosis,
+make sure to use that only, otherwise empty string if no followup is required, BUT if the doctor days to followup, be sure to schedule it as instructed.
 
 For the cron job format, strictly follow this format:
 - 5 space-separated fields: minute hour day month dayofweek
@@ -141,7 +141,6 @@ export async function unscheduleAllFollowupsByPatientId(patientId: string) {
   console.log("Unscheduling all followups for patient id", patientId)
   jobIds.forEach(async ({ jobId, reportId }) => {
     await unscheduleFollowupById(jobId, reportId)
-    await updateReportById(reportId, { jobId: null, followupSchedule: "" })
     console.log("Unscheduled followup with id", jobId)
   })
 }
@@ -156,7 +155,6 @@ export async function unscheduleAllFollowupsByDoctorId(doctorId: string) {
   console.log("Unscheduling all followups for doctor id", doctorId)
   jobIds.forEach(async ({ jobId, reportId }) => {
     await unscheduleFollowupById(jobId, reportId)
-    await updateReportById(reportId, { jobId: null, followupSchedule: "" })
     console.log("Unscheduled followup with id", jobId)
   })
 }
@@ -367,6 +365,7 @@ export async function updateReportById(
     )
     revalidatePath(`/dashboard/patient/${report.patientId}/reports`)
     revalidatePath(`/dashboard/patient/${report.patientId}`)
+    revalidatePath(`/dashboard/reports`)
     revalidatePath(`/dashboard/`)
 
     return report
@@ -528,6 +527,7 @@ export async function deleteReport(id: string): Promise<void> {
 
     revalidatePath(`/dashboard/patients/${report.patientId}`)
     revalidatePath(`/dashboard/patients/${report.patientId}/reports`)
+    revalidatePath(`/dashboard/reports`)
     revalidatePath("/dashboard")
   } catch (error) {
     console.error(`Failed to delete report ${id}:`, error)
